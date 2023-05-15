@@ -1,0 +1,6 @@
+.chakra-checkbox__label[data-checked] {
+  font-weight: bold;
+}
+.chakra-checkbox__control {
+  border-width: 1px !important;
+}

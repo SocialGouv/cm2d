@@ -1,0 +1,33 @@
+{
+  "name": "webapp-next",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@chakra-ui/icons": "^2.0.19",
+    "@chakra-ui/react": "^2.6.1",
+    "@choc-ui/chakra-autocomplete": "^5.1.5",
+    "@elastic/elasticsearch": "^8.7.0",
+    "@emotion/react": "^11.11.0",
+    "@emotion/styled": "^11.11.0",
+    "@fontsource/inter": "^4.5.15",
+    "@next/font": "13.4.1",
+    "@types/node": "20.1.1",
+    "@types/react": "18.2.6",
+    "@types/react-dom": "18.2.4",
+    "eslint": "8.40.0",
+    "eslint-config-next": "13.4.1",
+    "framer-motion": "^10.12.9",
+    "next": "13.4.1",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "superjson": "^1.12.3",
+    "swr": "^2.1.5",
+    "typescript": "5.0.4"
+  }
+}

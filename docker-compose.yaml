@@ -1,0 +1,37 @@
+version: '3.3'
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.6.2
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+      - xpack.security.enabled=false
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+      - 9300:9300
+    networks:
+      - elastic
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.6.2
+    container_name: kibana
+    ports:
+      - 5601:5601
+    depends_on:
+      - elasticsearch
+    networks:
+      - elastic
+
+volumes:
+  es_data:
+    driver: local
+
+networks:
+  elastic:
