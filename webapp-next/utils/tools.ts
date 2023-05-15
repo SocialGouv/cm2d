@@ -37,5 +37,13 @@ export function transformFilters(filters: Filters): any[] {
     });
   }
 
+  if (filters.death_location.length > 0) {
+    transformed.push({
+      terms: {
+        death_location: filters.death_location
+      }
+    });
+  }
+
   return transformed;
 }

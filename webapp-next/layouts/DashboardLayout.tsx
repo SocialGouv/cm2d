@@ -1,3 +1,4 @@
+import { Header } from '@/components/layouts/Header';
 import { Menu } from '@/components/layouts/Menu';
 import { Box, Flex } from '@chakra-ui/react';
 import Head from 'next/head';
@@ -19,7 +20,10 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
         <Box mr={5}>
           <Menu />
         </Box>
-        <main>{children}</main>
+        <Flex flexDir="column" w="full">
+          <Header />
+          <main>{children}</main>
+        </Flex>
       </Flex>
     </Box>
   );

@@ -12,11 +12,13 @@ export default function Home() {
   const { filters } = context;
 
   const { data } = useData(filters);
+  if (!data) return <>...</>;
 
   return (
     <>
-      <pre>{JSON.stringify(filters, null, 2)}</pre>
-      <pre>{JSON.stringify(data, null, 2)}</pre>
+      <pre>
+        {JSON.stringify(data.result.hits.total.value, null, 2)} objets trouvés
+      </pre>
     </>
   );
 }

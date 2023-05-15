@@ -1,11 +1,12 @@
+import { FilterContext } from '@/utils/filters-provider';
 import { Box, Flex, Image, Stack } from '@chakra-ui/react';
-import { useContext, useEffect, useState } from 'react';
+import { useContext } from 'react';
 import { FiltersAges } from '../filters/Ages';
 import { FilterCauses } from '../filters/Causes';
+import { FiltersDeathLocations } from '../filters/DeathLocations';
 import { FiltersSexes } from '../filters/Sexes';
 import { MenuTitle } from './MenuTitle';
 import { SubMenu } from './SubMenu';
-import { FilterContext } from '@/utils/filters-provider';
 
 const ageRanges = [
   { id: 0, label: '0-10 ans', minAge: 0, maxAge: 10 },
@@ -33,7 +34,7 @@ export function Menu() {
       py={8}
       borderRadius={16}
       bg="white"
-      maxW={80}
+      w={80}
       boxShadow="box-shadow: 0px 10px 15px -3px rgba(36, 108, 249, 0.04), 0px 4px 6px -2px rgba(36, 108, 249, 0.04);"
     >
       <Box pl={4} px={8}>
@@ -67,12 +68,7 @@ export function Menu() {
           }}
         >
           <Stack dir="column" spacing={4}>
-            <FiltersSexes filters={filters} setFilters={setFilters} />
-            <FiltersAges
-              filters={filters}
-              setFilters={setFilters}
-              ages={ageRanges}
-            />
+            <FiltersDeathLocations filters={filters} setFilters={setFilters} />
           </Stack>
         </SubMenu>
       </Box>

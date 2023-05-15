@@ -8,6 +8,7 @@ import {
 
 export type Filters = {
   categories_level_1: string[];
+  death_location: string[];
   age: {
     min: number;
     max?: number;
@@ -31,6 +32,7 @@ type FilterProviderProps = {
 export function FilterProvider({ children }: FilterProviderProps) {
   const [filters, setFilters] = useState<Filters>({
     categories_level_1: [],
+    death_location: [],
     age: [],
     sex: []
   });
