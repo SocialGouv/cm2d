@@ -1,8 +1,8 @@
-import { Dispatch, SetStateAction } from 'react';
-import { MenuSubTitle } from '../layouts/MenuSubTitle';
-import { Box, Checkbox, Flex, Text } from '@chakra-ui/react';
 import { useSexes } from '@/utils/api';
 import { Filters } from '@/utils/filters-provider';
+import { Box, Checkbox, Flex, Text } from '@chakra-ui/react';
+import { Dispatch, SetStateAction } from 'react';
+import { MenuSubTitle } from '../layouts/MenuSubTitle';
 
 type Sexes = {
   id: number;
@@ -49,8 +49,11 @@ export const FiltersSexes = (props: Props) => {
               }
             }}
           >
-            <Text as={filters.sexes.includes(sex.label) ? 'b' : 'span'}>
-              {sex.label.charAt(0).toLocaleUpperCase() + sex.label.substring(1)}
+            <Text
+              as={filters.sexes.includes(sex.label) ? 'b' : 'span'}
+              textTransform="capitalize"
+            >
+              {sex.label}
             </Text>
           </Checkbox>
         ))}

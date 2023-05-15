@@ -1,3 +1,5 @@
+import { useCauses } from '@/utils/api';
+import { Filters } from '@/utils/filters-provider';
 import { InputGroup, InputLeftElement } from '@chakra-ui/react';
 import {
   AutoComplete,
@@ -5,10 +7,8 @@ import {
   AutoCompleteItem,
   AutoCompleteList
 } from '@choc-ui/chakra-autocomplete';
-import { Dispatch, SetStateAction } from 'react';
 import Image from 'next/image';
-import { useCauses } from '@/utils/api';
-import { Filters } from '@/utils/filters-provider';
+import { Dispatch, SetStateAction } from 'react';
 
 type Causes = {
   id: number;
@@ -52,7 +52,7 @@ export const FilterCauses = (props: Props) => {
           setFilters({ ...filters, causes: [val] });
         }}
       >
-        <AutoCompleteInput pl={10} />
+        <AutoCompleteInput pl={10} textTransform="capitalize" />
         <AutoCompleteList>
           {causes.map(cause => (
             <AutoCompleteItem
