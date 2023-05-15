@@ -1,9 +1,6 @@
-import Head from 'next/head';
-import { Inter } from '@next/font/google';
-import { useContext } from 'react';
+import { useData } from '@/utils/api';
 import { FilterContext } from '@/utils/filters-provider';
-
-const inter = Inter({ subsets: ['latin'] });
+import { useContext } from 'react';
 
 export default function Home() {
   const context = useContext(FilterContext);
@@ -14,5 +11,12 @@ export default function Home() {
 
   const { filters } = context;
 
-  return <pre>{JSON.stringify(filters, null, 2)}</pre>;
+  const { data } = useData(filters);
+
+  return (
+    <>
+      <pre>{JSON.stringify(filters, null, 2)}</pre>
+      <pre>{JSON.stringify(data, null, 2)}</pre>
+    </>
+  );
 }

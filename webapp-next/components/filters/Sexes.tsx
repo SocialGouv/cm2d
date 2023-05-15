@@ -39,18 +39,18 @@ export const FiltersSexes = (props: Props) => {
               if (e.target.checked) {
                 setFilters({
                   ...filters,
-                  sexes: [...filters.sexes, e.target.value]
+                  sex: [...filters.sex, e.target.value]
                 });
               } else {
                 setFilters({
                   ...filters,
-                  sexes: [...filters.sexes.filter(f => f !== e.target.value)]
+                  sex: [...filters.sex.filter(f => f !== e.target.value)]
                 });
               }
             }}
           >
             <Text
-              as={filters.sexes.includes(sex.label) ? 'b' : 'span'}
+              as={filters.sex.includes(sex.label) ? 'b' : 'span'}
               textTransform="capitalize"
             >
               {sex.label}

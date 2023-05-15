@@ -49,7 +49,7 @@ export const FilterCauses = (props: Props) => {
       <AutoComplete
         openOnFocus
         onChange={(val: string) => {
-          setFilters({ ...filters, causes: [val] });
+          setFilters({ ...filters, categories_level_1: [val] });
         }}
       >
         <AutoCompleteInput pl={10} textTransform="capitalize" />

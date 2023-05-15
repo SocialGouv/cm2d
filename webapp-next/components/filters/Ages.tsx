@@ -25,19 +25,19 @@ export const FiltersAges = (props: Props) => {
               if (e.target.checked) {
                 setFilters({
                   ...filters,
-                  ages: [...filters.ages, { min: age.minAge, max: age.maxAge }]
+                  age: [...filters.age, { min: age.minAge, max: age.maxAge }]
                 });
               } else {
                 setFilters({
                   ...filters,
-                  ages: [...filters.ages.filter(a => a.min !== age.minAge)]
+                  age: [...filters.age.filter(a => a.min !== age.minAge)]
                 });
               }
             }}
           >
             <Text
               as={
-                filters.ages.includes({ min: age.minAge, max: age.maxAge })
+                filters.age.includes({ min: age.minAge, max: age.maxAge })
                   ? 'b'
                   : 'span'
               }

@@ -7,12 +7,12 @@ import {
 } from 'react';
 
 export type Filters = {
-  causes: string[];
-  ages: {
+  categories_level_1: string[];
+  age: {
     min: number;
     max?: number;
   }[];
-  sexes: string[];
+  sex: string[];
 };
 
 type FilterContextType = {
@@ -30,9 +30,9 @@ type FilterProviderProps = {
 
 export function FilterProvider({ children }: FilterProviderProps) {
   const [filters, setFilters] = useState<Filters>({
-    causes: [],
-    ages: [],
-    sexes: []
+    categories_level_1: [],
+    age: [],
+    sex: []
   });
 
   return (
