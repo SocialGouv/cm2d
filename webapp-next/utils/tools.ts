@@ -1,5 +1,4 @@
 import { Filters } from './filters-provider';
-import querystring from 'querystring';
 
 export function transformFilters(filters: Filters): any[] {
   const transformed: any[] = [];
