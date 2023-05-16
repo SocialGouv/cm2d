@@ -26,7 +26,10 @@ export function FiltersShortcut() {
     return (
       <Tag
         color="primary.500"
-        bg="primary.50"
+        bg="white"
+        borderWidth={1}
+        borderStyle="solid"
+        borderColor="primary.500"
         py={2}
         fontSize="md"
         mr={2}
@@ -47,9 +50,10 @@ export function FiltersShortcut() {
         </Text>
         <CloseIcon
           bg="primary.100"
+          color="primary.300"
           cursor="pointer"
           borderRadius="50%"
-          fontSize="lg"
+          fontSize="xl"
           ml={2}
           p={1}
           onClick={onDelete}
