@@ -8,7 +8,7 @@ import {
   AutoCompleteList
 } from '@choc-ui/chakra-autocomplete';
 import Image from 'next/image';
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
 type Causes = {
   id: number;
@@ -19,10 +19,17 @@ type Props = {
   filters: Filters;
   setFilters: Dispatch<SetStateAction<Filters>>;
 };
-
 export const FilterCauses = (props: Props) => {
   const { filters, setFilters } = props;
   const { data } = useCauses();
+
+  const [inputValue, setInputValue] = useState('');
+
+  useEffect(() => {
+    if (!filters.categories_level_1.length) {
+      setInputValue('');
+    }
+  }, [filters.categories_level_1]);
 
   if (!data) return <>...</>;
 
@@ -47,18 +54,38 @@ export const FilterCauses = (props: Props) => {
         />
       </InputLeftElement>
       <AutoComplete
+        key={filters.categories_level_1.toString()}
         openOnFocus
-        onChange={(val: string) => {
-          setFilters({ ...filters, categories_level_1: [val] });
+        onSelectOption={selectedOption => {
+          setFilters({
+            ...filters,
+            categories_level_1: [selectedOption.item.value]
+          });
+
+          setInputValue(selectedOption.item.value);
         }}
+        restoreOnBlurIfEmpty={false}
       >
-        <AutoCompleteInput pl={10} textTransform="capitalize" />
+        <AutoCompleteInput
+          pl={10}
+          textTransform="capitalize"
+          onChange={e => {
+            if (!e.target.value) {
+              setFilters({ ...filters, categories_level_1: [] });
+            }
+            setInputValue(e.target.value);
+          }}
+          onBlur={() => {
+            if (!causes.map(c => c.label).includes(inputValue))
+              setInputValue('');
+          }}
+          value={inputValue}
+        />
         <AutoCompleteList>
           {causes.map(cause => (
             <AutoCompleteItem
               key={`option-${cause.id}`}
               value={cause.label}
-              getValue={() => cause.label}
               textTransform="capitalize"
             >
               {cause.label}
