@@ -14,6 +14,8 @@ export type Filters = {
     max?: number;
   }[];
   sex: string[];
+  start_date?: string;
+  end_date?: string;
 };
 
 type FilterContextType = {

@@ -21,7 +21,14 @@ export default async function handler(
     : [];
   const aggregations = req.query.aggregations
     ? JSON.parse(req.query.aggregations as string)
-    : {};
+    : {
+        aggregated_date: {
+          date_histogram: {
+            field: 'date',
+            calendar_interval: 'week'
+          }
+        }
+      };
   const index = (req.query.index as string) || 'cm2d_certificate'; // default to 'cm2d_certificate' if no index is provided
 
   const result = await client.search(

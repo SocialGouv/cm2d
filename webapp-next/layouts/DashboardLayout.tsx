@@ -1,3 +1,4 @@
+import { FiltersShortcut } from '@/components/layouts/FiltersShortcut';
 import { Header } from '@/components/layouts/Header';
 import { Menu } from '@/components/layouts/Menu';
 import { Box, Flex } from '@chakra-ui/react';
@@ -22,6 +23,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
         </Box>
         <Flex flexDir="column" w="full">
           <Header />
+          <FiltersShortcut />
           <main>{children}</main>
         </Flex>
       </Flex>
