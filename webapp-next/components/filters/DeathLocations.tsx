@@ -37,6 +37,7 @@ export const FiltersDeathLocations = (props: Props) => {
             borderColor="primary.500"
             colorScheme="primary"
             value={death_location.label}
+            isChecked={filters.death_location.includes(death_location.label)}
             onChange={e => {
               if (e.target.checked) {
                 setFilters({

@@ -11,6 +11,7 @@ type Props = {
 
 export const FiltersAges = (props: Props) => {
   const { filters, setFilters, ages } = props;
+
   return (
     <Box>
       <MenuSubTitle title="Ages" />
@@ -21,6 +22,7 @@ export const FiltersAges = (props: Props) => {
             borderColor="primary.500"
             colorScheme="primary"
             value={age.id}
+            isChecked={filters.age.some(a => a.min === age.minAge)}
             onChange={e => {
               if (e.target.checked) {
                 setFilters({
@@ -36,11 +38,7 @@ export const FiltersAges = (props: Props) => {
             }}
           >
             <Text
-              as={
-                filters.age.includes({ min: age.minAge, max: age.maxAge })
-                  ? 'b'
-                  : 'span'
-              }
+              as={filters.age.some(a => a.min === age.minAge) ? 'b' : 'span'}
             >
               {age.label}
             </Text>

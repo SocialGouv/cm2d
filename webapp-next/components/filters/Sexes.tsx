@@ -35,6 +35,7 @@ export const FiltersSexes = (props: Props) => {
             borderColor="primary.500"
             colorScheme="primary"
             value={sex.label}
+            isChecked={filters.sex.includes(sex.label)}
             onChange={e => {
               if (e.target.checked) {
                 setFilters({

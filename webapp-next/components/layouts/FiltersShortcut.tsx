@@ -67,7 +67,7 @@ export function FiltersShortcut() {
           case 'age':
             return filters[key].map(value => (
               <CustomTag
-                key={`${key}-${value}`}
+                key={`${key}-${value.toString()}`}
                 field_name={key}
                 value={`entre ${value.min} et ${value.max} ans`}
                 onDelete={() => {
