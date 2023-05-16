@@ -16,10 +16,12 @@ export function FiltersShortcut() {
 
   const CustomTag = ({
     field_name,
-    value
+    value,
+    onDelete
   }: {
     field_name: keyof Filters;
     value: string;
+    onDelete: () => void;
   }) => {
     return (
       <Tag
@@ -50,9 +52,7 @@ export function FiltersShortcut() {
           fontSize="lg"
           ml={2}
           p={1}
-          onClick={() => {
-            setFilters({ ...filters, [field_name]: '' });
-          }}
+          onClick={onDelete}
         />
       </Tag>
     );
@@ -70,6 +70,12 @@ export function FiltersShortcut() {
                 key={`${key}-${value}`}
                 field_name={key}
                 value={`entre ${value.min} et ${value.max} ans`}
+                onDelete={() => {
+                  setFilters({
+                    ...filters,
+                    age: [...filters.age.filter(a => a.min !== value.min)]
+                  });
+                }}
               />
             ));
           case 'categories_level_1':
@@ -80,6 +86,12 @@ export function FiltersShortcut() {
                 key={`${key}-${value}`}
                 field_name={key}
                 value={value}
+                onDelete={() => {
+                  setFilters({
+                    ...filters,
+                    [key]: filters[key].filter(v => v !== value)
+                  });
+                }}
               />
             ));
           case 'start_date':
@@ -90,7 +102,19 @@ export function FiltersShortcut() {
               value = `de ${ISODateToMonthYear(
                 filters[key] as string
               )} à ${ISODateToMonthYear(filters['end_date'])}`;
-            return <CustomTag field_name={key} value={value} />;
+            return (
+              <CustomTag
+                field_name={key}
+                value={value}
+                onDelete={() => {
+                  setFilters({
+                    ...filters,
+                    start_date: undefined,
+                    end_date: undefined
+                  });
+                }}
+              />
+            );
         }
       })}
     </Box>
