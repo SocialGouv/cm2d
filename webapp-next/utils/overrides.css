@@ -1,6 +1,92 @@
+/* Override chakra checkboxes */
 .chakra-checkbox__label[data-checked] {
   font-weight: bold;
 }
 .chakra-checkbox__control {
   border-width: 1px !important;
+}
+
+/* Override chakra autocomplete */
+.chakra-input:focus-visible {
+  border-color: #246cf9 !important;
+  box-shadow: none !important;
+}
+
+/* Override date picker */
+.react-datepicker-wrapper input.has-value {
+  background-color: #e3ebfd;
+}
+.react-datepicker-wrapper input {
+  padding: 0.7rem 0.5rem 0.7rem 2.5rem;
+  border-radius: 0.375rem;
+  background-color: white;
+  border: 1px solid #e9f1ff;
+  max-width: 100%;
+}
+.react-datepicker-wrapper input:focus-visible {
+  outline: 1px solid #246cf9;
+}
+.react-datepicker-wrapper {
+  position: relative;
+}
+.react-datepicker-wrapper::before {
+  content: '';
+  display: block;
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  z-index: 1;
+  background: url('../public/icons/calendar.svg') center / cover no-repeat;
+}
+.react-datepicker-wrapper.has-value::before {
+  background: url('../public/icons/calendar-blue.svg') center / cover no-repeat;
+}
+.react-datepicker {
+  border: 1px solid #e9f1ff;
+  box-shadow: 0px 2px 6px -1px rgba(36, 108, 249, 0.04),
+    0px 2px 4px -1px rgba(36, 108, 249, 0.04);
+  border-radius: 10px;
+  font-family: 'Inter', sans-serif;
+}
+.react-datepicker .react-datepicker__header {
+  background-color: white;
+  border-bottom: none;
+  padding: 15px 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+.react-datepicker .react-datepicker__triangle {
+  display: none;
+}
+.react-datepicker .react-datepicker__navigation {
+  height: 38px;
+  width: 38px;
+}
+.react-datepicker
+  .react-datepicker__navigation
+  .react-datepicker__navigation-icon::before {
+  border-color: #246cf9;
+  border-width: 2px 2px 0 0;
+  top: 18px;
+}
+.react-datepicker
+  .react-datepicker__month-wrapper
+  .react-datepicker__month-text {
+  width: 4.75rem;
+  padding: 10px;
+}
+
+.react-datepicker
+  .react-datepicker__month-wrapper
+  .react-datepicker__month--in-range {
+  background-color: #246cf9;
+}
+
+.react-datepicker
+  .react-datepicker__month-wrapper
+  .react-datepicker__month-text--keyboard-selected {
+  background-color: #e9f1ff;
 }

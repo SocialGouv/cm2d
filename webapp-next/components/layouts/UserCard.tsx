@@ -14,8 +14,8 @@ type UserCardProps = {
 
 export const UserCard: React.FC<UserCardProps> = ({ user }) => {
   return (
-    <Box left={0} mt={4}>
-      <Box borderRadius="lg" overflow="hidden" py={3} bg={"#F7FAFC"} left={0}>
+    
+      <Box borderBottomRadius="lg" overflow="hidden" py={3} bg={"primary.50"} mt={4}>
         <Flex alignItems="center" mb={4}>
           <Avatar
             src={user.avatar}
@@ -25,7 +25,7 @@ export const UserCard: React.FC<UserCardProps> = ({ user }) => {
             ml={5}
           />
           <Box>
-            <Text fontSize="md" fontWeight="bold">
+            <Text fontSize="md" fontWeight="400">
               {user.firstName} {user.lastName}
             </Text>
             <Text fontSize="sm" color="gray.600">
@@ -34,6 +34,6 @@ export const UserCard: React.FC<UserCardProps> = ({ user }) => {
           </Box>
         </Flex>
       </Box>
-    </Box>
+    
   );
 };

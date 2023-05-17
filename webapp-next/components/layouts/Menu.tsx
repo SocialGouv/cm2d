@@ -1,3 +1,4 @@
+
 import { FilterContext } from "@/utils/filters-provider";
 import { Box, Flex, Image, Spacer, Stack } from "@chakra-ui/react";
 import { useContext } from "react";
@@ -9,6 +10,7 @@ import { MenuTitle } from "./MenuTitle";
 import { SubMenu } from "./SubMenu";
 import { MenuLinks } from "./MenuLinks";
 import { UserCard } from "./UserCard";
+import { FilterDates } from '../filters/Dates';
 
 const ageRanges = [
   { id: 0, label: "0-10 ans", minAge: 0, maxAge: 10 },
@@ -37,6 +39,9 @@ export function Menu() {
       borderRadius={16}
       bg="white"
       w={80}
+      minH={'calc(100vh - 2.5rem)'}
+      position="sticky"
+      top={0}
       boxShadow="box-shadow: 0px 10px 15px -3px rgba(36, 108, 249, 0.04), 0px 4px 6px -2px rgba(36, 108, 249, 0.04);"
       
     >
@@ -44,15 +49,25 @@ export function Menu() {
         <Image src="/CM2D.svg" alt="CM2D Logo" w={24} />
       </Box>
       <Box mt={5} h="3px" w="full" bg="gray.50" />
-      <Box mt={8} px={8}>
+      <Box mt={10} px={8}>
         <MenuTitle title="Cause de décès" />
         <FilterCauses filters={filters} setFilters={setFilters} />
       </Box>
-      <Box mt={8} px={8}>
+      <Box mt={10} px={8}>
+        <MenuTitle title="Période" />
+        <FilterDates />
+      </Box>
+      <Box mt={10} px={8}>
         <MenuTitle title="Filtres" />
         <SubMenu
           title="Démographie"
-          icon={{ src: "icons/user-search.svg", alt: "Onglet démographie" }}
+
+          icon={{
+            src: 'icons/user-search-blue.svg',
+            srcOpen: 'icons/user-search.svg',
+            alt: 'Onglet démographie'
+          }}
+
         >
           <Stack dir="column" spacing={4}>
             <FiltersSexes filters={filters} setFilters={setFilters} />
@@ -66,15 +81,18 @@ export function Menu() {
         <SubMenu
           title="Données du décès"
           icon={{
-            src: "icons/user-search.svg",
-            alt: "Onglet données du décès",
+
+            src: 'icons/file-list-search-blue.svg',
+            srcOpen: 'icons/file-list-search.svg',
+            alt: 'Onglet données du décès'
+
           }}
         >
           <Stack dir="column" spacing={4}>
             <FiltersDeathLocations filters={filters} setFilters={setFilters} />
           </Stack>
         </SubMenu>
-          <Spacer h={"14rem"}/>
+          <Spacer h={"8rem"}/>
         
         <MenuLinks
           links={[
@@ -83,29 +101,23 @@ export function Menu() {
               icon: "/icons/about-circle.svg",
               link: "/",
             },
-          ]}
-        />
-        <MenuLinks
-          links={[
             {
               label: "Réglages",
               icon: "/icons/settings.svg",
               link: "/",
             },
-          ]}
-        />
-        <MenuLinks
-          links={[
             {
               label: "Déconnexion",
               icon: "/icons/log-out.svg",
               link: "/",
             },
+            
           ]}
         />
+  
         
-        <Box position="absolute" left={4} width={325}>
-          <UserCard
+      </Box>
+      <UserCard
             user={{
               firstName: "John",
               lastName: "Doe",
@@ -113,8 +125,6 @@ export function Menu() {
               avatar: "/icons/avatar.svg",
             }}
           />
-        </Box>
-      </Box>
     </Flex>
   );
 }

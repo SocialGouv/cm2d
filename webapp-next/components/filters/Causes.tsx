@@ -39,15 +39,18 @@ export const FilterCauses = (props: Props) => {
   }));
 
   return (
-    <InputGroup zIndex={1}>
+    <InputGroup zIndex={2}>
       <InputLeftElement
         pointerEvents="none"
         top="50%"
         transform="translateY(-50%)"
       >
         <Image
-          src="icons/search-text.svg"
-          color="gray.300"
+          src={
+            !!filters.categories_level_1.length
+              ? 'icons/search-text-blue.svg'
+              : 'icons/search-text.svg'
+          }
           alt="Icone de recherche"
           width={24}
           height={24}
@@ -69,6 +72,7 @@ export const FilterCauses = (props: Props) => {
         <AutoCompleteInput
           pl={10}
           textTransform="capitalize"
+          bg={!!inputValue ? 'primary.50' : 'white'}
           onChange={e => {
             if (!e.target.value) {
               setFilters({ ...filters, categories_level_1: [] });

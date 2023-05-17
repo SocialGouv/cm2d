@@ -12,8 +12,6 @@ export function Header() {
       bg="white"
       w="full"
       boxShadow="box-shadow: 0px 10px 15px -3px rgba(36, 108, 249, 0.04), 0px 4px 6px -2px rgba(36, 108, 249, 0.04);"
-    >
-      <FilterDates />
-    </Flex>
+    ></Flex>
   );
 }
