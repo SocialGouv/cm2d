@@ -20,18 +20,19 @@ export default function Home() {
   const { data, isLoading } = useData(filters);
 
   const fetchNewTitle = async () => {
-    setTitle('...');
-    const res = await fetch('/api/chat', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        text: getTitleGptPrompt(JSON.stringify(filters))
-      })
-    });
-    const json = await res.json();
-    setTitle(json.text);
+    setTitle('Nombre de décès');
+    // setTitle('...');
+    // const res = await fetch('/api/chat', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body: JSON.stringify({
+    //     text: getTitleGptPrompt(JSON.stringify(filters))
+    //   })
+    // });
+    // const json = await res.json();
+    // setTitle(json.text);
   };
 
   useEffect(() => {
