@@ -49,7 +49,11 @@ export function Menu() {
         <MenuTitle title="Filtres" />
         <SubMenu
           title="Démographie"
-          icon={{ src: 'icons/user-search.svg', alt: 'Onglet démographie' }}
+          icon={{
+            src: 'icons/user-search-blue.svg',
+            srcOpen: 'icons/user-search.svg',
+            alt: 'Onglet démographie'
+          }}
         >
           <Stack dir="column" spacing={4}>
             <FiltersSexes filters={filters} setFilters={setFilters} />
@@ -63,7 +67,8 @@ export function Menu() {
         <SubMenu
           title="Données du décès"
           icon={{
-            src: 'icons/user-search.svg',
+            src: 'icons/file-text-search-blue.svg',
+            srcOpen: 'icons/user-search.svg',
             alt: 'Onglet données du décès'
           }}
         >
