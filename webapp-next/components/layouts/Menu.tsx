@@ -75,8 +75,8 @@ export function Menu() {
         <SubMenu
           title="Données du décès"
           icon={{
-            src: 'icons/file-text-search-blue.svg',
-            srcOpen: 'icons/user-search.svg',
+            src: 'icons/file-list-search-blue.svg',
+            srcOpen: 'icons/file-list-search.svg',
             alt: 'Onglet données du décès'
           }}
         >
