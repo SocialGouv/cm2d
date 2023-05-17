@@ -39,7 +39,7 @@ export const FilterCauses = (props: Props) => {
   }));
 
   return (
-    <InputGroup zIndex={1}>
+    <InputGroup zIndex={2}>
       <InputLeftElement
         pointerEvents="none"
         top="50%"
