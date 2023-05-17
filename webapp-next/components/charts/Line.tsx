@@ -23,6 +23,7 @@ export const ChartLine = (props: Props) => {
             data: yValues,
             fill: true,
             borderColor: '#246CF9',
+            borderWidth: 2,
             backgroundColor: (context: ScriptableContext<'line'>) => {
               const ctx = context.chart.ctx;
               const gradient = ctx.createLinearGradient(0, 500, 0, 0);
@@ -32,7 +33,7 @@ export const ChartLine = (props: Props) => {
               return gradient;
             },
             pointStyle: 'line',
-            tension: 0.1
+            tension: 0.5
           }
         ]
       }}

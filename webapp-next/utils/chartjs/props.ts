@@ -33,7 +33,7 @@ export const lineProps: { options: ChartOptions<'line'>; plugins: any[] } = {
         }
       },
       y: {
-        beginAtZero: true,
+        type: 'linear',
         grid: {
           color: '#E2E8F0'
         }
