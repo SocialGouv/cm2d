@@ -1,3 +1,4 @@
 # specific
 sample/
-faker/
+faker/sample_data.csv
+faker/.idea
