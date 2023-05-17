@@ -69,6 +69,7 @@ export const FilterCauses = (props: Props) => {
         <AutoCompleteInput
           pl={10}
           textTransform="capitalize"
+          bg={!!inputValue ? 'primary.50' : 'white'}
           onChange={e => {
             if (!e.target.value) {
               setFilters({ ...filters, categories_level_1: [] });

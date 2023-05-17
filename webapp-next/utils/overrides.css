@@ -13,6 +13,9 @@
 }
 
 /* Override date picker */
+.react-datepicker-wrapper input.has-value {
+  background-color: #e3ebfd;
+}
 .react-datepicker-wrapper input {
   padding: 0.7rem 0.5rem 0.7rem 2.5rem;
   border-radius: 0.375rem;
