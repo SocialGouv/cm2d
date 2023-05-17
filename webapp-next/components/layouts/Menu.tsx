@@ -35,6 +35,9 @@ export function Menu() {
       borderRadius={16}
       bg="white"
       w={80}
+      h={'calc(100vh - 2.5rem)'}
+      position="sticky"
+      top={0}
       boxShadow="box-shadow: 0px 10px 15px -3px rgba(36, 108, 249, 0.04), 0px 4px 6px -2px rgba(36, 108, 249, 0.04);"
     >
       <Box pl={4} px={8}>

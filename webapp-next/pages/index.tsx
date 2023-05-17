@@ -62,13 +62,14 @@ export default function Home() {
       borderRadius={16}
       bg="white"
       w="full"
-      h={'60vh'}
       boxShadow="box-shadow: 0px 10px 15px -3px rgba(36, 108, 249, 0.04), 0px 4px 6px -2px rgba(36, 108, 249, 0.04);"
     >
-      <Text as="h2" fontSize="2xl" fontWeight={700} mb={6}>
-        {title}
-      </Text>
-      <ChartLine id="line-example" hits={hits} />
+      <Box maxH="30rem">
+        <Text as="h2" fontSize="2xl" fontWeight={700} mb={6}>
+          {title}
+        </Text>
+        <ChartLine id="line-example" hits={hits} />
+      </Box>
     </Flex>
   );
 }
