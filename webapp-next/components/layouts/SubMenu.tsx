@@ -7,6 +7,7 @@ type Props = {
   title: string;
   icon: {
     src: string;
+    srcOpen?: string;
     alt: string;
   };
   children: ReactNode;
@@ -18,26 +19,41 @@ export const SubMenu = (props: Props) => {
   const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
 
   return (
-    <Box>
+    <Box mb={4}>
       <Button
         colorScheme="primary"
+        variant={isCollapsed ? 'ghost' : 'solid'}
         onClick={() => setIsCollapsed(!isCollapsed)}
         w="full"
         justifyContent="start"
         py={7}
         rounded="md"
       >
-        <Image src={icon.src} alt={icon.alt} width={24} height={24} />{' '}
-        <Text ml={2}>{title}</Text>
+        <Image
+          src={icon.srcOpen && !isCollapsed ? icon.srcOpen : icon.src}
+          alt={icon.alt}
+          width={24}
+          height={24}
+        />{' '}
+        <Text
+          ml={2}
+          color={isCollapsed ? 'black' : 'primary'}
+          fontWeight={isCollapsed ? 400 : 600}
+        >
+          {title}
+        </Text>
         {isCollapsed ? (
           <ChevronRightIcon ml="auto" fontSize="2xl" />
         ) : (
           <ChevronDownIcon ml="auto" fontSize="2xl" />
         )}
       </Button>
-      <Box px={4} py={5}>
-        {!isCollapsed && children}
-      </Box>
+
+      {!isCollapsed && (
+        <Box px={4} py={5}>
+          {children}
+        </Box>
+      )}
     </Box>
   );
 };
