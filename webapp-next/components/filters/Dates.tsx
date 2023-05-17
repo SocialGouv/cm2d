@@ -1,5 +1,5 @@
 import { FilterContext } from '@/utils/filters-provider';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -39,6 +39,8 @@ export function FilterDates() {
         setStartDate(start);
         setEndDate(end);
       }}
+      className={startDate && endDate ? 'has-value' : ''}
+      wrapperClassName={startDate && endDate ? 'has-value' : ''}
       selectsStart
       startDate={startDate}
       endDate={endDate}

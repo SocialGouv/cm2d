@@ -20,18 +20,19 @@ export default function Home() {
   const { data, isLoading } = useData(filters);
 
   const fetchNewTitle = async () => {
-    setTitle('...');
-    const res = await fetch('/api/chat', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        text: getTitleGptPrompt(JSON.stringify(filters))
-      })
-    });
-    const json = await res.json();
-    setTitle(json.text);
+    setTitle('Nombre de décès');
+    // setTitle('...');
+    // const res = await fetch('/api/chat', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body: JSON.stringify({
+    //     text: getTitleGptPrompt(JSON.stringify(filters))
+    //   })
+    // });
+    // const json = await res.json();
+    // setTitle(json.text);
   };
 
   useEffect(() => {
@@ -61,13 +62,14 @@ export default function Home() {
       borderRadius={16}
       bg="white"
       w="full"
-      h={'60vh'}
       boxShadow="box-shadow: 0px 10px 15px -3px rgba(36, 108, 249, 0.04), 0px 4px 6px -2px rgba(36, 108, 249, 0.04);"
     >
-      <Text as="h2" fontSize="2xl" fontWeight={700} mb={6}>
-        {title}
-      </Text>
-      <ChartLine id="line-example" hits={hits} />
+      <Box maxH="30rem">
+        <Text as="h2" fontSize="2xl" fontWeight={700} mb={6}>
+          {title}
+        </Text>
+        <ChartLine id="line-example" hits={hits} />
+      </Box>
     </Flex>
   );
 }

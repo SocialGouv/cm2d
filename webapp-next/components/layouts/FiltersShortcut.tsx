@@ -73,7 +73,11 @@ export function FiltersShortcut() {
               <CustomTag
                 key={`${key}-${value.toString()}`}
                 field_name={key}
-                value={`entre ${value.min} et ${value.max} ans`}
+                value={
+                  value.max
+                    ? `entre ${value.min} et ${value.max} ans`
+                    : `à partir de ${value.min}`
+                }
                 onDelete={() => {
                   setFilters({
                     ...filters,
