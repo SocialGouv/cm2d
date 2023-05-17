@@ -46,8 +46,11 @@ export const FilterCauses = (props: Props) => {
         transform="translateY(-50%)"
       >
         <Image
-          src="icons/search-text.svg"
-          color="gray.300"
+          src={
+            !!filters.categories_level_1.length
+              ? 'icons/search-text-blue.svg'
+              : 'icons/search-text.svg'
+          }
           alt="Icone de recherche"
           width={24}
           height={24}

@@ -41,6 +41,9 @@
   z-index: 1;
   background: url('../public/icons/calendar.svg') center / cover no-repeat;
 }
+.react-datepicker-wrapper.has-value::before {
+  background: url('../public/icons/calendar-blue.svg') center / cover no-repeat;
+}
 .react-datepicker {
   border: 1px solid #e9f1ff;
   box-shadow: 0px 2px 6px -1px rgba(36, 108, 249, 0.04),

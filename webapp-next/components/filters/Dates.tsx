@@ -40,6 +40,7 @@ export function FilterDates() {
         setEndDate(end);
       }}
       className={startDate && endDate ? 'has-value' : ''}
+      wrapperClassName={startDate && endDate ? 'has-value' : ''}
       selectsStart
       startDate={startDate}
       endDate={endDate}
