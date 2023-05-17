@@ -7,6 +7,7 @@ import { FiltersDeathLocations } from '../filters/DeathLocations';
 import { FiltersSexes } from '../filters/Sexes';
 import { MenuTitle } from './MenuTitle';
 import { SubMenu } from './SubMenu';
+import { FilterDates } from '../filters/Dates';
 
 const ageRanges = [
   { id: 0, label: '0-10 ans', minAge: 0, maxAge: 10 },
@@ -44,11 +45,15 @@ export function Menu() {
         <Image src="/CM2D.svg" alt="CM2D Logo" w={24} />
       </Box>
       <Box mt={5} h="3px" w="full" bg="gray.50" />
-      <Box mt={8} px={8}>
+      <Box mt={10} px={8}>
         <MenuTitle title="Cause de décès" />
         <FilterCauses filters={filters} setFilters={setFilters} />
       </Box>
-      <Box mt={8} px={8}>
+      <Box mt={10} px={8}>
+        <MenuTitle title="Période" />
+        <FilterDates />
+      </Box>
+      <Box mt={10} px={8}>
         <MenuTitle title="Filtres" />
         <SubMenu
           title="Démographie"
