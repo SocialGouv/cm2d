@@ -50,6 +50,18 @@ export function ChartTableHeader() {
       yAgg = aggregateY === 'age' ? rangeAgg : yAgg;
     }
 
+    if (aggregateX === 'months' || aggregateY === 'months') {
+      const dateAgg = {
+        date_histogram: {
+          field: 'date',
+          calendar_interval: 'month'
+        }
+      };
+
+      xAgg = aggregateX === 'months' ? dateAgg : xAgg;
+      yAgg = aggregateY === 'months' ? dateAgg : yAgg;
+    }
+
     setAggregations({
       aggregated_x: {
         ...xAgg,
@@ -131,6 +143,9 @@ export function ChartTableHeader() {
               Lieu de décès
             </Text>
           </MenuItem>
+          <MenuItem onClick={() => handleXAxisChange('months')}>
+            <Text as={aggregateX === 'months' ? 'b' : 'span'}>Périodes</Text>
+          </MenuItem>
         </MenuList>
       </Menu>
       <Menu>
@@ -153,6 +168,9 @@ export function ChartTableHeader() {
             <Text as={aggregateY === 'death_location' ? 'b' : 'span'}>
               Lieu de décès
             </Text>
+          </MenuItem>
+          <MenuItem onClick={() => handleYAxisChange('months')}>
+            <Text as={aggregateY === 'months' ? 'b' : 'span'}>Période</Text>
           </MenuItem>
         </MenuList>
       </Menu>

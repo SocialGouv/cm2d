@@ -9,7 +9,8 @@ const elkFields = [
   { value: 'cert_type', label: 'Format' },
   { value: 'start_date', label: 'Période' },
   { value: 'end_date', label: 'Période' },
-  { value: 'years', label: 'Années' }
+  { value: 'years', label: 'Années' },
+  { value: 'months', label: 'Périodes' }
 ];
 
 export function getLabelFromElkField(key: string): string {
@@ -95,6 +96,13 @@ export function dateToDayMonth(date: Date): string {
   const formatter = new Intl.DateTimeFormat('fr-FR', options as any);
   const parts = formatter.formatToParts(date);
   const formattedDate = `${parts[2].value.trim()} ${parts[0].value.trim()}`;
+  return formattedDate;
+}
+
+export function dateToMonthYear(date: Date): string {
+  const options = { month: 'long', year: 'numeric' };
+  const formatter = new Intl.DateTimeFormat('fr-FR', options as any);
+  const formattedDate = formatter.format(date);
   return formattedDate;
 }
 

@@ -1,4 +1,5 @@
 import { Cm2dContext } from '@/utils/cm2d-provider';
+import { dateToMonthYear, isStringContainingDate } from '@/utils/tools';
 import {
   Table,
   TableContainer,
@@ -31,12 +32,16 @@ export const ChartTable = (props: Props) => {
   const nbCols = datasets[0].hits.length;
 
   return (
-    <TableContainer textTransform="capitalize">
+    <TableContainer textTransform="capitalize" w="calc(100vw - 28rem)">
       <Table id={id} variant="primary" key={JSON.stringify(aggregations)}>
         <Thead>
           <Th></Th>
           {datasets[0].hits.map(h => (
-            <Th key={`head-${h.label}`}>{h.key}</Th>
+            <Th key={`head-${h.label}`}>
+              {isStringContainingDate(h.key)
+                ? dateToMonthYear(new Date(h.key))
+                : h.key}
+            </Th>
           ))}
           <Th>Total</Th>
         </Thead>

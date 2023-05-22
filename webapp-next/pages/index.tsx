@@ -2,7 +2,7 @@ import { ChartLine } from '@/components/charts/line/Line';
 import { ChartTable } from '@/components/charts/table/Table';
 import { useData } from '@/utils/api';
 import { Cm2dContext } from '@/utils/cm2d-provider';
-import { isStringContainingDate } from '@/utils/tools';
+import { dateToMonthYear, isStringContainingDate } from '@/utils/tools';
 import { Box, Flex, Spinner, Text } from '@chakra-ui/react';
 import 'chart.js/auto';
 import 'chartjs-adapter-moment';
@@ -75,7 +75,7 @@ export default function Home() {
         .map((apb: any) => ({
           hits: apb.aggregated_y.buckets.filter((b: any) => !!b.doc_count),
           label: isStringContainingDate(apb.key)
-            ? new Date(apb.key).getFullYear().toString()
+            ? dateToMonthYear(new Date(apb.key))
             : apb.key
         }))
         .filter((apb: any) => !!apb.hits.length);
