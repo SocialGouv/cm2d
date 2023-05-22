@@ -56,8 +56,12 @@ const CM2DInput: ComponentStyleConfig = {
 };
 
 const CM2DButton: ComponentStyleConfig = {
+  baseStyle: {
+    borderRadius: 'lg',
+    py: 5
+  },
   variants: {
-    light: {
+    highlight: {
       borderWidth: 1,
       py: 6,
       borderColor: 'highlight.100',
@@ -66,6 +70,12 @@ const CM2DButton: ComponentStyleConfig = {
       _hover: {
         bg: 'highlight.100'
       }
+    },
+    light: {
+      bg: 'white',
+      borderWidth: 1,
+      borderColor: 'primary.50',
+      fontWeight: 500
     }
   }
 };

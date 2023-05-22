@@ -1,6 +1,6 @@
 import { stringify, parse as superJSONParse } from 'superjson';
 import useSWR from 'swr';
-import { Filters } from './filters-provider';
+import { Filters } from './cm2d-provider';
 import { transformFilters } from './tools';
 
 export function useSexes() {
@@ -63,10 +63,11 @@ export function useCauses() {
   };
 }
 
-export function useData(filters: Filters) {
+export function useData(filters: Filters, aggregations: any) {
   const params = {
     index: 'cm2d_certificate',
-    filters: JSON.stringify(transformFilters(filters))
+    filters: JSON.stringify(transformFilters(filters)),
+    aggregations: JSON.stringify(aggregations)
   };
 
   const { data, error } = useSWR(

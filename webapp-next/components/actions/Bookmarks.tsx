@@ -8,7 +8,7 @@ export const ActionBookmarks = (props: Props) => {
     <Button
       type="button"
       colorScheme="highlight"
-      variant="light"
+      variant="highlight"
       leftIcon={
         <StarIcon
           bg="highlight.200"
