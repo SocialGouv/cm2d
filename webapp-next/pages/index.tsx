@@ -21,7 +21,7 @@ export default function Home() {
   const { data, isLoading } = useData(filters, aggregations);
 
   const fetchNewTitle = async () => {
-    setTitle('Nombre de décès');
+    setTitle(filters.categories_level_1[0] || 'Nombre de décès');
     // setTitle('...');
     // const res = await fetch('/api/chat', {
     //   method: 'POST',
@@ -109,7 +109,13 @@ export default function Home() {
       boxShadow="box-shadow: 0px 10px 15px -3px rgba(36, 108, 249, 0.04), 0px 4px 6px -2px rgba(36, 108, 249, 0.04);"
     >
       <Box maxH={view === 'line' ? '30rem' : 'auto'}>
-        <Text as="h2" fontSize="2xl" fontWeight={700} mb={6}>
+        <Text
+          as="h2"
+          fontSize="2xl"
+          fontWeight={700}
+          mb={6}
+          textTransform="capitalize"
+        >
           {title}
         </Text>
         {getChartDisplay()}

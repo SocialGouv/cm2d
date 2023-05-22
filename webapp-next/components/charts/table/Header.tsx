@@ -80,7 +80,7 @@ export function ChartTableHeader() {
           variant="light"
           leftIcon={
             <NextImage
-              src="icons/chart-line.svg"
+              src="icons/table.svg"
               width={24}
               height={24}
               alt="vue courbe"
