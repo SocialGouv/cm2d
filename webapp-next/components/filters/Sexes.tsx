@@ -1,5 +1,5 @@
 import { useSexes } from '@/utils/api';
-import { Filters } from '@/utils/filters-provider';
+import { Filters } from '@/utils/cm2d-provider';
 import { Box, Checkbox, Flex, Text } from '@chakra-ui/react';
 import { Dispatch, SetStateAction } from 'react';
 import { MenuSubTitle } from '../layouts/MenuSubTitle';

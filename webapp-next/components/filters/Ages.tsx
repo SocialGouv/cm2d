@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from 'react';
 import { MenuSubTitle } from '../layouts/MenuSubTitle';
 import { Box, Checkbox, Flex, Text } from '@chakra-ui/react';
-import { Filters } from '@/utils/filters-provider';
+import { Filters } from '@/utils/cm2d-provider';
 
 type Props = {
   filters: Filters;
