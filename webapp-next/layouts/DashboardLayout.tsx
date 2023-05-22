@@ -1,3 +1,4 @@
+import { ChartHeader } from '@/components/charts/Header';
 import { FiltersShortcut } from '@/components/layouts/FiltersShortcut';
 import { Header } from '@/components/layouts/Header';
 import { Menu } from '@/components/layouts/Menu';
@@ -24,6 +25,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
         <Flex flexDir="column" w="full">
           <Header />
           <FiltersShortcut />
+          <ChartHeader />
           <main>{children}</main>
         </Flex>
       </Flex>

@@ -1,4 +1,4 @@
-import { Filters } from './filters-provider';
+import { Filters } from './cm2d-provider';
 
 const elkFields = [
   { value: 'sex', label: 'Sexe' },
@@ -8,7 +8,8 @@ const elkFields = [
   { value: 'death_location', label: 'Lieu de décès' },
   { value: 'cert_type', label: 'Format' },
   { value: 'start_date', label: 'Période' },
-  { value: 'end_date', label: 'Période' }
+  { value: 'end_date', label: 'Période' },
+  { value: 'years', label: 'Années' }
 ];
 
 export function getLabelFromElkField(key: string): string {
@@ -87,4 +88,46 @@ export function ISODateToMonthYear(isoDateString: string): string {
   const monthStr = month < 10 ? `0${month}` : `${month}`;
 
   return `${monthStr}/${year}`;
+}
+
+export function dateToDayMonth(date: Date): string {
+  const options = { day: '2-digit', month: 'long' };
+  const formatter = new Intl.DateTimeFormat('fr-FR', options as any);
+  const parts = formatter.formatToParts(date);
+  const formattedDate = `${parts[2].value.trim()} ${parts[0].value.trim()}`;
+  return formattedDate;
+}
+
+const availableColors: string[] = [
+  '#91B6FC',
+  '#A0AEC0',
+  '#F56565',
+  '#FF943C',
+  '#ECC94B',
+  '#48BB78',
+  '#38B2AC',
+  '#4299E1',
+  '#0BC5EA',
+  '#9F7AEA',
+  '#ED64A6'
+];
+export function getRandomColor(): string {
+  const randomIndex = Math.floor(Math.random() * availableColors.length);
+  return availableColors[randomIndex];
+}
+
+export function isStringContainingDate(str: string): boolean {
+  // Attempt to parse the string as a date
+  const date = new Date(str);
+
+  // Check if the parsed date is valid
+  if (!isNaN(date.getTime())) {
+    // Check if the original string matches the parsed date
+    const dateString = date.toDateString();
+    const parsedDateString = new Date(dateString).toDateString();
+
+    return dateString === parsedDateString;
+  }
+
+  return false;
 }

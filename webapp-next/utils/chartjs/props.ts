@@ -16,7 +16,9 @@ export const lineProps: { options: ChartOptions<'line'>; plugins: any[] } = {
     },
     elements: {
       point: {
-        radius: 0
+        radius: 0,
+        pointStyle: 'circle',
+        hoverRadius: 4
       }
     },
     scales: {
@@ -29,7 +31,8 @@ export const lineProps: { options: ChartOptions<'line'>; plugins: any[] } = {
           unit: 'week',
           displayFormats: {
             week: 'MM/YYYY'
-          }
+          },
+          tooltipFormat: 'MMMM DD YYYY'
         }
       },
       y: {

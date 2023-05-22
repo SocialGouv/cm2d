@@ -1,23 +1,23 @@
-import { ChartLine } from '@/components/charts/Line';
+import { ChartLine } from '@/components/charts/line/Line';
 import { useData } from '@/utils/api';
-import { FilterContext } from '@/utils/filters-provider';
-import { getTitleGptPrompt } from '@/utils/prompts';
+import { Cm2dContext } from '@/utils/cm2d-provider';
+import { isStringContainingDate } from '@/utils/tools';
 import { Box, Flex, Spinner, Text } from '@chakra-ui/react';
 import 'chart.js/auto';
 import 'chartjs-adapter-moment';
 import { useContext, useEffect, useState } from 'react';
 
 export default function Home() {
-  const context = useContext(FilterContext);
+  const context = useContext(Cm2dContext);
   const [title, setTitle] = useState('Nombre de décès');
 
   if (!context) {
-    throw new Error('Menu must be used within a FilterProvider');
+    throw new Error('Menu must be used within a Cm2dProvider');
   }
 
-  const { filters } = context;
+  const { filters, aggregations } = context;
 
-  const { data, isLoading } = useData(filters);
+  const { data, isLoading } = useData(filters, aggregations);
 
   const fetchNewTitle = async () => {
     setTitle('Nombre de décès');
@@ -51,7 +51,20 @@ export default function Home() {
       </Box>
     );
 
-  const hits = data.result.aggregations.aggregated_date.buckets;
+  let datasets: { hits: any[] }[] = [];
+
+  if (data.result.aggregations.aggregated_date) {
+    datasets = [{ hits: data.result.aggregations.aggregated_date.buckets }];
+  } else if (data.result.aggregations.aggregated_parent) {
+    datasets = data.result.aggregations.aggregated_parent.buckets
+      .map((apb: any) => ({
+        hits: apb.aggregated_date.buckets,
+        label: isStringContainingDate(apb.key)
+          ? new Date(apb.key).getFullYear().toString()
+          : apb.key
+      }))
+      .filter((apb: any) => !!apb.hits.length);
+  }
 
   return (
     <Flex
@@ -68,7 +81,7 @@ export default function Home() {
         <Text as="h2" fontSize="2xl" fontWeight={700} mb={6}>
           {title}
         </Text>
-        <ChartLine id="line-example" hits={hits} />
+        <ChartLine id="line-example" datasets={datasets} />
       </Box>
     </Flex>
   );

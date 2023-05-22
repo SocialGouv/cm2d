@@ -1,4 +1,4 @@
-import { FilterContext } from '@/utils/filters-provider';
+import { Cm2dContext } from '@/utils/cm2d-provider';
 import { Box, Flex, Image, Stack } from '@chakra-ui/react';
 import { useContext } from 'react';
 import { FiltersAges } from '../filters/Ages';
@@ -21,10 +21,10 @@ const ageRanges = [
 ];
 
 export function Menu() {
-  const context = useContext(FilterContext);
+  const context = useContext(Cm2dContext);
 
   if (!context) {
-    throw new Error('Menu must be used within a FilterProvider');
+    throw new Error('Menu must be used within a Cm2dProvider');
   }
 
   const { filters, setFilters } = context;
