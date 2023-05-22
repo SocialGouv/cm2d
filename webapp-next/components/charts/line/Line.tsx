@@ -43,7 +43,6 @@ export const ChartLine = (props: Props) => {
                   gradient.addColorStop(1, '#D4E2FE');
                   return gradient;
                 },
-            pointStyle: 'line',
             tension: 0.5
           };
         })
