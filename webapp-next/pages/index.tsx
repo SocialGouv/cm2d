@@ -1,3 +1,4 @@
+import { ChartHistogram } from '@/components/charts/histogram/Histogram';
 import { ChartLine } from '@/components/charts/line/Line';
 import { ChartTable } from '@/components/charts/table/Table';
 import { useData } from '@/utils/api';
@@ -70,7 +71,10 @@ export default function Home() {
   }
 
   if (view === 'table') {
-    if (data.result.aggregations.aggregated_x) {
+    if (
+      data.result.aggregations.aggregated_x &&
+      data.result.aggregations.aggregated_x.buckets[0].aggregated_y
+    ) {
       datasets = data.result.aggregations.aggregated_x.buckets
         .map((apb: any) => ({
           hits: apb.aggregated_y.buckets.filter((b: any) => !!b.doc_count),
@@ -79,6 +83,18 @@ export default function Home() {
             : apb.key
         }))
         .filter((apb: any) => !!apb.hits.length);
+    }
+  }
+
+  if (view === 'histogram') {
+    if (data.result.aggregations.aggregated_x) {
+      datasets = [
+        {
+          hits: data.result.aggregations.aggregated_x.buckets.filter(
+            (b: any) => !!b.doc_count
+          )
+        }
+      ];
     }
   }
 
@@ -91,7 +107,7 @@ export default function Home() {
           <ChartTable id="table-example" rowsLabel="Sexe" datasets={datasets} />
         );
       case 'histogram':
-        return <>HISTOGRAM</>;
+        return <ChartHistogram id="histogram-example" datasets={datasets} />;
       default:
         <>Pas de dataviz configurée pour cette vue</>;
     }
@@ -108,15 +124,9 @@ export default function Home() {
       w="full"
       boxShadow="box-shadow: 0px 10px 15px -3px rgba(36, 108, 249, 0.04), 0px 4px 6px -2px rgba(36, 108, 249, 0.04);"
     >
-      <Box maxH={view === 'line' ? '30rem' : 'auto'}>
-        <Text
-          as="h2"
-          fontSize="2xl"
-          fontWeight={700}
-          mb={6}
-          textTransform="capitalize"
-        >
-          {title}
+      <Box maxH={['line', 'histogram'].includes(view) ? '30rem' : 'auto'}>
+        <Text as="h2" fontSize="2xl" fontWeight={700} mb={6}>
+          {title.charAt(0).toUpperCase() + title.substring(1)}
         </Text>
         {getChartDisplay()}
       </Box>

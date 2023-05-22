@@ -3,6 +3,7 @@ import { Flex } from '@chakra-ui/react';
 import { ReactNode, useContext } from 'react';
 import { ChartLineHeader } from './line/Header';
 import { ChartTableHeader } from './table/Header';
+import { ChartHistogramHeader } from './histogram/Header';
 
 export function ChartHeader() {
   const context = useContext(Cm2dContext);
@@ -19,6 +20,8 @@ export function ChartHeader() {
         return <ChartLineHeader />;
       case 'table':
         return <ChartTableHeader />;
+      case 'histogram':
+        return <ChartHistogramHeader />;
       default:
         return <>NO VIEW</>;
     }

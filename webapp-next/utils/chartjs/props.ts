@@ -45,3 +45,28 @@ export const lineProps: { options: ChartOptions<'line'>; plugins: any[] } = {
   },
   plugins: [verticalLegendPlugin]
 };
+
+export const histogramProps: {
+  options: ChartOptions<'bar'> & { barThickness: number };
+  plugins: any[];
+} = {
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    barThickness: 50,
+    scales: {
+      x: {
+        grid: {
+          color: 'transparent'
+        }
+      },
+      y: {
+        type: 'linear',
+        grid: {
+          color: '#E2E8F0'
+        }
+      }
+    }
+  },
+  plugins: []
+};
