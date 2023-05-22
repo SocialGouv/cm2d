@@ -48,16 +48,18 @@ export function FiltersShortcut() {
             {value}
           </Text>
         </Text>
-        <CloseIcon
-          bg="primary.100"
-          color="primary.300"
-          cursor="pointer"
-          borderRadius="50%"
-          fontSize="xl"
-          ml={2}
-          p={1}
-          onClick={onDelete}
-        />
+        {field_name !== 'start_date' && (
+          <CloseIcon
+            bg="primary.100"
+            color="primary.300"
+            cursor="pointer"
+            borderRadius="50%"
+            fontSize="xl"
+            ml={2}
+            p={1}
+            onClick={onDelete}
+          />
+        )}
       </Tag>
     );
   };
