@@ -27,7 +27,7 @@ export const FiltersSexes = (props: Props) => {
 
   return (
     <Box>
-      <MenuSubTitle title="Sexes" />
+      <MenuSubTitle title="Sexe" />
       <Flex gap={4} flexDirection="row" wrap="wrap">
         {sexes.map(sex => (
           <Checkbox

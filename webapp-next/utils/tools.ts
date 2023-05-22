@@ -1,4 +1,5 @@
 import { Filters } from './cm2d-provider';
+import { format } from 'date-fns';
 
 const elkFields = [
   { value: 'sex', label: 'Sexe' },
@@ -104,6 +105,20 @@ export function dateToMonthYear(date: Date): string {
   const formatter = new Intl.DateTimeFormat('fr-FR', options as any);
   const formattedDate = formatter.format(date);
   return formattedDate;
+}
+
+export function dateToWeekYear(date: Date): string {
+  const weekNumber: string = format(date, 'w');
+  const year: string = format(date, 'yyyy');
+  return `S${weekNumber} ${year}`;
+}
+
+export function getLastDayOfMonth(date: Date): Date {
+  const year: number = date.getFullYear();
+  const month: number = date.getMonth();
+  const lastDay: Date = new Date(year, month + 1, 0);
+  lastDay.setHours(23, 59, 0, 0);
+  return lastDay;
 }
 
 const availableColors: string[] = [

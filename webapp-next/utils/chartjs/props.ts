@@ -23,16 +23,12 @@ export const lineProps: { options: ChartOptions<'line'>; plugins: any[] } = {
     },
     scales: {
       x: {
-        type: 'time',
+        type: 'category',
         grid: {
           color: 'transparent'
         },
-        time: {
-          unit: 'week',
-          displayFormats: {
-            week: 'MM/YYYY'
-          },
-          tooltipFormat: 'MMMM DD YYYY'
+        ticks: {
+          align: 'center'
         }
       },
       y: {

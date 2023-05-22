@@ -1,4 +1,5 @@
 import { Cm2dContext } from '@/utils/cm2d-provider';
+import { getLastDayOfMonth } from '@/utils/tools';
 import { useContext, useEffect, useRef, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -26,7 +27,7 @@ export function FilterDates() {
       setFilters({
         ...filters,
         start_date: startDate.toISOString(),
-        end_date: endDate.toISOString()
+        end_date: getLastDayOfMonth(endDate).toISOString()
       });
     }
   }, [startDate, endDate]);

@@ -14,7 +14,7 @@ export const FiltersAges = (props: Props) => {
 
   return (
     <Box>
-      <MenuSubTitle title="Ages" />
+      <MenuSubTitle title="Age" />
       <Flex gap={4} flexDirection="column">
         {ages.map((age, index) => (
           <Checkbox

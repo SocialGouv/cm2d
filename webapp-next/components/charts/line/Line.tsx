@@ -1,5 +1,5 @@
 import { lineProps } from '@/utils/chartjs/props';
-import { dateToDayMonth, getRandomColor } from '@/utils/tools';
+import { dateToDayMonth, dateToWeekYear, getRandomColor } from '@/utils/tools';
 import { ScriptableContext } from 'chart.js';
 import { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
@@ -51,9 +51,9 @@ export const ChartLine = (props: Props) => {
 
   if (!datasets.length) return <></>;
 
-  const xValues = datasets[0].hits.map(
-    (item: any) => new Date(item.key_as_string)
-  );
+  const xValues = datasets[0].hits.map((item: any) => {
+    return dateToWeekYear(new Date(item.key_as_string));
+  });
 
   return (
     <Line
