@@ -1,3 +1,4 @@
+import { ageRanges } from '@/components/layouts/Menu';
 import { Cm2dContext, baseAggregation } from '@/utils/cm2d-provider';
 import { getLabelFromElkField } from '@/utils/tools';
 import { ChevronDownIcon } from '@chakra-ui/icons';
@@ -44,16 +45,7 @@ export function ChartLineHeader() {
         [`aggregated_parent`]: {
           range: {
             field: aggregateField,
-            ranges: [
-              { to: 10, key: '0-10 ans' },
-              { from: 11, to: 20, key: '11-20 ans' },
-              { from: 21, to: 30, key: '21-30 ans' },
-              { from: 31, to: 40, key: '31-40 ans' },
-              { from: 41, to: 50, key: '41-50 ans' },
-              { from: 51, to: 60, key: '51-60 ans' },
-              { from: 61, to: 70, key: '61-70 ans' },
-              { from: 71, key: '71 ans et +' }
-            ]
+            ranges: ageRanges
           },
           aggs: {
             ...baseAggregation
