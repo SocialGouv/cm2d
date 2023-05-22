@@ -25,6 +25,18 @@ const colors = {
     700: '#9abdec',
     800: '#73a9e1',
     900: '#4c82d5'
+  },
+  highlight: {
+    50: '#FFFAF0',
+    100: '#FEEBCB',
+    200: '#FFD88A',
+    300: '#F8AB4E',
+    400: '#FFB637',
+    500: '#F8AB4E',
+    600: '#E79729',
+    700: '#D0800D',
+    800: '#B86A00',
+    900: '#9A5500'
   }
 };
 
@@ -43,6 +55,21 @@ const CM2DInput: ComponentStyleConfig = {
   }
 };
 
+const CM2DButton: ComponentStyleConfig = {
+  variants: {
+    light: {
+      borderWidth: 1,
+      py: 6,
+      borderColor: 'highlight.100',
+      bg: 'highlight.50',
+      fontWeight: 500,
+      _hover: {
+        bg: 'highlight.100'
+      }
+    }
+  }
+};
+
 const theme = extendTheme({
   colors,
   fonts: {
@@ -50,7 +77,8 @@ const theme = extendTheme({
     body: `'Inter', sans-serif`
   },
   components: {
-    Input: CM2DInput
+    Input: CM2DInput,
+    Button: CM2DButton
   }
 });
 
