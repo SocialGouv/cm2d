@@ -1,5 +1,5 @@
 import { ageRanges } from '@/components/layouts/Menu';
-import { Cm2dContext, baseAggregation } from '@/utils/cm2d-provider';
+import { Cm2dContext, View, baseAggregation } from '@/utils/cm2d-provider';
 import { getLabelFromElkField } from '@/utils/tools';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import {
@@ -38,26 +38,20 @@ export function ChartTableHeader() {
       }
     };
 
-    if (aggregateX === 'age') {
-      xAgg = {
+    if (aggregateX === 'age' || aggregateY === 'age') {
+      const rangeAgg = {
         range: {
-          field: aggregateX,
+          field: 'age',
           ranges: ageRanges
         }
       };
-    }
 
-    if (aggregateY === 'age') {
-      yAgg = {
-        range: {
-          field: aggregateY,
-          ranges: ageRanges
-        }
-      };
+      xAgg = aggregateX === 'age' ? rangeAgg : xAgg;
+      yAgg = aggregateY === 'age' ? rangeAgg : yAgg;
     }
 
     setAggregations({
-      [`aggregated_x`]: {
+      aggregated_x: {
         ...xAgg,
         aggs: {
           aggregated_y: {
@@ -72,8 +66,22 @@ export function ChartTableHeader() {
     if (aggregateX && aggregateY) updateAggregation();
   }, [aggregateX, aggregateY]);
 
+  const handleViewChange = (view: View) => {
+    setView(view);
+  };
+
+  const handleXAxisChange = (field: string) => {
+    if (aggregateY === field) setAggregateY(aggregateX);
+    setAggregateX(field);
+  };
+
+  const handleYAxisChange = (field: string) => {
+    if (aggregateX === field) setAggregateX(aggregateY);
+    setAggregateY(field);
+  };
+
   return (
-    <Flex flexDir={'row'} w="full">
+    <Flex flexDir="row" w="full">
       <Menu>
         <MenuButton
           as={Button}
@@ -83,7 +91,7 @@ export function ChartTableHeader() {
               src="icons/table.svg"
               width={24}
               height={24}
-              alt="vue courbe"
+              alt="vue table"
             />
           }
           rightIcon={<ChevronDownIcon color="primary.200" w={5} h={5} />}
@@ -91,18 +99,10 @@ export function ChartTableHeader() {
           Vue : <Text as="b">Tableau</Text>
         </MenuButton>
         <MenuList>
-          <MenuItem
-            onClick={() => {
-              setView('line');
-            }}
-          >
+          <MenuItem onClick={() => handleViewChange('line')}>
             Vue courbe
           </MenuItem>
-          <MenuItem
-            onClick={() => {
-              setView('histogram');
-            }}
-          >
+          <MenuItem onClick={() => handleViewChange('histogram')}>
             Vue histogramme
           </MenuItem>
           <MenuItem>
@@ -120,28 +120,13 @@ export function ChartTableHeader() {
           Abscisse : <Text as="b">{getLabelFromElkField(aggregateX)}</Text>
         </MenuButton>
         <MenuList>
-          <MenuItem
-            onClick={() => {
-              if (aggregateY === 'sex') setAggregateY(aggregateX);
-              setAggregateX('sex');
-            }}
-          >
+          <MenuItem onClick={() => handleXAxisChange('sex')}>
             <Text as={aggregateX === 'sex' ? 'b' : 'span'}>Sexe</Text>
           </MenuItem>
-          <MenuItem
-            onClick={() => {
-              if (aggregateY === 'age') setAggregateY(aggregateX);
-              setAggregateX('age');
-            }}
-          >
+          <MenuItem onClick={() => handleXAxisChange('age')}>
             <Text as={aggregateX === 'age' ? 'b' : 'span'}>Age</Text>
           </MenuItem>
-          <MenuItem
-            onClick={() => {
-              if (aggregateY === 'death_location') setAggregateY(aggregateX);
-              setAggregateX('death_location');
-            }}
-          >
+          <MenuItem onClick={() => handleXAxisChange('death_location')}>
             <Text as={aggregateX === 'death_location' ? 'b' : 'span'}>
               Lieu de décès
             </Text>
@@ -155,31 +140,16 @@ export function ChartTableHeader() {
           variant="light"
           rightIcon={<ChevronDownIcon color="primary.200" w={5} h={5} />}
         >
-          Abscisse : <Text as="b">{getLabelFromElkField(aggregateY)}</Text>
+          Ordonnée : <Text as="b">{getLabelFromElkField(aggregateY)}</Text>
         </MenuButton>
         <MenuList>
-          <MenuItem
-            onClick={() => {
-              if (aggregateX === 'sex') setAggregateX(aggregateY);
-              setAggregateY('sex');
-            }}
-          >
+          <MenuItem onClick={() => handleYAxisChange('sex')}>
             <Text as={aggregateY === 'sex' ? 'b' : 'span'}>Sexe</Text>
           </MenuItem>
-          <MenuItem
-            onClick={() => {
-              if (aggregateX === 'age') setAggregateX(aggregateY);
-              setAggregateY('age');
-            }}
-          >
+          <MenuItem onClick={() => handleYAxisChange('age')}>
             <Text as={aggregateY === 'age' ? 'b' : 'span'}>Age</Text>
           </MenuItem>
-          <MenuItem
-            onClick={() => {
-              if (aggregateX === 'death_location') setAggregateX(aggregateY);
-              setAggregateY('death_location');
-            }}
-          >
+          <MenuItem onClick={() => handleYAxisChange('death_location')}>
             <Text as={aggregateY === 'death_location' ? 'b' : 'span'}>
               Lieu de décès
             </Text>

@@ -1,5 +1,5 @@
 import { ageRanges } from '@/components/layouts/Menu';
-import { Cm2dContext, baseAggregation } from '@/utils/cm2d-provider';
+import { Cm2dContext, View, baseAggregation } from '@/utils/cm2d-provider';
 import { getLabelFromElkField } from '@/utils/tools';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import {
@@ -27,52 +27,70 @@ export function ChartLineHeader() {
   const [aggregateField, setAggregateField] = useState<string>('sex');
 
   const updateAggregation = () => {
+    let aggregation: any = {};
+
     if (isAggregated) {
-      setAggregations(baseAggregation);
-    } else if (['sex', 'death_location'].includes(aggregateField)) {
-      setAggregations({
-        [`aggregated_parent`]: {
-          terms: {
-            field: aggregateField
-          },
-          aggs: {
-            ...baseAggregation
+      aggregation = baseAggregation;
+    } else {
+      if (['sex', 'death_location'].includes(aggregateField)) {
+        aggregation = {
+          aggregated_parent: {
+            terms: {
+              field: aggregateField
+            },
+            aggs: {
+              ...baseAggregation
+            }
           }
-        }
-      });
-    } else if (['age'].includes(aggregateField)) {
-      setAggregations({
-        [`aggregated_parent`]: {
-          range: {
-            field: aggregateField,
-            ranges: ageRanges
-          },
-          aggs: {
-            ...baseAggregation
+        };
+      } else if (['age'].includes(aggregateField)) {
+        aggregation = {
+          aggregated_parent: {
+            range: {
+              field: aggregateField,
+              ranges: ageRanges
+            },
+            aggs: {
+              ...baseAggregation
+            }
           }
-        }
-      });
-    } else if (['years'].includes(aggregateField)) {
-      setAggregations({
-        [`aggregated_parent`]: {
-          date_histogram: {
-            field: 'date',
-            calendar_interval: 'year'
-          },
-          aggs: {
-            ...baseAggregation
+        };
+      } else if (['years'].includes(aggregateField)) {
+        aggregation = {
+          aggregated_parent: {
+            date_histogram: {
+              field: 'date',
+              calendar_interval: 'year'
+            },
+            aggs: {
+              ...baseAggregation
+            }
           }
-        }
-      });
+        };
+      }
     }
+
+    setAggregations(aggregation);
   };
 
   useEffect(() => {
-    if (aggregateField) updateAggregation();
-  }, [aggregateField, isAggregated]);
+    updateAggregation();
+  }, [isAggregated, aggregateField]);
+
+  const handleViewChange = (view: View) => {
+    setView(view);
+  };
+
+  const handleAggregationChange = (aggregated: boolean) => {
+    setIsAggregated(aggregated);
+  };
+
+  const handleLegendChange = (field: string) => {
+    setAggregateField(field);
+  };
 
   return (
-    <Flex flexDir={'row'} w="full">
+    <Flex flexDir="row" w="full">
       <Menu>
         <MenuButton
           as={Button}
@@ -93,18 +111,10 @@ export function ChartLineHeader() {
           <MenuItem>
             <Text as="b">Vue courbe</Text>
           </MenuItem>
-          <MenuItem
-            onClick={() => {
-              setView('histogram');
-            }}
-          >
+          <MenuItem onClick={() => handleViewChange('histogram')}>
             Vue histogramme
           </MenuItem>
-          <MenuItem
-            onClick={() => {
-              setView('table');
-            }}
-          >
+          <MenuItem onClick={() => handleViewChange('table')}>
             Vue tableau
           </MenuItem>
         </MenuList>
@@ -120,18 +130,10 @@ export function ChartLineHeader() {
           <Text as="b">{isAggregated ? 'Vue agrégée' : 'Vue distribuée'}</Text>
         </MenuButton>
         <MenuList>
-          <MenuItem
-            onClick={() => {
-              setIsAggregated(true);
-            }}
-          >
+          <MenuItem onClick={() => handleAggregationChange(true)}>
             <Text as={isAggregated ? 'b' : 'span'}>Vue agrégée</Text>
           </MenuItem>
-          <MenuItem
-            onClick={() => {
-              setIsAggregated(false);
-            }}
-          >
+          <MenuItem onClick={() => handleAggregationChange(false)}>
             <Text as={!isAggregated ? 'b' : 'span'}>Vue distribuée</Text>
           </MenuItem>
         </MenuList>
@@ -147,32 +149,12 @@ export function ChartLineHeader() {
             Légende : <Text as="b">{getLabelFromElkField(aggregateField)}</Text>
           </MenuButton>
           <MenuList>
-            <MenuItem
-              onClick={() => {
-                setAggregateField('sex');
-              }}
-            >
-              Sexe
-            </MenuItem>
-            <MenuItem
-              onClick={() => {
-                setAggregateField('age');
-              }}
-            >
-              Ages
-            </MenuItem>
-            <MenuItem
-              onClick={() => {
-                setAggregateField('death_location');
-              }}
-            >
+            <MenuItem onClick={() => handleLegendChange('sex')}>Sexe</MenuItem>
+            <MenuItem onClick={() => handleLegendChange('age')}>Ages</MenuItem>
+            <MenuItem onClick={() => handleLegendChange('death_location')}>
               Lieu de décès
             </MenuItem>
-            <MenuItem
-              onClick={() => {
-                setAggregateField('years');
-              }}
-            >
+            <MenuItem onClick={() => handleLegendChange('years')}>
               Années
             </MenuItem>
           </MenuList>
