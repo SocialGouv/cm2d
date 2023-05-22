@@ -71,7 +71,10 @@ export default function Home() {
   }
 
   if (view === 'table') {
-    if (data.result.aggregations.aggregated_x) {
+    if (
+      data.result.aggregations.aggregated_x &&
+      data.result.aggregations.aggregated_x.buckets[0].aggregated_y
+    ) {
       datasets = data.result.aggregations.aggregated_x.buckets
         .map((apb: any) => ({
           hits: apb.aggregated_y.buckets.filter((b: any) => !!b.doc_count),
