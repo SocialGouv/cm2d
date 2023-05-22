@@ -29,7 +29,8 @@ export const lineProps: { options: ChartOptions<'line'>; plugins: any[] } = {
           unit: 'week',
           displayFormats: {
             week: 'MM/YYYY'
-          }
+          },
+          tooltipFormat: 'MMMM DD YYYY'
         }
       },
       y: {
