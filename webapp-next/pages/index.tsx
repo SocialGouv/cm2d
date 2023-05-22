@@ -1,4 +1,5 @@
 import { ChartLine } from '@/components/charts/line/Line';
+import { ChartTable } from '@/components/charts/table/Table';
 import { useData } from '@/utils/api';
 import { Cm2dContext } from '@/utils/cm2d-provider';
 import { isStringContainingDate } from '@/utils/tools';
@@ -15,12 +16,12 @@ export default function Home() {
     throw new Error('Menu must be used within a Cm2dProvider');
   }
 
-  const { filters, aggregations } = context;
+  const { filters, aggregations, view } = context;
 
   const { data, isLoading } = useData(filters, aggregations);
 
   const fetchNewTitle = async () => {
-    setTitle('Nombre de décès');
+    setTitle(filters.categories_level_1[0] || 'Nombre de décès');
     // setTitle('...');
     // const res = await fetch('/api/chat', {
     //   method: 'POST',
@@ -53,18 +54,48 @@ export default function Home() {
 
   let datasets: { hits: any[] }[] = [];
 
-  if (data.result.aggregations.aggregated_date) {
-    datasets = [{ hits: data.result.aggregations.aggregated_date.buckets }];
-  } else if (data.result.aggregations.aggregated_parent) {
-    datasets = data.result.aggregations.aggregated_parent.buckets
-      .map((apb: any) => ({
-        hits: apb.aggregated_date.buckets,
-        label: isStringContainingDate(apb.key)
-          ? new Date(apb.key).getFullYear().toString()
-          : apb.key
-      }))
-      .filter((apb: any) => !!apb.hits.length);
+  if (view === 'line') {
+    if (data.result.aggregations.aggregated_date) {
+      datasets = [{ hits: data.result.aggregations.aggregated_date.buckets }];
+    } else if (data.result.aggregations.aggregated_parent) {
+      datasets = data.result.aggregations.aggregated_parent.buckets
+        .map((apb: any) => ({
+          hits: apb.aggregated_date.buckets,
+          label: isStringContainingDate(apb.key)
+            ? new Date(apb.key).getFullYear().toString()
+            : apb.key
+        }))
+        .filter((apb: any) => !!apb.hits.length);
+    }
   }
+
+  if (view === 'table') {
+    if (data.result.aggregations.aggregated_x) {
+      datasets = data.result.aggregations.aggregated_x.buckets
+        .map((apb: any) => ({
+          hits: apb.aggregated_y.buckets.filter((b: any) => !!b.doc_count),
+          label: isStringContainingDate(apb.key)
+            ? new Date(apb.key).getFullYear().toString()
+            : apb.key
+        }))
+        .filter((apb: any) => !!apb.hits.length);
+    }
+  }
+
+  const getChartDisplay = () => {
+    switch (view) {
+      case 'line':
+        return <ChartLine id="line-example" datasets={datasets} />;
+      case 'table':
+        return (
+          <ChartTable id="table-example" rowsLabel="Sexe" datasets={datasets} />
+        );
+      case 'histogram':
+        return <>HISTOGRAM</>;
+      default:
+        <>Pas de dataviz configurée pour cette vue</>;
+    }
+  };
 
   return (
     <Flex
@@ -77,11 +108,17 @@ export default function Home() {
       w="full"
       boxShadow="box-shadow: 0px 10px 15px -3px rgba(36, 108, 249, 0.04), 0px 4px 6px -2px rgba(36, 108, 249, 0.04);"
     >
-      <Box maxH="30rem">
-        <Text as="h2" fontSize="2xl" fontWeight={700} mb={6}>
+      <Box maxH={view === 'line' ? '30rem' : 'auto'}>
+        <Text
+          as="h2"
+          fontSize="2xl"
+          fontWeight={700}
+          mb={6}
+          textTransform="capitalize"
+        >
           {title}
         </Text>
-        <ChartLine id="line-example" datasets={datasets} />
+        {getChartDisplay()}
       </Box>
     </Flex>
   );

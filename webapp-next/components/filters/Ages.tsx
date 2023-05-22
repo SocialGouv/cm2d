@@ -6,7 +6,7 @@ import { Filters } from '@/utils/cm2d-provider';
 type Props = {
   filters: Filters;
   setFilters: Dispatch<SetStateAction<Filters>>;
-  ages: { id: number; label: string; minAge: number; maxAge?: number }[];
+  ages: { key: string; from: number; to?: number }[];
 };
 
 export const FiltersAges = (props: Props) => {
@@ -21,26 +21,24 @@ export const FiltersAges = (props: Props) => {
             key={index}
             borderColor="primary.500"
             colorScheme="primary"
-            value={age.id}
-            isChecked={filters.age.some(a => a.min === age.minAge)}
+            value={age.key}
+            isChecked={filters.age.some(a => a.min === age.from)}
             onChange={e => {
               if (e.target.checked) {
                 setFilters({
                   ...filters,
-                  age: [...filters.age, { min: age.minAge, max: age.maxAge }]
+                  age: [...filters.age, { min: age.from, max: age.to }]
                 });
               } else {
                 setFilters({
                   ...filters,
-                  age: [...filters.age.filter(a => a.min !== age.minAge)]
+                  age: [...filters.age.filter(a => a.min !== age.from)]
                 });
               }
             }}
           >
-            <Text
-              as={filters.age.some(a => a.min === age.minAge) ? 'b' : 'span'}
-            >
-              {age.label}
+            <Text as={filters.age.some(a => a.min === age.from) ? 'b' : 'span'}>
+              {age.key}
             </Text>
           </Checkbox>
         ))}

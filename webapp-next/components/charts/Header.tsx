@@ -2,6 +2,7 @@ import { Cm2dContext } from '@/utils/cm2d-provider';
 import { Flex } from '@chakra-ui/react';
 import { ReactNode, useContext } from 'react';
 import { ChartLineHeader } from './line/Header';
+import { ChartTableHeader } from './table/Header';
 
 export function ChartHeader() {
   const context = useContext(Cm2dContext);
@@ -16,6 +17,8 @@ export function ChartHeader() {
     switch (view) {
       case 'line':
         return <ChartLineHeader />;
+      case 'table':
+        return <ChartTableHeader />;
       default:
         return <>NO VIEW</>;
     }

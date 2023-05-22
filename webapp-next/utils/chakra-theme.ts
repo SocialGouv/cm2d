@@ -3,7 +3,7 @@ import { ComponentStyleConfig } from '@chakra-ui/react';
 
 const colors = {
   primary: {
-    50: '#e3ebfd',
+    50: '#F4F8FF',
     100: '#b9ccfc',
     200: '#8eaafc',
     300: '#639bf9',
@@ -37,6 +37,18 @@ const colors = {
     700: '#D0800D',
     800: '#B86A00',
     900: '#9A5500'
+  },
+  neutral: {
+    50: '#E0E4E9',
+    100: '#CDD3DA',
+    200: '#ABB4C2',
+    300: '#8A95AA',
+    400: '#697694',
+    500: '#718096',
+    600: '#526380',
+    700: '#364A6C',
+    800: '#1F344E',
+    900: '#031F33'
   }
 };
 
@@ -50,6 +62,33 @@ const CM2DInput: ComponentStyleConfig = {
     outline: {
       field: {
         borderColor: 'secondary.500'
+      }
+    }
+  }
+};
+
+const CM2DTable: ComponentStyleConfig = {
+  variants: {
+    primary: {
+      th: {
+        color: 'neutral.500',
+        fontWeight: 400,
+        textTransform: 'capitalize',
+        fontSize: 'sm'
+      },
+      tr: {
+        td: {
+          py: 4,
+          _first: {
+            borderRadius: 'lg'
+          },
+          _last: {
+            borderRadius: 'lg'
+          }
+        },
+        _odd: {
+          background: 'primary.50'
+        }
       }
     }
   }
@@ -88,7 +127,8 @@ const theme = extendTheme({
   },
   components: {
     Input: CM2DInput,
-    Button: CM2DButton
+    Button: CM2DButton,
+    Table: CM2DTable
   }
 });
 
