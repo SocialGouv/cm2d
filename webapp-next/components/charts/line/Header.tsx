@@ -133,14 +133,14 @@ export function ChartLineHeader() {
               setIsAggregated(true);
             }}
           >
-            Vue agrégée
+            <Text as={isAggregated ? 'b' : 'span'}>Vue agrégée</Text>
           </MenuItem>
           <MenuItem
             onClick={() => {
               setIsAggregated(false);
             }}
           >
-            Vue distribuée
+            <Text as={!isAggregated ? 'b' : 'span'}>Vue distribuée</Text>
           </MenuItem>
         </MenuList>
       </Menu>
