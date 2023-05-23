@@ -149,16 +149,24 @@ export function ChartLineHeader() {
             Légende : <Text as="b">{getLabelFromElkField(aggregateField)}</Text>
           </MenuButton>
           <MenuList>
-            <MenuItem onClick={() => handleLegendChange('sex')}>Sexe</MenuItem>
-            <MenuItem onClick={() => handleLegendChange('age')}>Ages</MenuItem>
+            <MenuItem onClick={() => handleLegendChange('sex')}>
+              <Text as={aggregateField === 'sex' ? 'b' : 'span'}>Sexe</Text>
+            </MenuItem>
+            <MenuItem onClick={() => handleLegendChange('age')}>
+              <Text as={aggregateField === 'age' ? 'b' : 'span'}>Ages</Text>
+            </MenuItem>
             <MenuItem onClick={() => handleLegendChange('department')}>
-              Départements
+              <Text as={aggregateField === 'department' ? 'b' : 'span'}>
+                Départements
+              </Text>
             </MenuItem>
             <MenuItem onClick={() => handleLegendChange('death_location')}>
-              Lieu de décès
+              <Text as={aggregateField === 'death_location' ? 'b' : 'span'}>
+                Lieu de décès
+              </Text>
             </MenuItem>
             <MenuItem onClick={() => handleLegendChange('years')}>
-              Années
+              <Text as={aggregateField === 'years' ? 'b' : 'span'}>Années</Text>
             </MenuItem>
           </MenuList>
         </Menu>

@@ -132,7 +132,7 @@ export default function Home() {
       borderRadius={16}
       bg="white"
       w="full"
-      boxShadow="box-shadow: 0px 10px 15px -3px rgba(36, 108, 249, 0.04), 0px 4px 6px -2px rgba(36, 108, 249, 0.04);"
+      boxShadow="0px 8px 15px -4px rgba(36, 108, 249, 0.08), 0px 4px 6px -2px rgba(36, 108, 249, 0.08);"
     >
       <Box maxH={['line', 'histogram'].includes(view) ? '30rem' : 'auto'}>
         <Text as="h2" fontSize="2xl" fontWeight={700} mb={6}>

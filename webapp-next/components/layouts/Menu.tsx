@@ -42,7 +42,7 @@ export function Menu() {
       minH={'calc(100vh - 2.5rem)'}
       position="sticky"
       top={0}
-      boxShadow="box-shadow: 0px 10px 15px -3px rgba(36, 108, 249, 0.04), 0px 4px 6px -2px rgba(36, 108, 249, 0.04);"
+      boxShadow="0px 8px 15px -4px rgba(36, 108, 249, 0.08), 0px 4px 6px -2px rgba(36, 108, 249, 0.08);"
     >
       <Box pl={4} px={6}>
         <Image src="/CM2D.svg" alt="CM2D Logo" w={24} />
@@ -113,9 +113,9 @@ export function Menu() {
         </Box>
         <UserCard
           user={{
-            firstName: 'John',
-            lastName: 'Doe',
-            email: 'jeneconnaispasmonemail@jsp.com'
+            firstName: 'Jeanne',
+            lastName: 'Dupont',
+            email: 'jeanne.dupont@lorem.com'
           }}
         />
       </Box>
