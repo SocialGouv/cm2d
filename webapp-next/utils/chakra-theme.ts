@@ -3,7 +3,7 @@ import { ComponentStyleConfig } from '@chakra-ui/react';
 
 const colors = {
   primary: {
-    50: '#e3ebfd',
+    50: '#F4F8FF',
     100: '#b9ccfc',
     200: '#8eaafc',
     300: '#639bf9',
@@ -25,6 +25,30 @@ const colors = {
     700: '#9abdec',
     800: '#73a9e1',
     900: '#4c82d5'
+  },
+  highlight: {
+    50: '#FFFAF0',
+    100: '#FEEBCB',
+    200: '#FFD88A',
+    300: '#F8AB4E',
+    400: '#FFB637',
+    500: '#F8AB4E',
+    600: '#E79729',
+    700: '#D0800D',
+    800: '#B86A00',
+    900: '#9A5500'
+  },
+  neutral: {
+    50: '#E0E4E9',
+    100: '#CDD3DA',
+    200: '#ABB4C2',
+    300: '#8A95AA',
+    400: '#697694',
+    500: '#718096',
+    600: '#526380',
+    700: '#364A6C',
+    800: '#1F344E',
+    900: '#031F33'
   }
 };
 
@@ -43,6 +67,58 @@ const CM2DInput: ComponentStyleConfig = {
   }
 };
 
+const CM2DTable: ComponentStyleConfig = {
+  variants: {
+    primary: {
+      th: {
+        color: 'neutral.500',
+        fontWeight: 400,
+        textTransform: 'capitalize',
+        fontSize: 'sm'
+      },
+      tr: {
+        td: {
+          py: 4,
+          _first: {
+            borderRadius: 'lg'
+          },
+          _last: {
+            borderRadius: 'lg'
+          }
+        },
+        _odd: {
+          background: 'primary.50'
+        }
+      }
+    }
+  }
+};
+
+const CM2DButton: ComponentStyleConfig = {
+  baseStyle: {
+    borderRadius: 'lg',
+    py: 5
+  },
+  variants: {
+    highlight: {
+      borderWidth: 1,
+      py: 6,
+      borderColor: 'highlight.100',
+      bg: 'highlight.50',
+      fontWeight: 500,
+      _hover: {
+        bg: 'highlight.100'
+      }
+    },
+    light: {
+      bg: 'white',
+      borderWidth: 1,
+      borderColor: 'primary.50',
+      fontWeight: 500
+    }
+  }
+};
+
 const theme = extendTheme({
   colors,
   fonts: {
@@ -50,7 +126,9 @@ const theme = extendTheme({
     body: `'Inter', sans-serif`
   },
   components: {
-    Input: CM2DInput
+    Input: CM2DInput,
+    Button: CM2DButton,
+    Table: CM2DTable
   }
 });
 

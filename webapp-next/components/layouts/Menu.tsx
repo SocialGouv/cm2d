@@ -1,5 +1,5 @@
-import { FilterContext } from '@/utils/filters-provider';
 import { Box, Flex, Image, Spacer, Stack } from '@chakra-ui/react';
+import { Cm2dContext } from '@/utils/cm2d-provider';
 import { useContext } from 'react';
 import { FiltersAges } from '../filters/Ages';
 import { FilterCauses } from '../filters/Causes';
@@ -10,23 +10,24 @@ import { SubMenu } from './SubMenu';
 import { MenuLinks } from './MenuLinks';
 import { UserCard } from './UserCard';
 import { FilterDates } from '../filters/Dates';
+import { FiltersDepartments } from '../filters/Departments';
 
-const ageRanges = [
-  { id: 0, label: '0-10 ans', minAge: 0, maxAge: 10 },
-  { id: 1, label: '11-20 ans', minAge: 11, maxAge: 20 },
-  { id: 2, label: '21-30 ans', minAge: 21, maxAge: 30 },
-  { id: 3, label: '31-40 ans', minAge: 31, maxAge: 40 },
-  { id: 4, label: '41-50 ans', minAge: 41, maxAge: 50 },
-  { id: 5, label: '51-60 ans', minAge: 51, maxAge: 60 },
-  { id: 6, label: '61-70 ans', minAge: 61, maxAge: 70 },
-  { id: 7, label: '71 ans et +', minAge: 71 }
+export const ageRanges = [
+  { from: 0, to: 10, key: '0-10 ans' },
+  { from: 11, to: 20, key: '11-20 ans' },
+  { from: 21, to: 30, key: '21-30 ans' },
+  { from: 31, to: 40, key: '31-40 ans' },
+  { from: 41, to: 50, key: '41-50 ans' },
+  { from: 51, to: 60, key: '51-60 ans' },
+  { from: 61, to: 70, key: '61-70 ans' },
+  { from: 71, key: '71 ans et +' }
 ];
 
 export function Menu() {
-  const context = useContext(FilterContext);
+  const context = useContext(Cm2dContext);
 
   if (!context) {
-    throw new Error('Menu must be used within a FilterProvider');
+    throw new Error('Menu must be used within a Cm2dProvider');
   }
 
   const { filters, setFilters } = context;
@@ -84,6 +85,7 @@ export function Menu() {
         >
           <Stack dir="column" spacing={4}>
             <FiltersDeathLocations filters={filters} setFilters={setFilters} />
+            <FiltersDepartments filters={filters} setFilters={setFilters} />
           </Stack>
         </SubMenu>
       </Box>

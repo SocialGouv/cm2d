@@ -1,5 +1,5 @@
 import { useCauses } from '@/utils/api';
-import { Filters } from '@/utils/filters-provider';
+import { Filters } from '@/utils/cm2d-provider';
 import { InputGroup, InputLeftElement } from '@chakra-ui/react';
 import {
   AutoComplete,

@@ -1,4 +1,4 @@
-import { FilterContext, Filters } from '@/utils/filters-provider';
+import { Cm2dContext, Filters } from '@/utils/cm2d-provider';
 import { ISODateToMonthYear, getLabelFromElkField } from '@/utils/tools';
 import { CloseIcon } from '@chakra-ui/icons';
 import { Box, Tag, Text } from '@chakra-ui/react';
@@ -6,10 +6,10 @@ import { useContext } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 
 export function FiltersShortcut() {
-  const context = useContext(FilterContext);
+  const context = useContext(Cm2dContext);
 
   if (!context) {
-    throw new Error('Header must be used within a FilterProvider');
+    throw new Error('Header must be used within a Cm2dProvider');
   }
 
   const { filters, setFilters } = context;
@@ -38,6 +38,7 @@ export function FiltersShortcut() {
         <Text>
           {`${getLabelFromElkField(field_name)} : `}
           <Text
+            as="span"
             display="inline-block"
             css={{
               '&::first-letter': {
@@ -48,16 +49,18 @@ export function FiltersShortcut() {
             {value}
           </Text>
         </Text>
-        <CloseIcon
-          bg="primary.100"
-          color="primary.300"
-          cursor="pointer"
-          borderRadius="50%"
-          fontSize="xl"
-          ml={2}
-          p={1}
-          onClick={onDelete}
-        />
+        {field_name !== 'start_date' && (
+          <CloseIcon
+            bg="primary.100"
+            color="primary.300"
+            cursor="pointer"
+            borderRadius="50%"
+            fontSize="xl"
+            ml={2}
+            p={1}
+            onClick={onDelete}
+          />
+        )}
       </Tag>
     );
   };
@@ -112,6 +115,7 @@ export function FiltersShortcut() {
               )} à ${ISODateToMonthYear(filters['end_date'])}`;
             return (
               <CustomTag
+                key={`date-${filters['start_date']}`}
                 field_name={key}
                 value={value}
                 onDelete={() => {

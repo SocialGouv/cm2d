@@ -6,16 +6,16 @@ import { ChakraProvider } from '@chakra-ui/react';
 import { DashboardLayout } from '@/layouts/DashboardLayout';
 import theme from '@/utils/chakra-theme';
 import '../utils/overrides.css';
-import { FilterProvider } from '@/utils/filters-provider';
+import { Cm2dProvider } from '@/utils/cm2d-provider';
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider theme={theme}>
-      <FilterProvider>
+      <Cm2dProvider>
         <DashboardLayout>
           <Component {...pageProps} />
         </DashboardLayout>
-      </FilterProvider>
+      </Cm2dProvider>
     </ChakraProvider>
   );
 }

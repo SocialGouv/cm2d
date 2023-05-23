@@ -1,4 +1,16 @@
-import { Filters } from './filters-provider';
+import { Filters } from './cm2d-provider';
+import { format } from 'date-fns';
+
+export const departmentRefs = {
+  '75': 'Paris',
+  '77': 'Seine-et-Marne',
+  '78': 'Yvelines',
+  '91': 'Essonne',
+  '92': 'Hauts-de-Seine',
+  '93': 'Seine-Saint-Denis',
+  '94': 'Val-de-Marne',
+  '95': "Val-d'Oise"
+};
 
 const elkFields = [
   { value: 'sex', label: 'Sexe' },
@@ -6,9 +18,12 @@ const elkFields = [
   { value: 'categories_level_1', label: 'Cause' },
   { value: 'categories_level_2', label: 'Comorbidité' },
   { value: 'death_location', label: 'Lieu de décès' },
+  { value: 'department', label: 'Département' },
   { value: 'cert_type', label: 'Format' },
   { value: 'start_date', label: 'Période' },
-  { value: 'end_date', label: 'Période' }
+  { value: 'end_date', label: 'Période' },
+  { value: 'years', label: 'Années' },
+  { value: 'months', label: 'Périodes' }
 ];
 
 export function getLabelFromElkField(key: string): string {
@@ -64,6 +79,14 @@ export function transformFilters(filters: Filters): any[] {
     });
   }
 
+  if (filters.department.length > 0) {
+    transformed.push({
+      terms: {
+        department: filters.department
+      }
+    });
+  }
+
   if (filters.start_date && filters.end_date) {
     transformed.push({
       range: {
@@ -87,4 +110,67 @@ export function ISODateToMonthYear(isoDateString: string): string {
   const monthStr = month < 10 ? `0${month}` : `${month}`;
 
   return `${monthStr}/${year}`;
+}
+
+export function dateToDayMonth(date: Date): string {
+  const options = { day: '2-digit', month: 'long' };
+  const formatter = new Intl.DateTimeFormat('fr-FR', options as any);
+  const parts = formatter.formatToParts(date);
+  const formattedDate = `${parts[2].value.trim()} ${parts[0].value.trim()}`;
+  return formattedDate;
+}
+
+export function dateToMonthYear(date: Date): string {
+  const options = { month: 'long', year: 'numeric' };
+  const formatter = new Intl.DateTimeFormat('fr-FR', options as any);
+  const formattedDate = formatter.format(date);
+  return formattedDate;
+}
+
+export function dateToWeekYear(date: Date): string {
+  const weekNumber: string = format(date, 'w');
+  const year: string = format(date, 'yyyy');
+  return `S${weekNumber} ${year}`;
+}
+
+export function getLastDayOfMonth(date: Date): Date {
+  const year: number = date.getFullYear();
+  const month: number = date.getMonth();
+  const lastDay: Date = new Date(year, month + 1, 0);
+  lastDay.setHours(23, 59, 0, 0);
+  return lastDay;
+}
+
+const availableColors: string[] = [
+  '#91B6FC',
+  '#A0AEC0',
+  '#F56565',
+  '#FF943C',
+  '#ECC94B',
+  '#48BB78',
+  '#38B2AC',
+  '#4299E1',
+  '#0BC5EA',
+  '#9F7AEA',
+  '#ED64A6'
+];
+export function getRandomColor(): string {
+  const randomIndex = Math.floor(Math.random() * availableColors.length);
+  return availableColors[randomIndex];
+}
+
+export function isStringContainingDate(str: string): boolean {
+  // Attempt to parse the string as a date
+  const date = new Date(str);
+
+  // Check if the parsed date is valid
+  if (!isNaN(date.getTime())) {
+    // Check if the original string matches the parsed date
+    const dateString = date.toDateString();
+    const parsedDateString = new Date(dateString).toDateString();
+
+    return dateString === parsedDateString && date.getFullYear() !== 1970;
+  }
+
+  return false;
 }

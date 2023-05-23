@@ -1,17 +1,22 @@
 import { Flex } from '@chakra-ui/react';
 import 'react-datepicker/dist/react-datepicker.css';
-import { FilterDates } from '../filters/Dates';
+import { ActionBookmarks } from '../actions/Bookmarks';
+import { ActionMenu } from '../actions/Menu';
 
 export function Header() {
   return (
     <Flex
-      flexDir={'column'}
-      py={8}
+      flexDir={'row'}
+      py={6}
       px={4}
       borderRadius={16}
       bg="white"
       w="full"
+      justifyContent={'space-between'}
       boxShadow="box-shadow: 0px 10px 15px -3px rgba(36, 108, 249, 0.04), 0px 4px 6px -2px rgba(36, 108, 249, 0.04);"
-    ></Flex>
+    >
+      <ActionBookmarks />
+      <ActionMenu />
+    </Flex>
   );
 }
