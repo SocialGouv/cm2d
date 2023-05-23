@@ -24,9 +24,11 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
         </Box>
         <Flex flexDir="column" w="full">
           <Header />
-          <FiltersShortcut />
-          <ChartHeader />
-          <main>{children}</main>
+          <Flex flexDir="column" position="sticky" top={0}>
+            <FiltersShortcut />
+            <ChartHeader />
+            <main>{children}</main>
+          </Flex>
         </Flex>
       </Flex>
     </Box>

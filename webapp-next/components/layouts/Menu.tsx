@@ -1,5 +1,5 @@
+import { Box, Flex, Image, Spacer, Stack } from '@chakra-ui/react';
 import { Cm2dContext } from '@/utils/cm2d-provider';
-import { Box, Flex, Image, Stack } from '@chakra-ui/react';
 import { useContext } from 'react';
 import { FiltersAges } from '../filters/Ages';
 import { FilterCauses } from '../filters/Causes';
@@ -7,6 +7,8 @@ import { FiltersDeathLocations } from '../filters/DeathLocations';
 import { FiltersSexes } from '../filters/Sexes';
 import { MenuTitle } from './MenuTitle';
 import { SubMenu } from './SubMenu';
+import { MenuLinks } from './MenuLinks';
+import { UserCard } from './UserCard';
 import { FilterDates } from '../filters/Dates';
 import { FiltersDepartments } from '../filters/Departments';
 
@@ -33,7 +35,7 @@ export function Menu() {
   return (
     <Flex
       flexDir={'column'}
-      py={8}
+      pt={8}
       borderRadius={16}
       bg="white"
       w={80}
@@ -42,19 +44,19 @@ export function Menu() {
       top={0}
       boxShadow="box-shadow: 0px 10px 15px -3px rgba(36, 108, 249, 0.04), 0px 4px 6px -2px rgba(36, 108, 249, 0.04);"
     >
-      <Box pl={4} px={8}>
+      <Box pl={4} px={6}>
         <Image src="/CM2D.svg" alt="CM2D Logo" w={24} />
       </Box>
       <Box mt={5} h="3px" w="full" bg="gray.50" />
-      <Box mt={10} px={8}>
+      <Box mt={10} px={6}>
         <MenuTitle title="Cause de décès" />
         <FilterCauses filters={filters} setFilters={setFilters} />
       </Box>
-      <Box mt={10} px={8}>
+      <Box mt={10} px={6}>
         <MenuTitle title="Période" />
         <FilterDates />
       </Box>
-      <Box mt={10} px={8}>
+      <Box mt={10} px={6}>
         <MenuTitle title="Filtres" />
         <SubMenu
           title="Démographie"
@@ -86,6 +88,37 @@ export function Menu() {
             <FiltersDepartments filters={filters} setFilters={setFilters} />
           </Stack>
         </SubMenu>
+      </Box>
+      <Box mt="auto">
+        <Box px={6}>
+          <MenuLinks
+            links={[
+              {
+                label: 'À propos',
+                icon: '/icons/about-circle.svg',
+                link: '/'
+              },
+              {
+                label: 'Réglages',
+                icon: '/icons/settings.svg',
+                link: '/'
+              },
+              {
+                label: 'Déconnexion',
+                icon: '/icons/log-out.svg',
+                link: '/'
+              }
+            ]}
+          />
+        </Box>
+        <UserCard
+          user={{
+            firstName: 'John',
+            lastName: 'Doe',
+            email: 'jeneconnaispasmonemail@jsp.com',
+            avatar: '/icons/avatar.svg'
+          }}
+        />
       </Box>
     </Flex>
   );
