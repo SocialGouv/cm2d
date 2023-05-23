@@ -111,7 +111,7 @@ export function transformFilters(filters: Filters): any[] {
   return transformed;
 }
 
-export function getViewDatasets(data: any, view: View): any {
+export function getViewDatasets(data: any, view: View): { hits: any[] }[] {
   if (view === 'line') {
     if (data.result.aggregations.aggregated_date) {
       return [{ hits: data.result.aggregations.aggregated_date.buckets }];
@@ -150,6 +150,8 @@ export function getViewDatasets(data: any, view: View): any {
       ];
     }
   }
+
+  return [];
 }
 
 export function ISODateToMonthYear(isoDateString: string): string {
