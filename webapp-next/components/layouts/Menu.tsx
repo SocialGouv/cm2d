@@ -115,8 +115,7 @@ export function Menu() {
           user={{
             firstName: 'John',
             lastName: 'Doe',
-            email: 'jeneconnaispasmonemail@jsp.com',
-            avatar: '/icons/avatar.svg'
+            email: 'jeneconnaispasmonemail@jsp.com'
           }}
         />
       </Box>
