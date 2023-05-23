@@ -17,7 +17,7 @@ export const MenuLinks: React.FC<Props> = ({ links }) => {
     
         {links.map((link, index) => (
           
-            <Link as={NextLink} href={link.link} display="flex" alignItems="left" mt={4}>
+            <Link as={NextLink} href={link.link} display="flex" alignItems="left" mt={4} key={index}>
               {link.icon && (
                <Image src={link.icon} width={24} height={24} alt="icon"/>
               )}
