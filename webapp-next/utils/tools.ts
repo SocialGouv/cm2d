@@ -1,12 +1,24 @@
 import { Filters } from './cm2d-provider';
 import { format } from 'date-fns';
 
+export const departmentRefs = {
+  '75': 'Paris',
+  '77': 'Seine-et-Marne',
+  '78': 'Yvelines',
+  '91': 'Essonne',
+  '92': 'Hauts-de-Seine',
+  '93': 'Seine-Saint-Denis',
+  '94': 'Val-de-Marne',
+  '95': "Val-d'Oise"
+};
+
 const elkFields = [
   { value: 'sex', label: 'Sexe' },
   { value: 'age', label: 'Age' },
   { value: 'categories_level_1', label: 'Cause' },
   { value: 'categories_level_2', label: 'Comorbidité' },
   { value: 'death_location', label: 'Lieu de décès' },
+  { value: 'department', label: 'Département' },
   { value: 'cert_type', label: 'Format' },
   { value: 'start_date', label: 'Période' },
   { value: 'end_date', label: 'Période' },
@@ -63,6 +75,14 @@ export function transformFilters(filters: Filters): any[] {
     transformed.push({
       terms: {
         death_location: filters.death_location
+      }
+    });
+  }
+
+  if (filters.department.length > 0) {
+    transformed.push({
+      terms: {
+        department: filters.department
       }
     });
   }
@@ -149,7 +169,7 @@ export function isStringContainingDate(str: string): boolean {
     const dateString = date.toDateString();
     const parsedDateString = new Date(dateString).toDateString();
 
-    return dateString === parsedDateString;
+    return dateString === parsedDateString && date.getFullYear() !== 1970;
   }
 
   return false;

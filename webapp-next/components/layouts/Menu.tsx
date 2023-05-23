@@ -8,6 +8,7 @@ import { FiltersSexes } from '../filters/Sexes';
 import { MenuTitle } from './MenuTitle';
 import { SubMenu } from './SubMenu';
 import { FilterDates } from '../filters/Dates';
+import { FiltersDepartments } from '../filters/Departments';
 
 export const ageRanges = [
   { from: 0, to: 10, key: '0-10 ans' },
@@ -82,6 +83,7 @@ export function Menu() {
         >
           <Stack dir="column" spacing={4}>
             <FiltersDeathLocations filters={filters} setFilters={setFilters} />
+            <FiltersDepartments filters={filters} setFilters={setFilters} />
           </Stack>
         </SubMenu>
       </Box>

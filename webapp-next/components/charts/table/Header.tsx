@@ -143,6 +143,11 @@ export function ChartTableHeader() {
               Lieu de décès
             </Text>
           </MenuItem>
+          <MenuItem onClick={() => handleXAxisChange('department')}>
+            <Text as={aggregateX === 'department' ? 'b' : 'span'}>
+              Départements
+            </Text>
+          </MenuItem>
           <MenuItem onClick={() => handleXAxisChange('months')}>
             <Text as={aggregateX === 'months' ? 'b' : 'span'}>Périodes</Text>
           </MenuItem>
@@ -167,6 +172,11 @@ export function ChartTableHeader() {
           <MenuItem onClick={() => handleYAxisChange('death_location')}>
             <Text as={aggregateY === 'death_location' ? 'b' : 'span'}>
               Lieu de décès
+            </Text>
+          </MenuItem>
+          <MenuItem onClick={() => handleYAxisChange('department')}>
+            <Text as={aggregateY === 'department' ? 'b' : 'span'}>
+              Départements
             </Text>
           </MenuItem>
           <MenuItem onClick={() => handleYAxisChange('months')}>

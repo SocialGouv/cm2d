@@ -38,6 +38,7 @@ export function FiltersShortcut() {
         <Text>
           {`${getLabelFromElkField(field_name)} : `}
           <Text
+            as="span"
             display="inline-block"
             css={{
               '&::first-letter': {
@@ -114,6 +115,7 @@ export function FiltersShortcut() {
               )} à ${ISODateToMonthYear(filters['end_date'])}`;
             return (
               <CustomTag
+                key={`date-${filters['start_date']}`}
                 field_name={key}
                 value={value}
                 onDelete={() => {

@@ -20,7 +20,7 @@ export const ChartHistogram = (props: Props) => {
           let label = 'nombre de décès';
 
           if (ds.label) {
-            label = ds.label;
+            label = ds.label.toString();
           }
 
           return {
@@ -39,7 +39,8 @@ export const ChartHistogram = (props: Props) => {
   const xValues = datasets[0].hits.map((item: any) =>
     isStringContainingDate(item.key)
       ? dateToMonthYear(new Date(item.key))
-      : item.key.charAt(0).toUpperCase() + item.key.substring(1)
+      : item.key.toString().charAt(0).toUpperCase() +
+        item.key.toString().substring(1)
   );
 
   return (

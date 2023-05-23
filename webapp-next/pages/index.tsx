@@ -3,7 +3,11 @@ import { ChartLine } from '@/components/charts/line/Line';
 import { ChartTable } from '@/components/charts/table/Table';
 import { useData } from '@/utils/api';
 import { Cm2dContext } from '@/utils/cm2d-provider';
-import { dateToMonthYear, isStringContainingDate } from '@/utils/tools';
+import {
+  dateToMonthYear,
+  departmentRefs,
+  isStringContainingDate
+} from '@/utils/tools';
 import { Box, Flex, Spinner, Text } from '@chakra-ui/react';
 import 'chart.js/auto';
 import 'chartjs-adapter-moment';
@@ -55,6 +59,16 @@ export default function Home() {
 
   let datasets: { hits: any[] }[] = [];
 
+  const getLabelFromKey = (key: string): string => {
+    if (isStringContainingDate(key))
+      return new Date(key).getFullYear().toString();
+
+    if (key in departmentRefs)
+      return `${departmentRefs[key as keyof typeof departmentRefs]} (${key})`;
+
+    return key;
+  };
+
   if (view === 'line') {
     if (data.result.aggregations.aggregated_date) {
       datasets = [{ hits: data.result.aggregations.aggregated_date.buckets }];
@@ -62,9 +76,7 @@ export default function Home() {
       datasets = data.result.aggregations.aggregated_parent.buckets
         .map((apb: any) => ({
           hits: apb.aggregated_date.buckets,
-          label: isStringContainingDate(apb.key)
-            ? new Date(apb.key).getFullYear().toString()
-            : apb.key
+          label: getLabelFromKey(apb.key)
         }))
         .filter((apb: any) => !!apb.hits.length);
     }
@@ -78,9 +90,7 @@ export default function Home() {
       datasets = data.result.aggregations.aggregated_x.buckets
         .map((apb: any) => ({
           hits: apb.aggregated_y.buckets.filter((b: any) => !!b.doc_count),
-          label: isStringContainingDate(apb.key)
-            ? dateToMonthYear(new Date(apb.key))
-            : apb.key
+          label: getLabelFromKey(apb.key)
         }))
         .filter((apb: any) => !!apb.hits.length);
     }

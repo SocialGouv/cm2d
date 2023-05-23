@@ -14,6 +14,7 @@ export type Filters = {
     max?: number;
   }[];
   sex: string[];
+  department: string[];
   start_date?: string;
   end_date?: string;
 };
@@ -51,7 +52,8 @@ export function Cm2dProvider({ children }: Cm2dProviderProps) {
     categories_level_1: [],
     death_location: [],
     age: [],
-    sex: []
+    sex: [],
+    department: []
   });
 
   const [aggregations, setAggregations] = useState<any>(baseAggregation);

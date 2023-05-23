@@ -32,7 +32,7 @@ export function ChartLineHeader() {
     if (isAggregated) {
       aggregation = baseAggregation;
     } else {
-      if (['sex', 'death_location'].includes(aggregateField)) {
+      if (['sex', 'death_location', 'department'].includes(aggregateField)) {
         aggregation = {
           aggregated_parent: {
             terms: {
@@ -151,6 +151,9 @@ export function ChartLineHeader() {
           <MenuList>
             <MenuItem onClick={() => handleLegendChange('sex')}>Sexe</MenuItem>
             <MenuItem onClick={() => handleLegendChange('age')}>Ages</MenuItem>
+            <MenuItem onClick={() => handleLegendChange('department')}>
+              Départements
+            </MenuItem>
             <MenuItem onClick={() => handleLegendChange('death_location')}>
               Lieu de décès
             </MenuItem>

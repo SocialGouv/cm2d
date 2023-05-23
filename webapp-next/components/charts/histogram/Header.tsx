@@ -120,6 +120,11 @@ export function ChartHistogramHeader() {
               Lieu de décès
             </Text>
           </MenuItem>
+          <MenuItem onClick={() => handleXAxisChange('department')}>
+            <Text as={aggregateX === 'department' ? 'b' : 'span'}>
+              Départements
+            </Text>
+          </MenuItem>
           <MenuItem onClick={() => handleXAxisChange('months')}>
             <Text as={aggregateX === 'months' ? 'b' : 'span'}>Périodes</Text>
           </MenuItem>

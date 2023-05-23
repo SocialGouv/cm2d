@@ -22,7 +22,7 @@ export const ChartLine = (props: Props) => {
           let label = 'nombre de décès';
 
           if (ds.label) {
-            label = ds.label;
+            label = ds.label.toString();
           }
 
           return {

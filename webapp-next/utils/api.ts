@@ -63,6 +63,26 @@ export function useCauses() {
   };
 }
 
+export function useDepartments() {
+  const params = {
+    index: 'cm2d_departments'
+  };
+
+  const { data, error } = useSWR(
+    `/api/elk?${new URLSearchParams(params)}`,
+    async function (input: RequestInfo, init?: RequestInit) {
+      const res = await fetch(input, init);
+      return superJSONParse<any>(stringify(await res.json()));
+    }
+  );
+
+  return {
+    data,
+    isError: error,
+    isLoading: !error && !data
+  };
+}
+
 export function useData(filters: Filters, aggregations: any) {
   const params = {
     index: 'cm2d_certificate',
