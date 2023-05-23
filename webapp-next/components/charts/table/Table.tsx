@@ -1,13 +1,15 @@
 import { Cm2dContext } from '@/utils/cm2d-provider';
 import { dateToMonthYear, isStringContainingDate } from '@/utils/tools';
 import {
+  Tag,
   Table,
   TableContainer,
   Tbody,
   Td,
   Th,
   Thead,
-  Tr
+  Tr,
+  Tooltip
 } from '@chakra-ui/react';
 import { useContext } from 'react';
 
@@ -19,6 +21,7 @@ type Props = {
 
 export const ChartTable = (props: Props) => {
   const context = useContext(Cm2dContext);
+  const minimumForNC = 2;
 
   if (!context) {
     throw new Error('Menu must be used within a Cm2dProvider');
@@ -29,18 +32,38 @@ export const ChartTable = (props: Props) => {
 
   if (!datasets[0]) return <>...</>;
 
-  const nbCols = datasets[0].hits.length;
+  const availableKeys: string[] = datasets
+    .reduce((acc: string[], ds) => {
+      ds.hits.forEach((h: any) => {
+        if (acc.indexOf(h.key) === -1) {
+          acc.push(h.key);
+        }
+      });
+      return acc;
+    }, [])
+    .sort();
+
+  const NCTag = () => {
+    return (
+      <Tooltip
+        label="Cette information est insuffisante pour être affichée afin de prévenir toute possibilité de réidentification."
+        aria-label="nc tooltip"
+      >
+        <Tag size="xs" fontSize="xs" p={1} colorScheme="neutral" cursor="help">
+          NC
+        </Tag>
+      </Tooltip>
+    );
+  };
 
   return (
     <TableContainer textTransform="capitalize" w="calc(100vw - 28rem)">
       <Table id={id} variant="primary" key={JSON.stringify(aggregations)}>
         <Thead>
           <Th></Th>
-          {datasets[0].hits.map(h => (
-            <Th key={`head-${h.label}`}>
-              {isStringContainingDate(h.key)
-                ? dateToMonthYear(new Date(h.key))
-                : h.key}
+          {availableKeys.map(ak => (
+            <Th key={`head-${ak}`}>
+              {isStringContainingDate(ak) ? dateToMonthYear(new Date(ak)) : ak}
             </Th>
           ))}
           <Th>Total</Th>
@@ -49,32 +72,53 @@ export const ChartTable = (props: Props) => {
           {datasets.map(ds => (
             <Tr key={ds.label}>
               <Td>{ds.label}</Td>
-              {ds.hits.map(h => (
-                <Td key={`${ds.label}-${h.key}`}>{h.doc_count}</Td>
-              ))}
+              {availableKeys.map((ak, index) => {
+                const hit = ds.hits.find(h => h.key === ak);
+                if (!hit)
+                  return (
+                    <Td key={`${ds.label}-${index}`}>
+                      <NCTag />
+                    </Td>
+                  );
+                return (
+                  <Td key={`${ds.label}-${hit.key}`}>
+                    {hit.doc_count < minimumForNC ? <NCTag /> : hit.doc_count}
+                  </Td>
+                );
+              })}
               <Td>
-                {ds.hits.reduce((acc, current) => acc + current.doc_count, 0)}
+                {ds.hits.reduce(
+                  (acc, current) =>
+                    acc +
+                    (current.doc_count < minimumForNC ? 0 : current.doc_count),
+                  0
+                )}
               </Td>
             </Tr>
           ))}
           <Tr>
             <Td>Total</Td>
-            {Array(nbCols)
-              .fill(0)
-              .map((zero, index) => (
-                <Td key={index}>
-                  {datasets.reduce(
-                    (acc, current) => acc + current.hits[index].doc_count,
-                    0
-                  )}
-                </Td>
-              ))}
+            {availableKeys.map(ak => (
+              <Td key={`total-${ak}`}>
+                {datasets.reduce((acc, current) => {
+                  const hit = current.hits.find(h => h.key === ak);
+                  if (!hit) return acc;
+                  return (
+                    acc + (hit.doc_count < minimumForNC ? 0 : hit.doc_count)
+                  );
+                }, 0)}
+              </Td>
+            ))}
             <Td>
               {datasets.reduce(
                 (acc, current) =>
                   acc +
                   current.hits.reduce(
-                    (acc2, current2) => acc2 + current2.doc_count,
+                    (acc2, current2) =>
+                      acc2 +
+                      (current2.doc_count < minimumForNC
+                        ? 0
+                        : current2.doc_count),
                     0
                   ),
                 0

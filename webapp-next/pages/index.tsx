@@ -3,11 +3,7 @@ import { ChartLine } from '@/components/charts/line/Line';
 import { ChartTable } from '@/components/charts/table/Table';
 import { useData } from '@/utils/api';
 import { Cm2dContext } from '@/utils/cm2d-provider';
-import {
-  dateToMonthYear,
-  departmentRefs,
-  isStringContainingDate
-} from '@/utils/tools';
+import { departmentRefs, isStringContainingDate } from '@/utils/tools';
 import { Box, Flex, Spinner, Text } from '@chakra-ui/react';
 import 'chart.js/auto';
 import 'chartjs-adapter-moment';
@@ -127,7 +123,7 @@ export default function Home() {
     <Flex
       flexDir={'column'}
       pt={8}
-      pb={20}
+      pb={['table'].includes(view) ? 6 : 20}
       px={6}
       borderRadius={16}
       bg="white"
