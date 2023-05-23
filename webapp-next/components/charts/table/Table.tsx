@@ -21,7 +21,7 @@ type Props = {
 
 export const ChartTable = (props: Props) => {
   const context = useContext(Cm2dContext);
-  const minimumForNC = 2;
+  const minimumForNC = 5;
 
   if (!context) {
     throw new Error('Menu must be used within a Cm2dProvider');
@@ -82,7 +82,7 @@ export const ChartTable = (props: Props) => {
                   );
                 return (
                   <Td key={`${ds.label}-${hit.key}`}>
-                    {hit.doc_count < minimumForNC ? <NCTag /> : hit.doc_count}
+                    {hit.doc_count <= minimumForNC ? <NCTag /> : hit.doc_count}
                   </Td>
                 );
               })}
@@ -90,7 +90,7 @@ export const ChartTable = (props: Props) => {
                 {ds.hits.reduce(
                   (acc, current) =>
                     acc +
-                    (current.doc_count < minimumForNC ? 0 : current.doc_count),
+                    (current.doc_count <= minimumForNC ? 0 : current.doc_count),
                   0
                 )}
               </Td>
@@ -104,7 +104,7 @@ export const ChartTable = (props: Props) => {
                   const hit = current.hits.find(h => h.key === ak);
                   if (!hit) return acc;
                   return (
-                    acc + (hit.doc_count < minimumForNC ? 0 : hit.doc_count)
+                    acc + (hit.doc_count <= minimumForNC ? 0 : hit.doc_count)
                   );
                 }, 0)}
               </Td>
@@ -116,7 +116,7 @@ export const ChartTable = (props: Props) => {
                   current.hits.reduce(
                     (acc2, current2) =>
                       acc2 +
-                      (current2.doc_count < minimumForNC
+                      (current2.doc_count <= minimumForNC
                         ? 0
                         : current2.doc_count),
                     0
