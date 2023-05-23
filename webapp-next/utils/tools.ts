@@ -1,4 +1,4 @@
-import { Filters } from './cm2d-provider';
+import { Filters, View } from './cm2d-provider';
 import { format } from 'date-fns';
 
 export const departmentRefs = {
@@ -33,6 +33,16 @@ export function getLabelFromElkField(key: string): string {
 
   return key;
 }
+
+export const getLabelFromKey = (key: string): string => {
+  if (isStringContainingDate(key))
+    return new Date(key).getFullYear().toString();
+
+  if (key in departmentRefs)
+    return `${departmentRefs[key as keyof typeof departmentRefs]} (${key})`;
+
+  return key;
+};
 
 export function transformFilters(filters: Filters): any[] {
   const transformed: any[] = [];
@@ -99,6 +109,47 @@ export function transformFilters(filters: Filters): any[] {
   }
 
   return transformed;
+}
+
+export function getViewDatasets(data: any, view: View): any {
+  if (view === 'line') {
+    if (data.result.aggregations.aggregated_date) {
+      return [{ hits: data.result.aggregations.aggregated_date.buckets }];
+    } else if (data.result.aggregations.aggregated_parent) {
+      return data.result.aggregations.aggregated_parent.buckets
+        .map((apb: any) => ({
+          hits: apb.aggregated_date.buckets,
+          label: getLabelFromKey(apb.key)
+        }))
+        .filter((apb: any) => !!apb.hits.length);
+    }
+  }
+
+  if (view === 'table') {
+    if (
+      data.result.aggregations.aggregated_x &&
+      data.result.aggregations.aggregated_x.buckets[0].aggregated_y
+    ) {
+      return data.result.aggregations.aggregated_x.buckets
+        .map((apb: any) => ({
+          hits: apb.aggregated_y.buckets.filter((b: any) => !!b.doc_count),
+          label: getLabelFromKey(apb.key)
+        }))
+        .filter((apb: any) => !!apb.hits.length);
+    }
+  }
+
+  if (view === 'histogram') {
+    if (data.result.aggregations.aggregated_x) {
+      return [
+        {
+          hits: data.result.aggregations.aggregated_x.buckets.filter(
+            (b: any) => !!b.doc_count
+          )
+        }
+      ];
+    }
+  }
 }
 
 export function ISODateToMonthYear(isoDateString: string): string {

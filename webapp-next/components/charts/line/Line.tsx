@@ -1,5 +1,5 @@
 import { lineProps } from '@/utils/chartjs/props';
-import { dateToDayMonth, dateToWeekYear, getRandomColor } from '@/utils/tools';
+import { dateToWeekYear, getRandomColor } from '@/utils/tools';
 import { ScriptableContext } from 'chart.js';
 import { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
