@@ -117,6 +117,11 @@ export function transformFilters(filters: Filters): any[] {
   return transformed;
 }
 
+export function isNC(count: number): boolean {
+  const minimumForNC = 5;
+  return count !== 0 && count <= minimumForNC;
+}
+
 export function getViewDatasets(data: any, view: View): { hits: any[] }[] {
   if (view === 'line') {
     if (data.result.aggregations.aggregated_date) {

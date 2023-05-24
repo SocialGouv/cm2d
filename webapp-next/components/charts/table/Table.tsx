@@ -1,5 +1,5 @@
 import { Cm2dContext } from '@/utils/cm2d-provider';
-import { getLabelFromKey } from '@/utils/tools';
+import { getLabelFromKey, isNC } from '@/utils/tools';
 import {
   Table,
   TableContainer,
@@ -16,19 +16,17 @@ import { useContext } from 'react';
 type Props = {
   id: string;
   datasets: { hits: any[]; label?: string }[];
-  rowsLabel: string;
 };
 
 export const ChartTable = (props: Props) => {
   const context = useContext(Cm2dContext);
-  const minimumForNC = 5;
 
   if (!context) {
     throw new Error('Menu must be used within a Cm2dProvider');
   }
 
   const { aggregations } = context;
-  const { datasets, rowsLabel, id } = props;
+  const { datasets, id } = props;
 
   if (!datasets[0]) return <>...</>;
 
@@ -72,23 +70,17 @@ export const ChartTable = (props: Props) => {
               <Td>{ds.label}</Td>
               {availableKeys.map((ak, index) => {
                 const hit = ds.hits.find(h => h.key === ak);
-                if (!hit)
-                  return (
-                    <Td key={`${ds.label}-${index}`}>
-                      <NCTag />
-                    </Td>
-                  );
+                if (!hit) return <Td key={`${ds.label}-${index}`}>0</Td>;
                 return (
                   <Td key={`${ds.label}-${hit.key}`}>
-                    {hit.doc_count <= minimumForNC ? <NCTag /> : hit.doc_count}
+                    {isNC(hit.doc_count) ? <NCTag /> : hit.doc_count}
                   </Td>
                 );
               })}
               <Td>
                 {ds.hits.reduce(
                   (acc, current) =>
-                    acc +
-                    (current.doc_count <= minimumForNC ? 0 : current.doc_count),
+                    acc + (isNC(current.doc_count) ? 0 : current.doc_count),
                   0
                 )}
               </Td>
@@ -101,9 +93,7 @@ export const ChartTable = (props: Props) => {
                 {datasets.reduce((acc, current) => {
                   const hit = current.hits.find(h => h.key === ak);
                   if (!hit) return acc;
-                  return (
-                    acc + (hit.doc_count <= minimumForNC ? 0 : hit.doc_count)
-                  );
+                  return acc + (isNC(hit.doc_count) ? 0 : hit.doc_count);
                 }, 0)}
               </Td>
             ))}
@@ -114,9 +104,7 @@ export const ChartTable = (props: Props) => {
                   current.hits.reduce(
                     (acc2, current2) =>
                       acc2 +
-                      (current2.doc_count <= minimumForNC
-                        ? 0
-                        : current2.doc_count),
+                      (isNC(current2.doc_count) ? 0 : current2.doc_count),
                     0
                   ),
                 0

@@ -109,10 +109,18 @@ export function FiltersShortcut() {
             let value = `à partir de ${ISODateToMonthYear(
               filters[key] as string
             )}`;
-            if (filters['end_date'])
-              value = `de ${ISODateToMonthYear(
-                filters[key] as string
-              )} à ${ISODateToMonthYear(filters['end_date'])}`;
+            if (filters['end_date']) {
+              if (
+                ISODateToMonthYear(filters[key] as string) ===
+                ISODateToMonthYear(filters['end_date'])
+              ) {
+                value = `${ISODateToMonthYear(filters[key] as string)}`;
+              } else {
+                value = `de ${ISODateToMonthYear(
+                  filters[key] as string
+                )} à ${ISODateToMonthYear(filters['end_date'])}`;
+              }
+            }
             return (
               <CustomTag
                 key={`date-${filters['start_date']}`}

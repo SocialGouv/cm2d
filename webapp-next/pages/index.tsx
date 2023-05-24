@@ -92,15 +92,13 @@ export default function Home() {
   const ChartDisplay = () => {
     switch (view) {
       case 'line':
-        return <ChartLine id="line-example" datasets={datasets} />;
+        return <ChartLine id="line-cm2d" datasets={datasets} />;
       case 'table':
-        return (
-          <ChartTable id="table-example" rowsLabel="Sexe" datasets={datasets} />
-        );
+        return <ChartTable id="table-cm2d" datasets={datasets} />;
       case 'histogram':
-        return <ChartHistogram id="histogram-example" datasets={datasets} />;
+        return <ChartHistogram id="histogram-cm2d" datasets={datasets} />;
       case 'doughnut':
-        return <ChartDoughnut id="doughnut-example" datasets={datasets} />;
+        return <ChartDoughnut id="doughnut-cm2d" datasets={datasets} />;
       default:
         return <>Pas de dataviz configurée pour cette vue</>;
     }
