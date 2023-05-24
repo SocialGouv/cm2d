@@ -1,9 +1,14 @@
 import { ChartHistogram } from '@/components/charts/histogram/Histogram';
 import { ChartLine } from '@/components/charts/line/Line';
 import { ChartTable } from '@/components/charts/table/Table';
+import { ClosableAlert } from '@/components/layouts/ClosableAlert';
 import { useData } from '@/utils/api';
 import { Cm2dContext } from '@/utils/cm2d-provider';
-import { getViewDatasets } from '@/utils/tools';
+import {
+  getSixMonthAgoDate,
+  getViewDatasets,
+  isRangeContainsLastSixMonths
+} from '@/utils/tools';
 import { Box, Flex, Spinner, Text } from '@chakra-ui/react';
 import 'chart.js/auto';
 import 'chartjs-adapter-moment';
@@ -95,22 +100,39 @@ export default function Home() {
   };
 
   return (
-    <Flex
-      flexDir={'column'}
-      pt={8}
-      pb={['table'].includes(view) ? 6 : 20}
-      px={6}
-      borderRadius={16}
-      bg="white"
-      w="full"
-      boxShadow="0px 8px 15px -4px rgba(36, 108, 249, 0.08), 0px 4px 6px -2px rgba(36, 108, 249, 0.08);"
-    >
-      <Box maxH={['line', 'histogram'].includes(view) ? '30rem' : 'auto'}>
-        <Text as="h2" fontSize="2xl" fontWeight={700} mb={6}>
-          {title.charAt(0).toUpperCase() + title.substring(1)}
-        </Text>
-        <ChartDisplay />
-      </Box>
+    <Flex flexDir="column">
+      {isRangeContainsLastSixMonths(filters.start_date, filters.end_date) && (
+        <ClosableAlert
+          status="warning"
+          mb={8}
+          content={
+            <>
+              Attention : veuillez prendre en compte que les données ne sont pas
+              consolidées pour les dates ultérieures au {getSixMonthAgoDate()}.
+              <br />
+              En conséquence, l&apos;exactitude de toute information postérieure
+              à cette date ne peut être garantie.
+            </>
+          }
+        />
+      )}
+      <Flex
+        flexDir={'column'}
+        pt={8}
+        pb={['table'].includes(view) ? 6 : 20}
+        px={6}
+        borderRadius={16}
+        bg="white"
+        w="full"
+        boxShadow="0px 8px 15px -4px rgba(36, 108, 249, 0.08), 0px 4px 6px -2px rgba(36, 108, 249, 0.08);"
+      >
+        <Box maxH={['line', 'histogram'].includes(view) ? '30rem' : 'auto'}>
+          <Text as="h2" fontSize="2xl" fontWeight={700} mb={6}>
+            {title.charAt(0).toUpperCase() + title.substring(1)}
+          </Text>
+          <ChartDisplay />
+        </Box>
+      </Flex>
     </Flex>
   );
 }

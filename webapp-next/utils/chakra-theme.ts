@@ -119,6 +119,23 @@ const CM2DButton: ComponentStyleConfig = {
   }
 };
 
+const CM2DAlert: ComponentStyleConfig = {
+  baseStyle: {
+    container: {
+      borderRadius: 'lg',
+      bg: 'highlight.50',
+      color: 'orange.500'
+    },
+    description: {
+      fontWeight: 500
+    },
+    icon: {
+      bg: 'highlight.50',
+      color: 'highlight.500'
+    }
+  }
+};
+
 const theme = extendTheme({
   colors,
   fonts: {
@@ -128,7 +145,8 @@ const theme = extendTheme({
   components: {
     Input: CM2DInput,
     Button: CM2DButton,
-    Table: CM2DTable
+    Table: CM2DTable,
+    Alert: CM2DAlert
   }
 });
 

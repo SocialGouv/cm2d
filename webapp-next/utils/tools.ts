@@ -1,5 +1,6 @@
 import { Filters, View } from './cm2d-provider';
 import { format } from 'date-fns';
+import moment from 'moment';
 
 export const departmentRefs = {
   '75': 'Paris',
@@ -226,4 +227,36 @@ export function isStringContainingDate(str: string): boolean {
   }
 
   return false;
+}
+
+export function isRangeContainsLastSixMonths(
+  startDate?: string,
+  endDate?: string
+): boolean {
+  if (!startDate) return true;
+
+  const now = moment();
+  const sixMonthsAgo = moment().subtract(6, 'months');
+
+  const start = new Date(startDate);
+  let end;
+
+  if (!endDate) {
+    end = now.toDate();
+  } else {
+    end = new Date(endDate);
+  }
+
+  const startMoment = moment(start);
+  const endMoment = moment(end);
+
+  return (
+    (startMoment.isSameOrBefore(sixMonthsAgo) &&
+      endMoment.isSameOrAfter(sixMonthsAgo)) ||
+    (startMoment.isAfter(sixMonthsAgo) && startMoment.isSameOrBefore(now))
+  );
+}
+
+export function getSixMonthAgoDate() {
+  return moment().subtract(6, 'months').format('DD/MM/YYYY');
 }
