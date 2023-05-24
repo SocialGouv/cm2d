@@ -16,7 +16,6 @@ import { useContext } from 'react';
 type Props = {
   id: string;
   datasets: { hits: any[]; label?: string }[];
-  rowsLabel: string;
 };
 
 export const ChartTable = (props: Props) => {
@@ -27,7 +26,7 @@ export const ChartTable = (props: Props) => {
   }
 
   const { aggregations } = context;
-  const { datasets, rowsLabel, id } = props;
+  const { datasets, id } = props;
 
   if (!datasets[0]) return <>...</>;
 
