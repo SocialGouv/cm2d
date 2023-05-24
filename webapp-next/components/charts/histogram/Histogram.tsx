@@ -1,9 +1,5 @@
 import { histogramProps } from '@/utils/chartjs/props';
-import {
-  dateToMonthYear,
-  getLabelFromKey,
-  isStringContainingDate
-} from '@/utils/tools';
+import { getLabelFromKey } from '@/utils/tools';
 import { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 

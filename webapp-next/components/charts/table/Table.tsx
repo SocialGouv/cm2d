@@ -1,19 +1,15 @@
 import { Cm2dContext } from '@/utils/cm2d-provider';
+import { getLabelFromKey } from '@/utils/tools';
 import {
-  dateToMonthYear,
-  getLabelFromKey,
-  isStringContainingDate
-} from '@/utils/tools';
-import {
-  Tag,
   Table,
   TableContainer,
+  Tag,
   Tbody,
   Td,
   Th,
   Thead,
-  Tr,
-  Tooltip
+  Tooltip,
+  Tr
 } from '@chakra-ui/react';
 import { useContext } from 'react';
 
@@ -66,11 +62,7 @@ export const ChartTable = (props: Props) => {
         <Thead>
           <Th></Th>
           {availableKeys.map(ak => (
-            <Th key={`head-${ak}`}>
-              {isStringContainingDate(ak)
-                ? dateToMonthYear(new Date(ak))
-                : getLabelFromKey(ak)}
-            </Th>
+            <Th key={`head-${ak}`}>{getLabelFromKey(ak, 'month')}</Th>
           ))}
           <Th>Total</Th>
         </Thead>

@@ -35,9 +35,14 @@ export function getLabelFromElkField(key: string): string {
   return key;
 }
 
-export const getLabelFromKey = (key: string): string => {
+export const getLabelFromKey = (
+  key: string,
+  dateFormat: 'year' | 'month' = 'year'
+): string => {
   if (isStringContainingDate(key))
-    return new Date(key).getFullYear().toString();
+    return dateFormat === 'year'
+      ? new Date(key).getFullYear().toString()
+      : dateToMonthYear(new Date(key));
 
   if (key in departmentRefs)
     return `${departmentRefs[key as keyof typeof departmentRefs]} (${key})`;
@@ -134,7 +139,7 @@ export function getViewDatasets(data: any, view: View): { hits: any[] }[] {
       return data.result.aggregations.aggregated_x.buckets
         .map((apb: any) => ({
           hits: apb.aggregated_y.buckets.filter((b: any) => !!b.doc_count),
-          label: getLabelFromKey(apb.key)
+          label: getLabelFromKey(apb.key, 'month')
         }))
         .filter((apb: any) => !!apb.hits.length);
     }

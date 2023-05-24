@@ -1,12 +1,7 @@
 import { doughnutProps } from '@/utils/chartjs/props';
-import {
-  dateToMonthYear,
-  getLabelFromKey,
-  getRandomColor,
-  isStringContainingDate
-} from '@/utils/tools';
+import { getLabelFromKey } from '@/utils/tools';
 import { useEffect, useState } from 'react';
-import { Bar, Doughnut } from 'react-chartjs-2';
+import { Doughnut } from 'react-chartjs-2';
 
 type Props = {
   id: string;
