@@ -25,16 +25,10 @@ with open('sample_data.csv', mode='w', newline='') as csv_file:
 
     writer.writeheader()
 
-    for i in range(200):
+    for i in range(100000):
         row = {}
-        
-        if random.random() < 0.2:  # 20% chance to have multiple categories
-            row['categories_level_1'] = "[" + ",".join(random.sample(category_1, random.randint(2, len(category_1)))) + "]"
-            row['categories_level_2'] = "[" + ",".join(random.sample(category_2, random.randint(2, len(category_2)))) + "]"
-        else:
-            row['categories_level_1'] = random.choice(category_1)
-            row['categories_level_2'] = random.choice(category_2)
-
+        row['categories_level_1'] = random.choice(category_1)
+        row['categories_level_2'] = random.choice(category_2)
         row['age'] = fake.random_int(min=1, max=100)
         row['sex'] = random.choice(['homme', 'femme', 'indéterminé'])
         row['death_location'] = random.choice(['domicile', 'hopital', 'autre'])
