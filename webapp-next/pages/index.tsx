@@ -53,6 +53,30 @@ export default function Home() {
       </Box>
     );
 
+  if (!data.result.hits.total.value)
+    return (
+      <Flex
+        justifyContent="center"
+        py={12}
+        px={6}
+        borderRadius={16}
+        bg="white"
+        w="full"
+        boxShadow="0px 8px 15px -4px rgba(36, 108, 249, 0.08), 0px 4px 6px -2px rgba(36, 108, 249, 0.08);"
+      >
+        <Text role="status" textAlign="center">
+          <Text as="span" fontSize="3xl">
+            😞
+          </Text>
+          <br />
+          Aucun résultat ne correspond à ces critères.
+          <br />
+          Merci de modifier votre plage temporelle ou d&apos;ajuster les filtres
+          complémentaires.
+        </Text>
+      </Flex>
+    );
+
   let datasets: { hits: any[] }[] = getViewDatasets(data, view);
 
   const ChartDisplay = () => {
