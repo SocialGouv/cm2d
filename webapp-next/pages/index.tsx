@@ -134,7 +134,12 @@ export default function Home() {
             ['line', 'histogram', 'doughnut'].includes(view) ? '30rem' : 'auto'
           }
         >
-          <Text as="h2" fontSize="2xl" fontWeight={700} mb={6}>
+          <Text
+            as="h2"
+            fontSize="2xl"
+            fontWeight={700}
+            mb={['line', 'histogram', 'doughnut'].includes(view) ? 2 : 6}
+          >
             {title.charAt(0).toUpperCase() + title.substring(1)}
           </Text>
           <ChartDisplay />
