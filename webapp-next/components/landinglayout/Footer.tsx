@@ -19,7 +19,7 @@ export const Footer = () => {
           </NextLink>
           
           <NextLink href={"/landingpage"}>
-            <Text fontSize={["12px", "14px", "16px"]} fontWeight={500} mx={[6, 1, 2]}>Conditions générales d'utilisation</Text>
+            <Text fontSize={["12px", "14px", "16px"]} fontWeight={500} mx={[6, 1, 2]}>Conditions générales d&apos;utilisation</Text>
           </NextLink>
           
           <NextLink href={"/landingpage"}>
