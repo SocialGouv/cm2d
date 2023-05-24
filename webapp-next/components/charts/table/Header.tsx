@@ -114,6 +114,7 @@ export function ChartTableHeader() {
           <MenuItem onClick={() => handleViewChange('line')}>
             Vue courbe
           </MenuItem>
+          <MenuItem onClick={() => handleViewChange('map')}>Vue carte</MenuItem>
           <MenuItem onClick={() => handleViewChange('histogram')}>
             Vue histogramme
           </MenuItem>

@@ -5,6 +5,7 @@ import { ChartLineHeader } from './line/Header';
 import { ChartTableHeader } from './table/Header';
 import { ChartHistogramHeader } from './histogram/Header';
 import { ChartDoughnutHeader } from './doughnut/Header';
+import { ChartMapHeader } from './map/Header';
 
 export function ChartHeader() {
   const context = useContext(Cm2dContext);
@@ -25,6 +26,8 @@ export function ChartHeader() {
         return <ChartHistogramHeader />;
       case 'doughnut':
         return <ChartDoughnutHeader />;
+      case 'map':
+        return <ChartMapHeader />;
       default:
         return <>NO VIEW</>;
     }

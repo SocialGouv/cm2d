@@ -91,6 +91,7 @@ export function ChartHistogramHeader() {
           <MenuItem onClick={() => handleViewChange('line')}>
             Vue courbe
           </MenuItem>
+          <MenuItem onClick={() => handleViewChange('map')}>Vue carte</MenuItem>
           <MenuItem>
             <Text as="b">Vue histogramme</Text>
           </MenuItem>

@@ -122,7 +122,10 @@ export function isNC(count: number): boolean {
   return count !== 0 && count <= minimumForNC;
 }
 
-export function getViewDatasets(data: any, view: View): { hits: any[] }[] {
+export function getViewDatasets(
+  data: any,
+  view: View
+): { hits: any[]; label?: string; total?: number }[] {
   if (view === 'line') {
     if (data.result.aggregations.aggregated_date) {
       return [{ hits: data.result.aggregations.aggregated_date.buckets }];
@@ -150,13 +153,14 @@ export function getViewDatasets(data: any, view: View): { hits: any[] }[] {
     }
   }
 
-  if (view === 'histogram' || view === 'doughnut') {
+  if (view === 'histogram' || view === 'doughnut' || view === 'map') {
     if (data.result.aggregations.aggregated_x) {
       return [
         {
           hits: data.result.aggregations.aggregated_x.buckets.filter(
             (b: any) => !!b.doc_count
-          )
+          ),
+          total: view === 'map' ? data.result.hits.total.value : undefined
         }
       ];
     }
