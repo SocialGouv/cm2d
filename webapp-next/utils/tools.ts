@@ -24,7 +24,7 @@ const elkFields = [
   { value: 'start_date', label: 'Période' },
   { value: 'end_date', label: 'Période' },
   { value: 'years', label: 'Années' },
-  { value: 'months', label: 'Périodes' }
+  { value: 'months', label: 'Mois' }
 ];
 
 export function getLabelFromElkField(key: string): string {

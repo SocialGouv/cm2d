@@ -152,7 +152,7 @@ export function ChartTableHeader() {
             </Text>
           </MenuItem>
           <MenuItem onClick={() => handleXAxisChange('months')}>
-            <Text as={aggregateX === 'months' ? 'b' : 'span'}>Périodes</Text>
+            <Text as={aggregateX === 'months' ? 'b' : 'span'}>Mois</Text>
           </MenuItem>
         </MenuList>
       </Menu>
@@ -183,7 +183,7 @@ export function ChartTableHeader() {
             </Text>
           </MenuItem>
           <MenuItem onClick={() => handleYAxisChange('months')}>
-            <Text as={aggregateY === 'months' ? 'b' : 'span'}>Période</Text>
+            <Text as={aggregateY === 'months' ? 'b' : 'span'}>Mois</Text>
           </MenuItem>
         </MenuList>
       </Menu>
