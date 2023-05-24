@@ -35,6 +35,7 @@ export function FilterDates() {
   return (
     <DatePicker
       selected={startDate}
+      maxDate={new Date()}
       onChange={(dates: [Date, Date]) => {
         const [start, end] = dates;
         setStartDate(start);
@@ -42,7 +43,6 @@ export function FilterDates() {
       }}
       className={startDate && endDate ? 'has-value' : ''}
       wrapperClassName={startDate && endDate ? 'has-value' : ''}
-      selectsStart
       startDate={startDate}
       endDate={endDate}
       dateFormat="MM/yyyy"
