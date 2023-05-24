@@ -1,5 +1,5 @@
 import { ChartOptions } from 'chart.js';
-import { verticalLegendPlugin } from './utils';
+import { legendSpacingPlugin, verticalLegendPlugin } from './utils';
 
 export const lineProps: { options: ChartOptions<'line'>; plugins: any[] } = {
   options: {
@@ -8,6 +8,18 @@ export const lineProps: { options: ChartOptions<'line'>; plugins: any[] } = {
     plugins: {
       filler: {
         propagate: false
+      },
+      legend: {
+        position: 'top',
+        align: 'end',
+        labels: {
+          font: {
+            size: 14
+          },
+          padding: 20,
+          usePointStyle: true,
+          pointStyle: 'circle'
+        }
       }
     },
     interaction: {
@@ -39,7 +51,7 @@ export const lineProps: { options: ChartOptions<'line'>; plugins: any[] } = {
       }
     }
   },
-  plugins: [verticalLegendPlugin]
+  plugins: [verticalLegendPlugin, legendSpacingPlugin]
 };
 
 export const histogramProps: {
@@ -50,6 +62,20 @@ export const histogramProps: {
     responsive: true,
     maintainAspectRatio: false,
     barThickness: 50,
+    plugins: {
+      legend: {
+        position: 'top',
+        align: 'end',
+        labels: {
+          font: {
+            size: 14
+          },
+          padding: 20,
+          usePointStyle: true,
+          pointStyle: 'circle'
+        }
+      }
+    },
     scales: {
       x: {
         grid: {
@@ -64,7 +90,7 @@ export const histogramProps: {
       }
     }
   },
-  plugins: []
+  plugins: [legendSpacingPlugin]
 };
 
 export const doughnutProps: {
@@ -74,7 +100,24 @@ export const doughnutProps: {
   options: {
     responsive: true,
     maintainAspectRatio: false,
+    plugins: {
+      filler: {
+        propagate: false
+      },
+      legend: {
+        position: 'top',
+        align: 'end',
+        labels: {
+          font: {
+            size: 14
+          },
+          padding: 20,
+          usePointStyle: true,
+          pointStyle: 'circle'
+        }
+      }
+    },
     cutout: 140
   },
-  plugins: []
+  plugins: [legendSpacingPlugin]
 };
