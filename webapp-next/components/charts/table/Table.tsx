@@ -66,7 +66,11 @@ export const ChartTable = (props: Props) => {
         <Thead>
           <Th></Th>
           {availableKeys.map(ak => (
-            <Th key={`head-${ak}`}>{getLabelFromKey(ak)}</Th>
+            <Th key={`head-${ak}`}>
+              {isStringContainingDate(ak)
+                ? dateToMonthYear(new Date(ak))
+                : getLabelFromKey(ak)}
+            </Th>
           ))}
           <Th>Total</Th>
         </Thead>
