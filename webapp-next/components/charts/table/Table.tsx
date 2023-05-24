@@ -1,5 +1,9 @@
 import { Cm2dContext } from '@/utils/cm2d-provider';
-import { dateToMonthYear, isStringContainingDate } from '@/utils/tools';
+import {
+  dateToMonthYear,
+  getLabelFromKey,
+  isStringContainingDate
+} from '@/utils/tools';
 import {
   Tag,
   Table,
@@ -62,9 +66,7 @@ export const ChartTable = (props: Props) => {
         <Thead>
           <Th></Th>
           {availableKeys.map(ak => (
-            <Th key={`head-${ak}`}>
-              {isStringContainingDate(ak) ? dateToMonthYear(new Date(ak)) : ak}
-            </Th>
+            <Th key={`head-${ak}`}>{getLabelFromKey(ak)}</Th>
           ))}
           <Th>Total</Th>
         </Thead>

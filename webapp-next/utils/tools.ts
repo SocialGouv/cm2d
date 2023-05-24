@@ -140,7 +140,7 @@ export function getViewDatasets(data: any, view: View): { hits: any[] }[] {
     }
   }
 
-  if (view === 'histogram') {
+  if (view === 'histogram' || view === 'doughnut') {
     if (data.result.aggregations.aggregated_x) {
       return [
         {

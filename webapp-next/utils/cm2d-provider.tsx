@@ -36,7 +36,7 @@ type Cm2dProviderProps = {
   children: ReactNode;
 };
 
-export type View = 'line' | 'histogram' | 'table';
+export type View = 'line' | 'histogram' | 'table' | 'doughnut';
 
 export const baseAggregation = {
   aggregated_date: {

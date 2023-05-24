@@ -4,6 +4,7 @@ import { ReactNode, useContext } from 'react';
 import { ChartLineHeader } from './line/Header';
 import { ChartTableHeader } from './table/Header';
 import { ChartHistogramHeader } from './histogram/Header';
+import { ChartDoughnutHeader } from './doughnut/Header';
 
 export function ChartHeader() {
   const context = useContext(Cm2dContext);
@@ -22,6 +23,8 @@ export function ChartHeader() {
         return <ChartTableHeader />;
       case 'histogram':
         return <ChartHistogramHeader />;
+      case 'doughnut':
+        return <ChartDoughnutHeader />;
       default:
         return <>NO VIEW</>;
     }

@@ -1,18 +1,19 @@
-import { histogramProps } from '@/utils/chartjs/props';
+import { doughnutProps } from '@/utils/chartjs/props';
 import {
   dateToMonthYear,
   getLabelFromKey,
+  getRandomColor,
   isStringContainingDate
 } from '@/utils/tools';
 import { useEffect, useState } from 'react';
-import { Bar } from 'react-chartjs-2';
+import { Bar, Doughnut } from 'react-chartjs-2';
 
 type Props = {
   id: string;
   datasets: { hits: any[]; label?: string }[];
 };
 
-export const ChartHistogram = (props: Props) => {
+export const ChartDoughnut = (props: Props) => {
   const { datasets, id } = props;
   const [displayDatasets, setDisplayDatasets] = useState<any[]>([]);
 
@@ -31,7 +32,6 @@ export const ChartHistogram = (props: Props) => {
             label: label.charAt(0).toUpperCase() + label.substring(1),
             data: yValues,
             fill: true,
-            backgroundColor: '#246CF9',
             borderRadius: 10
           };
         })
@@ -46,13 +46,13 @@ export const ChartHistogram = (props: Props) => {
   });
 
   return (
-    <Bar
+    <Doughnut
       id={id}
       data={{
         labels: xValues,
         datasets: displayDatasets
       }}
-      {...histogramProps}
+      {...doughnutProps}
     />
   );
 };

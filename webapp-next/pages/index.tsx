@@ -1,3 +1,4 @@
+import { ChartDoughnut } from '@/components/charts/doughnut/Doughnut';
 import { ChartHistogram } from '@/components/charts/histogram/Histogram';
 import { ChartLine } from '@/components/charts/line/Line';
 import { ChartTable } from '@/components/charts/table/Table';
@@ -94,6 +95,8 @@ export default function Home() {
         );
       case 'histogram':
         return <ChartHistogram id="histogram-example" datasets={datasets} />;
+      case 'doughnut':
+        return <ChartDoughnut id="doughnut-example" datasets={datasets} />;
       default:
         return <>Pas de dataviz configurée pour cette vue</>;
     }
@@ -126,7 +129,11 @@ export default function Home() {
         w="full"
         boxShadow="0px 8px 15px -4px rgba(36, 108, 249, 0.08), 0px 4px 6px -2px rgba(36, 108, 249, 0.08);"
       >
-        <Box maxH={['line', 'histogram'].includes(view) ? '30rem' : 'auto'}>
+        <Box
+          maxH={
+            ['line', 'histogram', 'doughnut'].includes(view) ? '30rem' : 'auto'
+          }
+        >
           <Text as="h2" fontSize="2xl" fontWeight={700} mb={6}>
             {title.charAt(0).toUpperCase() + title.substring(1)}
           </Text>

@@ -41,11 +41,11 @@ export function ChartHistogramHeader() {
       };
     }
 
-    if (aggregateX === 'months') {
+    if (aggregateX === 'years') {
       xAgg = {
         date_histogram: {
           field: 'date',
-          calendar_interval: 'month'
+          calendar_interval: 'year'
         }
       };
     }
@@ -94,6 +94,9 @@ export function ChartHistogramHeader() {
           <MenuItem>
             <Text as="b">Vue histogramme</Text>
           </MenuItem>
+          <MenuItem onClick={() => handleViewChange('doughnut')}>
+            Vue donut
+          </MenuItem>
           <MenuItem onClick={() => handleViewChange('table')}>
             Vue tableau
           </MenuItem>
@@ -125,8 +128,8 @@ export function ChartHistogramHeader() {
               Départements
             </Text>
           </MenuItem>
-          <MenuItem onClick={() => handleXAxisChange('months')}>
-            <Text as={aggregateX === 'months' ? 'b' : 'span'}>Périodes</Text>
+          <MenuItem onClick={() => handleXAxisChange('years')}>
+            <Text as={aggregateX === 'years' ? 'b' : 'span'}>Années</Text>
           </MenuItem>
         </MenuList>
       </Menu>

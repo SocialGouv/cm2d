@@ -114,6 +114,9 @@ export function ChartLineHeader() {
           <MenuItem onClick={() => handleViewChange('histogram')}>
             Vue histogramme
           </MenuItem>
+          <MenuItem onClick={() => handleViewChange('doughnut')}>
+            Vue donut
+          </MenuItem>
           <MenuItem onClick={() => handleViewChange('table')}>
             Vue tableau
           </MenuItem>

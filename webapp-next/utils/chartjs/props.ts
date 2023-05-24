@@ -66,3 +66,15 @@ export const histogramProps: {
   },
   plugins: []
 };
+
+export const doughnutProps: {
+  options: ChartOptions<'doughnut'>;
+  plugins: any[];
+} = {
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    cutout: 140
+  },
+  plugins: []
+};

@@ -1,5 +1,5 @@
 import { lineProps } from '@/utils/chartjs/props';
-import { dateToWeekYear, getRandomColor } from '@/utils/tools';
+import { dateToWeekYear, getLabelFromKey, getRandomColor } from '@/utils/tools';
 import { ScriptableContext } from 'chart.js';
 import { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
@@ -22,7 +22,7 @@ export const ChartLine = (props: Props) => {
           let label = 'nombre de décès';
 
           if (ds.label) {
-            label = ds.label.toString();
+            label = getLabelFromKey(ds.label.toString());
           }
 
           return {
