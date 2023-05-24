@@ -28,7 +28,11 @@ export default function Home() {
   const { data, isLoading } = useData(filters, aggregations);
 
   const fetchNewTitle = async () => {
-    setTitle(filters.categories_level_1[0] || 'Nombre de décès');
+    setTitle(
+      filters.categories_level_1[0]
+        ? `Nombre de décès par ${filters.categories_level_1[0]}`
+        : 'Nombre de décès'
+    );
     // setTitle('...');
     // const res = await fetch('/api/chat', {
     //   method: 'POST',
