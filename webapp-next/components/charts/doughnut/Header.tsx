@@ -1,5 +1,5 @@
 import { ageRanges } from '@/components/layouts/Menu';
-import { Cm2dContext, View, baseAggregation } from '@/utils/cm2d-provider';
+import { Cm2dContext, View } from '@/utils/cm2d-provider';
 import { getLabelFromElkField } from '@/utils/tools';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import {
@@ -14,7 +14,7 @@ import {
 import NextImage from 'next/image';
 import { useContext, useEffect, useState } from 'react';
 
-export function ChartTableHeader() {
+export function ChartDoughnutHeader() {
   const context = useContext(Cm2dContext);
 
   if (!context) {
@@ -24,7 +24,6 @@ export function ChartTableHeader() {
   const { setAggregations, setView } = context;
 
   const [aggregateX, setAggregateX] = useState<string>('sex');
-  const [aggregateY, setAggregateY] = useState<string>('age');
 
   const updateAggregation = () => {
     let xAgg: any = {
@@ -32,64 +31,42 @@ export function ChartTableHeader() {
         field: aggregateX
       }
     };
-    let yAgg: any = {
-      terms: {
-        field: aggregateY
-      }
-    };
 
-    if (aggregateX === 'age' || aggregateY === 'age') {
-      const rangeAgg = {
+    if (aggregateX === 'age') {
+      xAgg = {
         range: {
-          field: 'age',
+          field: aggregateX,
           ranges: ageRanges
         }
       };
-
-      xAgg = aggregateX === 'age' ? rangeAgg : xAgg;
-      yAgg = aggregateY === 'age' ? rangeAgg : yAgg;
     }
 
-    if (aggregateX === 'months' || aggregateY === 'months') {
-      const dateAgg = {
+    if (aggregateX === 'years') {
+      xAgg = {
         date_histogram: {
           field: 'date',
-          calendar_interval: 'month'
+          calendar_interval: 'year'
         }
       };
-
-      xAgg = aggregateX === 'months' ? dateAgg : xAgg;
-      yAgg = aggregateY === 'months' ? dateAgg : yAgg;
     }
 
     setAggregations({
       aggregated_x: {
-        ...xAgg,
-        aggs: {
-          aggregated_y: {
-            ...yAgg
-          }
-        }
+        ...xAgg
       }
     });
   };
 
   useEffect(() => {
-    if (aggregateX && aggregateY) updateAggregation();
-  }, [aggregateX, aggregateY]);
+    updateAggregation();
+  }, [aggregateX]);
 
   const handleViewChange = (view: View) => {
     setView(view);
   };
 
   const handleXAxisChange = (field: string) => {
-    if (aggregateY === field) setAggregateY(aggregateX);
     setAggregateX(field);
-  };
-
-  const handleYAxisChange = (field: string) => {
-    if (aggregateX === field) setAggregateX(aggregateY);
-    setAggregateY(field);
   };
 
   return (
@@ -100,15 +77,15 @@ export function ChartTableHeader() {
           variant="light"
           leftIcon={
             <NextImage
-              src="icons/table.svg"
+              src="icons/chart-pie.svg"
               width={24}
               height={24}
-              alt="vue table"
+              alt="vue doughnut"
             />
           }
           rightIcon={<ChevronDownIcon color="primary.200" w={5} h={5} />}
         >
-          Vue : <Text as="b">Tableau</Text>
+          Vue : <Text as="b">Donut</Text>
         </MenuButton>
         <MenuList>
           <MenuItem onClick={() => handleViewChange('line')}>
@@ -117,11 +94,11 @@ export function ChartTableHeader() {
           <MenuItem onClick={() => handleViewChange('histogram')}>
             Vue histogramme
           </MenuItem>
-          <MenuItem onClick={() => handleViewChange('doughnut')}>
-            Vue donut
-          </MenuItem>
           <MenuItem>
-            <Text as="b">Vue tableau</Text>
+            <Text as="b">Vue donut</Text>
+          </MenuItem>
+          <MenuItem onClick={() => handleViewChange('table')}>
+            Vue tableau
           </MenuItem>
         </MenuList>
       </Menu>
@@ -151,39 +128,8 @@ export function ChartTableHeader() {
               Départements
             </Text>
           </MenuItem>
-          <MenuItem onClick={() => handleXAxisChange('months')}>
-            <Text as={aggregateX === 'months' ? 'b' : 'span'}>Périodes</Text>
-          </MenuItem>
-        </MenuList>
-      </Menu>
-      <Menu>
-        <MenuButton
-          ml={4}
-          as={Button}
-          variant="light"
-          rightIcon={<ChevronDownIcon color="primary.200" w={5} h={5} />}
-        >
-          Ordonnée : <Text as="b">{getLabelFromElkField(aggregateY)}</Text>
-        </MenuButton>
-        <MenuList>
-          <MenuItem onClick={() => handleYAxisChange('sex')}>
-            <Text as={aggregateY === 'sex' ? 'b' : 'span'}>Sexe</Text>
-          </MenuItem>
-          <MenuItem onClick={() => handleYAxisChange('age')}>
-            <Text as={aggregateY === 'age' ? 'b' : 'span'}>Age</Text>
-          </MenuItem>
-          <MenuItem onClick={() => handleYAxisChange('death_location')}>
-            <Text as={aggregateY === 'death_location' ? 'b' : 'span'}>
-              Lieu de décès
-            </Text>
-          </MenuItem>
-          <MenuItem onClick={() => handleYAxisChange('department')}>
-            <Text as={aggregateY === 'department' ? 'b' : 'span'}>
-              Départements
-            </Text>
-          </MenuItem>
-          <MenuItem onClick={() => handleYAxisChange('months')}>
-            <Text as={aggregateY === 'months' ? 'b' : 'span'}>Période</Text>
+          <MenuItem onClick={() => handleXAxisChange('years')}>
+            <Text as={aggregateX === 'years' ? 'b' : 'span'}>Années</Text>
           </MenuItem>
         </MenuList>
       </Menu>
