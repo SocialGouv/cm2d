@@ -33,7 +33,7 @@ const BlockGaleryimages: React.FC<Imagescontents> = ({ Imagescontent }) => {
 
       <Wrap justify="center" w={"full"}>
         {Imagescontent.map((image, index) => (
-          <WrapItem>
+          <WrapItem key={index}>
             <Box mt={10} mx={[5, 10, 28]}>
               <Image src={image.imagelink ? image.imagelink : ""} alt="Image 1" />
             </Box>

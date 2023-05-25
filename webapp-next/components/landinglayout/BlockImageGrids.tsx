@@ -55,7 +55,7 @@ export const BlockImageGrids: React.FC<Contentsofpage> = ({
       </Box>
       <Wrap justify="left" w={"full"}>
         {contentsgrids.map((content, index) => (
-          <WrapItem flex={2}>
+          <WrapItem flex={2} key={index}>
             <Box>
               <Text fontSize={["14px", "18px", "24px"]} mb={4}>
                 {content.title}
