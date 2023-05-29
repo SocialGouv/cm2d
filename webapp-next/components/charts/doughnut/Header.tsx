@@ -38,7 +38,7 @@ export function ChartDoughnutHeader() {
     context;
 
   const [aggregateX, setAggregateX] = useState<Field>(
-    isValidField(saveAggregateX) ? saveAggregateX : 'years'
+    isValidField(saveAggregateX) ? saveAggregateX : 'sex'
   );
 
   const updateAggregation = () => {
