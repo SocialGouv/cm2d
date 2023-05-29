@@ -107,13 +107,19 @@ export function ChartTableHeader() {
   };
 
   const handleXAxisChange = (field: Field) => {
-    if (aggregateY === field) setAggregateY(aggregateX);
+    if (aggregateY === field) {
+      setAggregateY(aggregateX);
+      setSaveAggregateY(aggregateX);
+    }
     setAggregateX(field);
     setSaveAggregateX(field);
   };
 
   const handleYAxisChange = (field: Field) => {
-    if (aggregateX === field) setAggregateX(aggregateY);
+    if (aggregateX === field) {
+      setAggregateX(aggregateY);
+      setSaveAggregateX(aggregateY);
+    }
     setAggregateY(field);
     setSaveAggregateY(field);
   };

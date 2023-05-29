@@ -96,7 +96,7 @@ export function ChartLineHeader() {
   }, [isAggregated, aggregateField]);
 
   useEffect(() => {
-    if (!isAggregated) setSaveAggregateX(undefined);
+    setSaveAggregateX(isAggregated ? undefined : aggregateField);
   }, [isAggregated]);
 
   const handleViewChange = (view: View) => {
