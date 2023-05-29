@@ -23,7 +23,7 @@ const elkFields = [
   { value: 'cert_type', label: 'Format' },
   { value: 'start_date', label: 'Période' },
   { value: 'end_date', label: 'Période' },
-  { value: 'years', label: 'Années' },
+  { value: 'years', label: 'Année' },
   { value: 'months', label: 'Mois' }
 ];
 
@@ -153,14 +153,36 @@ export function getViewDatasets(
     }
   }
 
-  if (view === 'histogram' || view === 'doughnut' || view === 'map') {
+  if (view === 'histogram' || view === 'doughnut') {
     if (data.result.aggregations.aggregated_x) {
       return [
         {
           hits: data.result.aggregations.aggregated_x.buckets.filter(
             (b: any) => !!b.doc_count
-          ),
-          total: view === 'map' ? data.result.hits.total.value : undefined
+          )
+        }
+      ];
+    }
+  }
+
+  if (view === 'map') {
+    if (data.result.aggregations.aggregated_x) {
+      return [
+        {
+          hits: data.result.aggregations.aggregated_x.buckets
+            .filter((b: any) => !!b.doc_count)
+            .map((x: any) =>
+              x.aggregated_y
+                ? {
+                    key: x.key,
+                    doc_count: x.doc_count,
+                    children: x.aggregated_y.buckets.filter(
+                      (y: any) => !!y.doc_count
+                    )
+                  }
+                : x
+            ),
+          total: data.result.hits.total.value
         }
       ];
     }

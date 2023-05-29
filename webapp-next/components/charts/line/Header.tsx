@@ -157,11 +157,11 @@ export function ChartLineHeader() {
               <Text as={aggregateField === 'sex' ? 'b' : 'span'}>Sexe</Text>
             </MenuItem>
             <MenuItem onClick={() => handleLegendChange('age')}>
-              <Text as={aggregateField === 'age' ? 'b' : 'span'}>Ages</Text>
+              <Text as={aggregateField === 'age' ? 'b' : 'span'}>Age</Text>
             </MenuItem>
             <MenuItem onClick={() => handleLegendChange('department')}>
               <Text as={aggregateField === 'department' ? 'b' : 'span'}>
-                Départements
+                Département
               </Text>
             </MenuItem>
             <MenuItem onClick={() => handleLegendChange('death_location')}>
@@ -170,7 +170,7 @@ export function ChartLineHeader() {
               </Text>
             </MenuItem>
             <MenuItem onClick={() => handleLegendChange('years')}>
-              <Text as={aggregateField === 'years' ? 'b' : 'span'}>Années</Text>
+              <Text as={aggregateField === 'years' ? 'b' : 'span'}>Année</Text>
             </MenuItem>
           </MenuList>
         </Menu>

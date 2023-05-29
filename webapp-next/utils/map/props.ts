@@ -1,4 +1,4 @@
-import { isNC } from '../tools';
+import { getLabelFromKey, isNC } from '../tools';
 
 export const getMapProps = (
   id: string,
@@ -7,6 +7,20 @@ export const getMapProps = (
   if (!datasets[0]) return '';
 
   const { hits, total } = datasets[0];
+
+  let availableKeys: string[] = [];
+  if (hits[0].children) {
+    availableKeys = hits
+      .reduce((acc: string[], h) => {
+        h.children.forEach((c: any) => {
+          if (acc.indexOf(c.key) === -1) {
+            acc.push(c.key);
+          }
+        });
+        return acc;
+      }, [])
+      .sort();
+  }
 
   const stateColors = {
     GREEN: { initial: '#C6F6D5', hover: '#68D391' },
@@ -33,6 +47,37 @@ export const getMapProps = (
     if (percentage < 0.2) return stateColors.BLUE[kind];
     if (percentage < 0.3) return stateColors.ORANGE[kind];
     return stateColors.RED[kind];
+  };
+
+  const getFullDescription = (key: number): string => {
+    const hit = hits.find(h => h.key === key);
+    if (!hit) return '';
+
+    if (hit.children) {
+      const totalCount = hit.children.reduce(
+        (acc: number, child: any) =>
+          acc + (isNC(child.doc_count) ? 0 : child.doc_count),
+        0
+      );
+
+      return `Nombre de décès : ${totalCount ? totalCount : 'NC'}
+			<div style="padding-left:10px;margin-top:2px">
+				${availableKeys
+          .map((key: any) => {
+            const child = hit.children.find((c: any) => c.key === key);
+            const label = getLabelFromKey(key);
+            return `<div>${
+              label.charAt(0).toUpperCase() + label.substring(1)
+            } : ${
+              !child || isNC(child.doc_count) ? 'NC' : child.doc_count
+            }</div>`;
+          })
+          .join('')}
+			</div>
+			`;
+    }
+
+    return `Nombre de décès : ${getCountFromKey(key)}`;
   };
 
   const config = {
@@ -111,49 +156,49 @@ export const getMapProps = (
     state_specific: {
       FRA5289: {
         name: 'Essonne',
-        description: `Nombre de décès : ${getCountFromKey(91)}`,
+        description: getFullDescription(91),
         color: getColorFromPercentage(91, 'initial'),
         hover_color: getColorFromPercentage(91, 'hover')
       },
       FRA5306: {
         name: 'Hauts-de-Seine',
-        description: `Nombre de décès : ${getCountFromKey(92)}`,
+        description: getFullDescription(92),
         color: getColorFromPercentage(92, 'initial'),
         hover_color: getColorFromPercentage(92, 'hover')
       },
       FRA5333: {
         name: 'Paris',
-        description: `Nombre de décès : ${getCountFromKey(75)}`,
+        description: getFullDescription(75),
         color: getColorFromPercentage(75, 'initial'),
         hover_color: getColorFromPercentage(75, 'hover')
       },
       FRA5342: {
         name: 'Seine-et-Marne',
-        description: `Nombre de décès : ${getCountFromKey(77)}`,
+        description: getFullDescription(77),
         color: getColorFromPercentage(77, 'initial'),
         hover_color: getColorFromPercentage(77, 'hover')
       },
       FRA5344: {
         name: 'Seine-Saint-Denis',
-        description: `Nombre de décès : ${getCountFromKey(93)}`,
+        description: getFullDescription(93),
         color: getColorFromPercentage(93, 'initial'),
         hover_color: getColorFromPercentage(93, 'hover')
       },
       FRA5349: {
         name: "Val-d'Oise",
-        description: `Nombre de décès : ${getCountFromKey(95)}`,
+        description: getFullDescription(95),
         color: getColorFromPercentage(95, 'initial'),
         hover_color: getColorFromPercentage(95, 'hover')
       },
       FRA5350: {
         name: 'Val-de-Marne',
-        description: `Nombre de décès : ${getCountFromKey(94)}`,
+        description: getFullDescription(94),
         color: getColorFromPercentage(94, 'initial'),
         hover_color: getColorFromPercentage(94, 'hover')
       },
       FRA5357: {
         name: 'Yvelines',
-        description: `Nombre de décès : ${getCountFromKey(78)}`,
+        description: getFullDescription(78),
         color: getColorFromPercentage(78, 'initial'),
         hover_color: getColorFromPercentage(78, 'hover')
       }

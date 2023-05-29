@@ -149,7 +149,7 @@ export function ChartTableHeader() {
           </MenuItem>
           <MenuItem onClick={() => handleXAxisChange('department')}>
             <Text as={aggregateX === 'department' ? 'b' : 'span'}>
-              Départements
+              Département
             </Text>
           </MenuItem>
           <MenuItem onClick={() => handleXAxisChange('months')}>
@@ -180,7 +180,7 @@ export function ChartTableHeader() {
           </MenuItem>
           <MenuItem onClick={() => handleYAxisChange('department')}>
             <Text as={aggregateY === 'department' ? 'b' : 'span'}>
-              Départements
+              Département
             </Text>
           </MenuItem>
           <MenuItem onClick={() => handleYAxisChange('months')}>
