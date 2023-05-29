@@ -1,6 +1,6 @@
 import { ageRanges } from '@/components/layouts/Menu';
 import { Cm2dContext, View, baseAggregation } from '@/utils/cm2d-provider';
-import { getLabelFromElkField } from '@/utils/tools';
+import { getLabelFromElkField, viewRefs } from '@/utils/tools';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import {
   Button,
@@ -131,19 +131,11 @@ export function ChartLineHeader() {
           Vue : <Text as="b">Courbe</Text>
         </MenuButton>
         <MenuList>
-          <MenuItem>
-            <Text as="b">Vue courbe</Text>
-          </MenuItem>
-          <MenuItem onClick={() => handleViewChange('map')}>Vue carte</MenuItem>
-          <MenuItem onClick={() => handleViewChange('histogram')}>
-            Vue histogramme
-          </MenuItem>
-          <MenuItem onClick={() => handleViewChange('doughnut')}>
-            Vue donut
-          </MenuItem>
-          <MenuItem onClick={() => handleViewChange('table')}>
-            Vue tableau
-          </MenuItem>
+          {viewRefs.map((vr, index) => (
+            <MenuItem key={index} onClick={() => handleViewChange(vr.value)}>
+              <Text as={vr.value === 'line' ? 'b' : 'span'}>{vr.label}</Text>
+            </MenuItem>
+          ))}
         </MenuList>
       </Menu>
       <Menu>

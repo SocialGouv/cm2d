@@ -2,6 +2,14 @@ import { Filters, View } from './cm2d-provider';
 import { format } from 'date-fns';
 import moment from 'moment';
 
+export const viewRefs: { label: string; value: View }[] = [
+  { label: 'Vue courbe', value: 'line' },
+  { label: 'Vue carte', value: 'map' },
+  { label: 'Vue histogramme', value: 'histogram' },
+  { label: 'Vue donut', value: 'doughnut' },
+  { label: 'Vue tableau', value: 'table' }
+];
+
 export const departmentRefs = {
   '75': 'Paris',
   '77': 'Seine-et-Marne',
