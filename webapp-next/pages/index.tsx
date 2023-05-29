@@ -1,6 +1,7 @@
 import { ChartDoughnut } from '@/components/charts/doughnut/Doughnut';
 import { ChartHistogram } from '@/components/charts/histogram/Histogram';
 import { ChartLine } from '@/components/charts/line/Line';
+import MapIframe from '@/components/charts/map/Map';
 import { ChartTable } from '@/components/charts/table/Table';
 import { ClosableAlert } from '@/components/layouts/ClosableAlert';
 import { useData } from '@/utils/api';
@@ -87,7 +88,7 @@ export default function Home() {
       </Flex>
     );
 
-  let datasets: { hits: any[] }[] = getViewDatasets(data, view);
+  let datasets = getViewDatasets(data, view);
 
   const ChartDisplay = () => {
     switch (view) {
@@ -99,6 +100,8 @@ export default function Home() {
         return <ChartHistogram id="histogram-cm2d" datasets={datasets} />;
       case 'doughnut':
         return <ChartDoughnut id="doughnut-cm2d" datasets={datasets} />;
+      case 'map':
+        return <MapIframe id="map-cm2d" datasets={datasets} />;
       default:
         return <>Pas de dataviz configurée pour cette vue</>;
     }

@@ -114,6 +114,7 @@ export function ChartTableHeader() {
           <MenuItem onClick={() => handleViewChange('line')}>
             Vue courbe
           </MenuItem>
+          <MenuItem onClick={() => handleViewChange('map')}>Vue carte</MenuItem>
           <MenuItem onClick={() => handleViewChange('histogram')}>
             Vue histogramme
           </MenuItem>
@@ -148,7 +149,7 @@ export function ChartTableHeader() {
           </MenuItem>
           <MenuItem onClick={() => handleXAxisChange('department')}>
             <Text as={aggregateX === 'department' ? 'b' : 'span'}>
-              Départements
+              Département
             </Text>
           </MenuItem>
           <MenuItem onClick={() => handleXAxisChange('months')}>
@@ -179,7 +180,7 @@ export function ChartTableHeader() {
           </MenuItem>
           <MenuItem onClick={() => handleYAxisChange('department')}>
             <Text as={aggregateY === 'department' ? 'b' : 'span'}>
-              Départements
+              Département
             </Text>
           </MenuItem>
           <MenuItem onClick={() => handleYAxisChange('months')}>

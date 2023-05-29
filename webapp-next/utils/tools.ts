@@ -23,7 +23,7 @@ const elkFields = [
   { value: 'cert_type', label: 'Format' },
   { value: 'start_date', label: 'Période' },
   { value: 'end_date', label: 'Période' },
-  { value: 'years', label: 'Années' },
+  { value: 'years', label: 'Année' },
   { value: 'months', label: 'Mois' }
 ];
 
@@ -122,7 +122,10 @@ export function isNC(count: number): boolean {
   return count !== 0 && count <= minimumForNC;
 }
 
-export function getViewDatasets(data: any, view: View): { hits: any[] }[] {
+export function getViewDatasets(
+  data: any,
+  view: View
+): { hits: any[]; label?: string; total?: number }[] {
   if (view === 'line') {
     if (data.result.aggregations.aggregated_date) {
       return [{ hits: data.result.aggregations.aggregated_date.buckets }];
@@ -157,6 +160,29 @@ export function getViewDatasets(data: any, view: View): { hits: any[] }[] {
           hits: data.result.aggregations.aggregated_x.buckets.filter(
             (b: any) => !!b.doc_count
           )
+        }
+      ];
+    }
+  }
+
+  if (view === 'map') {
+    if (data.result.aggregations.aggregated_x) {
+      return [
+        {
+          hits: data.result.aggregations.aggregated_x.buckets
+            .filter((b: any) => !!b.doc_count)
+            .map((x: any) =>
+              x.aggregated_y
+                ? {
+                    key: x.key,
+                    doc_count: x.doc_count,
+                    children: x.aggregated_y.buckets.filter(
+                      (y: any) => !!y.doc_count
+                    )
+                  }
+                : x
+            ),
+          total: data.result.hits.total.value
         }
       ];
     }

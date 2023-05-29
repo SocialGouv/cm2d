@@ -1,5 +1,5 @@
 import { ageRanges } from '@/components/layouts/Menu';
-import { Cm2dContext, View, baseAggregation } from '@/utils/cm2d-provider';
+import { Cm2dContext, View } from '@/utils/cm2d-provider';
 import { getLabelFromElkField } from '@/utils/tools';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import {
@@ -14,7 +14,7 @@ import {
 import NextImage from 'next/image';
 import { useContext, useEffect, useState } from 'react';
 
-export function ChartLineHeader() {
+export function ChartMapHeader() {
   const context = useContext(Cm2dContext);
 
   if (!context) {
@@ -27,50 +27,51 @@ export function ChartLineHeader() {
   const [aggregateField, setAggregateField] = useState<string>('sex');
 
   const updateAggregation = () => {
-    let aggregation: any = {};
-
+    const xAgg: any = {
+      aggregated_x: {
+        terms: {
+          field: 'department'
+        }
+      }
+    };
     if (isAggregated) {
-      aggregation = baseAggregation;
+      setAggregations({
+        ...xAgg
+      });
     } else {
-      if (['sex', 'death_location', 'department'].includes(aggregateField)) {
-        aggregation = {
-          aggregated_parent: {
-            terms: {
-              field: aggregateField
-            },
-            aggs: {
-              ...baseAggregation
-            }
-          }
-        };
-      } else if (['age'].includes(aggregateField)) {
-        aggregation = {
-          aggregated_parent: {
-            range: {
-              field: aggregateField,
-              ranges: ageRanges
-            },
-            aggs: {
-              ...baseAggregation
-            }
-          }
-        };
-      } else if (['years'].includes(aggregateField)) {
-        aggregation = {
-          aggregated_parent: {
-            date_histogram: {
-              field: 'date',
-              calendar_interval: 'year'
-            },
-            aggs: {
-              ...baseAggregation
-            }
+      let yAgg: any = {
+        terms: {
+          field: aggregateField
+        }
+      };
+
+      if (aggregateField === 'age') {
+        yAgg = {
+          range: {
+            field: 'age',
+            ranges: ageRanges
           }
         };
       }
-    }
 
-    setAggregations(aggregation);
+      if (aggregateField === 'years') {
+        yAgg = {
+          date_histogram: {
+            field: 'date',
+            calendar_interval: 'year'
+          }
+        };
+      }
+
+      setAggregations({
+        aggregated_x: {
+          ...xAgg.aggregated_x,
+          aggs: {
+            aggregated_y: { ...yAgg }
+          }
+        }
+      });
+    }
   };
 
   useEffect(() => {
@@ -97,21 +98,23 @@ export function ChartLineHeader() {
           variant="light"
           leftIcon={
             <NextImage
-              src="icons/chart-line.svg"
+              src="icons/map.svg"
               width={24}
               height={24}
-              alt="vue courbe"
+              alt="vue map"
             />
           }
           rightIcon={<ChevronDownIcon color="primary.200" w={5} h={5} />}
         >
-          Vue : <Text as="b">Courbe</Text>
+          Vue : <Text as="b">Carte</Text>
         </MenuButton>
         <MenuList>
-          <MenuItem>
-            <Text as="b">Vue courbe</Text>
+          <MenuItem onClick={() => handleViewChange('line')}>
+            Vue courbe
           </MenuItem>
-          <MenuItem onClick={() => handleViewChange('map')}>Vue carte</MenuItem>
+          <MenuItem>
+            <Text as="b">Vue carte</Text>
+          </MenuItem>
           <MenuItem onClick={() => handleViewChange('histogram')}>
             Vue histogramme
           </MenuItem>
@@ -158,11 +161,6 @@ export function ChartLineHeader() {
             </MenuItem>
             <MenuItem onClick={() => handleLegendChange('age')}>
               <Text as={aggregateField === 'age' ? 'b' : 'span'}>Age</Text>
-            </MenuItem>
-            <MenuItem onClick={() => handleLegendChange('department')}>
-              <Text as={aggregateField === 'department' ? 'b' : 'span'}>
-                Département
-              </Text>
             </MenuItem>
             <MenuItem onClick={() => handleLegendChange('death_location')}>
               <Text as={aggregateField === 'death_location' ? 'b' : 'span'}>
