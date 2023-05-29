@@ -20,7 +20,7 @@ export function Legends() {
     {
       color: 'red.100',
       borderColor: 'red.300',
-      content: '40%+'
+      content: '30%+'
     }
   ];
 
