@@ -26,10 +26,10 @@ export default function MapIframe(props: Props) {
 							event.stopPropagation();
 						}, true);
 					</script>
-					<script type="text/javascript" src="libs/countrymap/countrymap.js"></script>
 					<script type="text/javascript">
 						${getMapProps(id, datasets)}
 					</script>
+					<script type="text/javascript" src="libs/countrymap/countrymap.js"></script>
 					<style>
 						#${id}_access {
 							display: none !important;
@@ -64,6 +64,7 @@ export default function MapIframe(props: Props) {
         ref={iframeRef}
         width={'100%'}
         height="700px"
+        loading="lazy"
         onClick={e => {
           e.preventDefault();
           e.stopPropagation();
