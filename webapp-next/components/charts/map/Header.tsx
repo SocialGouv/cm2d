@@ -1,5 +1,5 @@
 import { ageRanges } from '@/components/layouts/Menu';
-import { Cm2dContext, View, baseAggregation } from '@/utils/cm2d-provider';
+import { Cm2dContext, View } from '@/utils/cm2d-provider';
 import { getLabelFromElkField, viewRefs } from '@/utils/tools';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import {
@@ -14,20 +14,19 @@ import {
 import NextImage from 'next/image';
 import { useContext, useEffect, useState } from 'react';
 
-type Field = 'sex' | 'age' | 'death_location' | 'department' | 'years';
+type Field = 'sex' | 'age' | 'death_location' | 'years';
 
 const availableFields: { label: string; value: Field }[] = [
   { label: 'Sexe', value: 'sex' },
   { label: 'Age', value: 'age' },
   { label: 'Lieu de décès', value: 'death_location' },
-  { label: 'Département', value: 'department' },
   { label: 'Année', value: 'years' }
 ];
 
 const isValidField = (field?: string): field is Field =>
   field ? availableFields.some(({ value }) => value === field) : false;
 
-export function ChartLineHeader() {
+export function ChartMapHeader() {
   const context = useContext(Cm2dContext);
 
   if (!context) {
@@ -45,50 +44,51 @@ export function ChartLineHeader() {
   );
 
   const updateAggregation = () => {
-    let aggregation: any = {};
-
+    const xAgg: any = {
+      aggregated_x: {
+        terms: {
+          field: 'department'
+        }
+      }
+    };
     if (isAggregated) {
-      aggregation = baseAggregation;
+      setAggregations({
+        ...xAgg
+      });
     } else {
-      if (['sex', 'death_location', 'department'].includes(aggregateField)) {
-        aggregation = {
-          aggregated_parent: {
-            terms: {
-              field: aggregateField
-            },
-            aggs: {
-              ...baseAggregation
-            }
-          }
-        };
-      } else if (['age'].includes(aggregateField)) {
-        aggregation = {
-          aggregated_parent: {
-            range: {
-              field: aggregateField,
-              ranges: ageRanges
-            },
-            aggs: {
-              ...baseAggregation
-            }
-          }
-        };
-      } else if (['years'].includes(aggregateField)) {
-        aggregation = {
-          aggregated_parent: {
-            date_histogram: {
-              field: 'date',
-              calendar_interval: 'year'
-            },
-            aggs: {
-              ...baseAggregation
-            }
+      let yAgg: any = {
+        terms: {
+          field: aggregateField
+        }
+      };
+
+      if (aggregateField === 'age') {
+        yAgg = {
+          range: {
+            field: 'age',
+            ranges: ageRanges
           }
         };
       }
-    }
 
-    setAggregations(aggregation);
+      if (aggregateField === 'years') {
+        yAgg = {
+          date_histogram: {
+            field: 'date',
+            calendar_interval: 'year'
+          }
+        };
+      }
+
+      setAggregations({
+        aggregated_x: {
+          ...xAgg.aggregated_x,
+          aggs: {
+            aggregated_y: { ...yAgg }
+          }
+        }
+      });
+    }
   };
 
   useEffect(() => {
@@ -120,20 +120,20 @@ export function ChartLineHeader() {
           variant="light"
           leftIcon={
             <NextImage
-              src="icons/chart-line.svg"
+              src="icons/map.svg"
               width={24}
               height={24}
-              alt="vue courbe"
+              alt="vue carte"
             />
           }
           rightIcon={<ChevronDownIcon color="primary.200" w={5} h={5} />}
         >
-          Vue : <Text as="b">Courbe</Text>
+          Vue : <Text as="b">Carte</Text>
         </MenuButton>
         <MenuList>
           {viewRefs.map((vr, index) => (
             <MenuItem key={index} onClick={() => handleViewChange(vr.value)}>
-              <Text as={vr.value === 'line' ? 'b' : 'span'}>{vr.label}</Text>
+              <Text as={vr.value === 'map' ? 'b' : 'span'}>{vr.label}</Text>
             </MenuItem>
           ))}
         </MenuList>

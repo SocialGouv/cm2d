@@ -1,6 +1,6 @@
 import { ageRanges } from '@/components/layouts/Menu';
 import { Cm2dContext, View, baseAggregation } from '@/utils/cm2d-provider';
-import { getLabelFromElkField } from '@/utils/tools';
+import { getLabelFromElkField, viewRefs } from '@/utils/tools';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import {
   Button,
@@ -14,6 +14,19 @@ import {
 import NextImage from 'next/image';
 import { useContext, useEffect, useState } from 'react';
 
+type Field = 'sex' | 'age' | 'death_location' | 'department' | 'months';
+
+const availableFields: { label: string; value: Field }[] = [
+  { label: 'Sexe', value: 'sex' },
+  { label: 'Age', value: 'age' },
+  { label: 'Lieu de décès', value: 'death_location' },
+  { label: 'Département', value: 'department' },
+  { label: 'Mois', value: 'months' }
+];
+
+const isValidField = (field?: string): field is Field =>
+  field ? availableFields.some(({ value }) => value === field) : false;
+
 export function ChartTableHeader() {
   const context = useContext(Cm2dContext);
 
@@ -21,10 +34,21 @@ export function ChartTableHeader() {
     throw new Error('Menu must be used within a Cm2dProvider');
   }
 
-  const { setAggregations, setView } = context;
+  const {
+    setAggregations,
+    setView,
+    saveAggregateX,
+    setSaveAggregateX,
+    saveAggregateY,
+    setSaveAggregateY
+  } = context;
 
-  const [aggregateX, setAggregateX] = useState<string>('sex');
-  const [aggregateY, setAggregateY] = useState<string>('age');
+  const [aggregateX, setAggregateX] = useState<Field>(
+    isValidField(saveAggregateX) ? saveAggregateX : 'sex'
+  );
+  const [aggregateY, setAggregateY] = useState<Field>(
+    isValidField(saveAggregateY) ? saveAggregateY : 'age'
+  );
 
   const updateAggregation = () => {
     let xAgg: any = {
@@ -82,14 +106,22 @@ export function ChartTableHeader() {
     setView(view);
   };
 
-  const handleXAxisChange = (field: string) => {
-    if (aggregateY === field) setAggregateY(aggregateX);
+  const handleXAxisChange = (field: Field) => {
+    if (aggregateY === field) {
+      setAggregateY(aggregateX);
+      setSaveAggregateY(aggregateX);
+    }
     setAggregateX(field);
+    setSaveAggregateX(field);
   };
 
-  const handleYAxisChange = (field: string) => {
-    if (aggregateX === field) setAggregateX(aggregateY);
+  const handleYAxisChange = (field: Field) => {
+    if (aggregateX === field) {
+      setAggregateX(aggregateY);
+      setSaveAggregateX(aggregateY);
+    }
     setAggregateY(field);
+    setSaveAggregateY(field);
   };
 
   return (
@@ -111,18 +143,11 @@ export function ChartTableHeader() {
           Vue : <Text as="b">Tableau</Text>
         </MenuButton>
         <MenuList>
-          <MenuItem onClick={() => handleViewChange('line')}>
-            Vue courbe
-          </MenuItem>
-          <MenuItem onClick={() => handleViewChange('histogram')}>
-            Vue histogramme
-          </MenuItem>
-          <MenuItem onClick={() => handleViewChange('doughnut')}>
-            Vue donut
-          </MenuItem>
-          <MenuItem>
-            <Text as="b">Vue tableau</Text>
-          </MenuItem>
+          {viewRefs.map((vr, index) => (
+            <MenuItem key={index} onClick={() => handleViewChange(vr.value)}>
+              <Text as={vr.value === 'table' ? 'b' : 'span'}>{vr.label}</Text>
+            </MenuItem>
+          ))}
         </MenuList>
       </Menu>
       <Menu>
@@ -135,25 +160,16 @@ export function ChartTableHeader() {
           Abscisse : <Text as="b">{getLabelFromElkField(aggregateX)}</Text>
         </MenuButton>
         <MenuList>
-          <MenuItem onClick={() => handleXAxisChange('sex')}>
-            <Text as={aggregateX === 'sex' ? 'b' : 'span'}>Sexe</Text>
-          </MenuItem>
-          <MenuItem onClick={() => handleXAxisChange('age')}>
-            <Text as={aggregateX === 'age' ? 'b' : 'span'}>Age</Text>
-          </MenuItem>
-          <MenuItem onClick={() => handleXAxisChange('death_location')}>
-            <Text as={aggregateX === 'death_location' ? 'b' : 'span'}>
-              Lieu de décès
-            </Text>
-          </MenuItem>
-          <MenuItem onClick={() => handleXAxisChange('department')}>
-            <Text as={aggregateX === 'department' ? 'b' : 'span'}>
-              Départements
-            </Text>
-          </MenuItem>
-          <MenuItem onClick={() => handleXAxisChange('months')}>
-            <Text as={aggregateX === 'months' ? 'b' : 'span'}>Mois</Text>
-          </MenuItem>
+          {availableFields.map(field => (
+            <MenuItem
+              key={field.value}
+              onClick={() => handleXAxisChange(field.value)}
+            >
+              <Text as={aggregateX === field.value ? 'b' : 'span'}>
+                {field.label}
+              </Text>
+            </MenuItem>
+          ))}
         </MenuList>
       </Menu>
       <Menu>
@@ -166,25 +182,16 @@ export function ChartTableHeader() {
           Ordonnée : <Text as="b">{getLabelFromElkField(aggregateY)}</Text>
         </MenuButton>
         <MenuList>
-          <MenuItem onClick={() => handleYAxisChange('sex')}>
-            <Text as={aggregateY === 'sex' ? 'b' : 'span'}>Sexe</Text>
-          </MenuItem>
-          <MenuItem onClick={() => handleYAxisChange('age')}>
-            <Text as={aggregateY === 'age' ? 'b' : 'span'}>Age</Text>
-          </MenuItem>
-          <MenuItem onClick={() => handleYAxisChange('death_location')}>
-            <Text as={aggregateY === 'death_location' ? 'b' : 'span'}>
-              Lieu de décès
-            </Text>
-          </MenuItem>
-          <MenuItem onClick={() => handleYAxisChange('department')}>
-            <Text as={aggregateY === 'department' ? 'b' : 'span'}>
-              Départements
-            </Text>
-          </MenuItem>
-          <MenuItem onClick={() => handleYAxisChange('months')}>
-            <Text as={aggregateY === 'months' ? 'b' : 'span'}>Mois</Text>
-          </MenuItem>
+          {availableFields.map(field => (
+            <MenuItem
+              key={field.value}
+              onClick={() => handleYAxisChange(field.value)}
+            >
+              <Text as={aggregateY === field.value ? 'b' : 'span'}>
+                {field.label}
+              </Text>
+            </MenuItem>
+          ))}
         </MenuList>
       </Menu>
     </Flex>

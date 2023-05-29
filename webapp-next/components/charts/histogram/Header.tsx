@@ -1,6 +1,6 @@
 import { ageRanges } from '@/components/layouts/Menu';
 import { Cm2dContext, View, baseAggregation } from '@/utils/cm2d-provider';
-import { getLabelFromElkField } from '@/utils/tools';
+import { getLabelFromElkField, viewRefs } from '@/utils/tools';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import {
   Button,
@@ -14,6 +14,19 @@ import {
 import NextImage from 'next/image';
 import { useContext, useEffect, useState } from 'react';
 
+type Field = 'sex' | 'age' | 'death_location' | 'department' | 'years';
+
+const availableFields: { label: string; value: Field }[] = [
+  { label: 'Sexe', value: 'sex' },
+  { label: 'Age', value: 'age' },
+  { label: 'Lieu de décès', value: 'death_location' },
+  { label: 'Département', value: 'department' },
+  { label: 'Année', value: 'years' }
+];
+
+const isValidField = (field?: string): field is Field =>
+  field ? availableFields.some(({ value }) => value === field) : false;
+
 export function ChartHistogramHeader() {
   const context = useContext(Cm2dContext);
 
@@ -21,9 +34,12 @@ export function ChartHistogramHeader() {
     throw new Error('Menu must be used within a Cm2dProvider');
   }
 
-  const { setAggregations, setView } = context;
+  const { setAggregations, setView, saveAggregateX, setSaveAggregateX } =
+    context;
 
-  const [aggregateX, setAggregateX] = useState<string>('sex');
+  const [aggregateX, setAggregateX] = useState<Field>(
+    isValidField(saveAggregateX) ? saveAggregateX : 'sex'
+  );
 
   const updateAggregation = () => {
     let xAgg: any = {
@@ -65,8 +81,9 @@ export function ChartHistogramHeader() {
     setView(view);
   };
 
-  const handleXAxisChange = (field: string) => {
+  const handleXAxisChange = (field: Field) => {
     setAggregateX(field);
+    setSaveAggregateX(field);
   };
 
   return (
@@ -88,18 +105,13 @@ export function ChartHistogramHeader() {
           Vue : <Text as="b">Histogramme</Text>
         </MenuButton>
         <MenuList>
-          <MenuItem onClick={() => handleViewChange('line')}>
-            Vue courbe
-          </MenuItem>
-          <MenuItem>
-            <Text as="b">Vue histogramme</Text>
-          </MenuItem>
-          <MenuItem onClick={() => handleViewChange('doughnut')}>
-            Vue donut
-          </MenuItem>
-          <MenuItem onClick={() => handleViewChange('table')}>
-            Vue tableau
-          </MenuItem>
+          {viewRefs.map((vr, index) => (
+            <MenuItem key={index} onClick={() => handleViewChange(vr.value)}>
+              <Text as={vr.value === 'histogram' ? 'b' : 'span'}>
+                {vr.label}
+              </Text>
+            </MenuItem>
+          ))}
         </MenuList>
       </Menu>
       <Menu>
@@ -112,25 +124,16 @@ export function ChartHistogramHeader() {
           Abscisse : <Text as="b">{getLabelFromElkField(aggregateX)}</Text>
         </MenuButton>
         <MenuList>
-          <MenuItem onClick={() => handleXAxisChange('sex')}>
-            <Text as={aggregateX === 'sex' ? 'b' : 'span'}>Sexe</Text>
-          </MenuItem>
-          <MenuItem onClick={() => handleXAxisChange('age')}>
-            <Text as={aggregateX === 'age' ? 'b' : 'span'}>Age</Text>
-          </MenuItem>
-          <MenuItem onClick={() => handleXAxisChange('death_location')}>
-            <Text as={aggregateX === 'death_location' ? 'b' : 'span'}>
-              Lieu de décès
-            </Text>
-          </MenuItem>
-          <MenuItem onClick={() => handleXAxisChange('department')}>
-            <Text as={aggregateX === 'department' ? 'b' : 'span'}>
-              Départements
-            </Text>
-          </MenuItem>
-          <MenuItem onClick={() => handleXAxisChange('years')}>
-            <Text as={aggregateX === 'years' ? 'b' : 'span'}>Années</Text>
-          </MenuItem>
+          {availableFields.map(field => (
+            <MenuItem
+              key={field.value}
+              onClick={() => handleXAxisChange(field.value)}
+            >
+              <Text as={aggregateX === field.value ? 'b' : 'span'}>
+                {field.label}
+              </Text>
+            </MenuItem>
+          ))}
         </MenuList>
       </Menu>
     </Flex>

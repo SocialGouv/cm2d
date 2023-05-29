@@ -2,6 +2,7 @@ import csv
 import random
 from faker import Faker
 from datetime import date
+import numpy as np
 
 fake = Faker('fr_FR')
 
@@ -18,6 +19,13 @@ department_dict = {
 
 category_1 = ['suicide', 'avc', 'cancer', 'tuberculose']
 category_2 = ['vih', 'tuberculose', 'diabete']
+death_locations = ['domicile', 'hopital', 'clinique privée', 'maison retraite', 'voie publique','autres', 'etablissement penitentiaire']
+
+# Maintain a list of departments for random choice
+departments = list(department_dict.keys())
+
+# Add weighted probabilities for departments
+weights = [0.15 if dept == '75' else 0.4 if dept == '77' else 0.2 if dept == '95' else 0.05 for dept in departments]
 
 with open('sample_data.csv', mode='w', newline='') as csv_file:
     fieldnames = ['categories_level_1', 'categories_level_2', 'age', 'sex', 'death_location', 'home_location', 'department', 'coordinates', 'date']
@@ -31,8 +39,8 @@ with open('sample_data.csv', mode='w', newline='') as csv_file:
         row['categories_level_2'] = random.choice(category_2)
         row['age'] = fake.random_int(min=1, max=100)
         row['sex'] = random.choice(['homme', 'femme', 'indéterminé'])
-        row['death_location'] = random.choice(['domicile', 'hopital', 'autre'])
-        row['department'] = random.choice(list(department_dict.keys()))
+        row['death_location'] = random.choice(death_locations)
+        row['department'] = np.random.choice(departments, p=weights)  # Select department based on weights
         row['home_location'] = random.choice(department_dict[row['department']])
         row['coordinates'] = f"{fake.latitude()}, {fake.longitude()}"
         row['date'] = fake.date_between(start_date=date(2021, 1, 1), end_date=date(2023, 12, 31)).isoformat()
