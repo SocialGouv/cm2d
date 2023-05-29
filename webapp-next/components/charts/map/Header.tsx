@@ -1,6 +1,6 @@
 import { ageRanges } from '@/components/layouts/Menu';
 import { Cm2dContext, View } from '@/utils/cm2d-provider';
-import { getLabelFromElkField } from '@/utils/tools';
+import { getLabelFromElkField, viewRefs } from '@/utils/tools';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import {
   Button,
@@ -14,6 +14,19 @@ import {
 import NextImage from 'next/image';
 import { useContext, useEffect, useState } from 'react';
 
+type Field = 'sex' | 'age' | 'death_location' | 'department' | 'years';
+
+const availableFields: { label: string; value: Field }[] = [
+  { label: 'Sexe', value: 'sex' },
+  { label: 'Age', value: 'age' },
+  { label: 'Lieu de décès', value: 'death_location' },
+  { label: 'Département', value: 'department' },
+  { label: 'Année', value: 'years' }
+];
+
+const isValidField = (field?: string): field is Field =>
+  field ? availableFields.some(({ value }) => value === field) : false;
+
 export function ChartMapHeader() {
   const context = useContext(Cm2dContext);
 
@@ -21,10 +34,15 @@ export function ChartMapHeader() {
     throw new Error('Menu must be used within a Cm2dProvider');
   }
 
-  const { setAggregations, setView } = context;
+  const { setAggregations, setView, saveAggregateX, setSaveAggregateX } =
+    context;
 
-  const [isAggregated, setIsAggregated] = useState<boolean>(true);
-  const [aggregateField, setAggregateField] = useState<string>('sex');
+  const [isAggregated, setIsAggregated] = useState<boolean>(
+    !isValidField(saveAggregateX)
+  );
+  const [aggregateField, setAggregateField] = useState<Field>(
+    isValidField(saveAggregateX) ? saveAggregateX : 'sex'
+  );
 
   const updateAggregation = () => {
     const xAgg: any = {
@@ -78,6 +96,10 @@ export function ChartMapHeader() {
     updateAggregation();
   }, [isAggregated, aggregateField]);
 
+  useEffect(() => {
+    setSaveAggregateX(isAggregated ? undefined : aggregateField);
+  }, [isAggregated]);
+
   const handleViewChange = (view: View) => {
     setView(view);
   };
@@ -86,8 +108,9 @@ export function ChartMapHeader() {
     setIsAggregated(aggregated);
   };
 
-  const handleLegendChange = (field: string) => {
+  const handleLegendChange = (field: Field) => {
     setAggregateField(field);
+    setSaveAggregateX(field);
   };
 
   return (
@@ -101,7 +124,7 @@ export function ChartMapHeader() {
               src="icons/map.svg"
               width={24}
               height={24}
-              alt="vue map"
+              alt="vue carte"
             />
           }
           rightIcon={<ChevronDownIcon color="primary.200" w={5} h={5} />}
@@ -109,21 +132,11 @@ export function ChartMapHeader() {
           Vue : <Text as="b">Carte</Text>
         </MenuButton>
         <MenuList>
-          <MenuItem onClick={() => handleViewChange('line')}>
-            Vue courbe
-          </MenuItem>
-          <MenuItem>
-            <Text as="b">Vue carte</Text>
-          </MenuItem>
-          <MenuItem onClick={() => handleViewChange('histogram')}>
-            Vue histogramme
-          </MenuItem>
-          <MenuItem onClick={() => handleViewChange('doughnut')}>
-            Vue donut
-          </MenuItem>
-          <MenuItem onClick={() => handleViewChange('table')}>
-            Vue tableau
-          </MenuItem>
+          {viewRefs.map((vr, index) => (
+            <MenuItem key={index} onClick={() => handleViewChange(vr.value)}>
+              <Text as={vr.value === 'map' ? 'b' : 'span'}>{vr.label}</Text>
+            </MenuItem>
+          ))}
         </MenuList>
       </Menu>
       <Menu>
@@ -156,20 +169,16 @@ export function ChartMapHeader() {
             Légende : <Text as="b">{getLabelFromElkField(aggregateField)}</Text>
           </MenuButton>
           <MenuList>
-            <MenuItem onClick={() => handleLegendChange('sex')}>
-              <Text as={aggregateField === 'sex' ? 'b' : 'span'}>Sexe</Text>
-            </MenuItem>
-            <MenuItem onClick={() => handleLegendChange('age')}>
-              <Text as={aggregateField === 'age' ? 'b' : 'span'}>Age</Text>
-            </MenuItem>
-            <MenuItem onClick={() => handleLegendChange('death_location')}>
-              <Text as={aggregateField === 'death_location' ? 'b' : 'span'}>
-                Lieu de décès
-              </Text>
-            </MenuItem>
-            <MenuItem onClick={() => handleLegendChange('years')}>
-              <Text as={aggregateField === 'years' ? 'b' : 'span'}>Année</Text>
-            </MenuItem>
+            {availableFields.map(field => (
+              <MenuItem
+                key={field.value}
+                onClick={() => handleLegendChange(field.value)}
+              >
+                <Text as={aggregateField === field.value ? 'b' : 'span'}>
+                  {field.label}
+                </Text>
+              </MenuItem>
+            ))}
           </MenuList>
         </Menu>
       )}

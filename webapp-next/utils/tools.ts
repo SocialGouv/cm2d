@@ -2,6 +2,14 @@ import { Filters, View } from './cm2d-provider';
 import { format } from 'date-fns';
 import moment from 'moment';
 
+export const viewRefs: { label: string; value: View }[] = [
+  { label: 'Vue courbe', value: 'line' },
+  { label: 'Vue carte', value: 'map' },
+  { label: 'Vue histogramme', value: 'histogram' },
+  { label: 'Vue donut', value: 'doughnut' },
+  { label: 'Vue tableau', value: 'table' }
+];
+
 export const departmentRefs = {
   '75': 'Paris',
   '77': 'Seine-et-Marne',
@@ -142,6 +150,7 @@ export function getViewDatasets(
   if (view === 'table') {
     if (
       data.result.aggregations.aggregated_x &&
+      !!data.result.aggregations.aggregated_x.buckets.length &&
       data.result.aggregations.aggregated_x.buckets[0].aggregated_y
     ) {
       return data.result.aggregations.aggregated_x.buckets
