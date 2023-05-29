@@ -14,13 +14,12 @@ import {
 import NextImage from 'next/image';
 import { useContext, useEffect, useState } from 'react';
 
-type Field = 'sex' | 'age' | 'death_location' | 'department' | 'years';
+type Field = 'sex' | 'age' | 'death_location' | 'years';
 
 const availableFields: { label: string; value: Field }[] = [
   { label: 'Sexe', value: 'sex' },
   { label: 'Age', value: 'age' },
   { label: 'Lieu de décès', value: 'death_location' },
-  { label: 'Département', value: 'department' },
   { label: 'Année', value: 'years' }
 ];
 
