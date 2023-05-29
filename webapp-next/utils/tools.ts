@@ -142,6 +142,7 @@ export function getViewDatasets(
   if (view === 'table') {
     if (
       data.result.aggregations.aggregated_x &&
+      !!data.result.aggregations.aggregated_x.buckets.length &&
       data.result.aggregations.aggregated_x.buckets[0].aggregated_y
     ) {
       return data.result.aggregations.aggregated_x.buckets

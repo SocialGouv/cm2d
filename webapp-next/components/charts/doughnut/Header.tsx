@@ -14,6 +14,19 @@ import {
 import NextImage from 'next/image';
 import { useContext, useEffect, useState } from 'react';
 
+type Field = 'sex' | 'age' | 'death_location' | 'department' | 'years';
+
+const availableFields: { label: string; value: Field }[] = [
+  { label: 'Sexe', value: 'sex' },
+  { label: 'Age', value: 'age' },
+  { label: 'Lieu de décès', value: 'death_location' },
+  { label: 'Département', value: 'department' },
+  { label: 'Année', value: 'years' }
+];
+
+const isValidField = (field?: string): field is Field =>
+  field ? availableFields.some(({ value }) => value === field) : false;
+
 export function ChartDoughnutHeader() {
   const context = useContext(Cm2dContext);
 
@@ -21,9 +34,12 @@ export function ChartDoughnutHeader() {
     throw new Error('Menu must be used within a Cm2dProvider');
   }
 
-  const { setAggregations, setView } = context;
+  const { setAggregations, setView, saveAggregateX, setSaveAggregateX } =
+    context;
 
-  const [aggregateX, setAggregateX] = useState<string>('sex');
+  const [aggregateX, setAggregateX] = useState<Field>(
+    isValidField(saveAggregateX) ? saveAggregateX : 'years'
+  );
 
   const updateAggregation = () => {
     let xAgg: any = {
@@ -65,8 +81,9 @@ export function ChartDoughnutHeader() {
     setView(view);
   };
 
-  const handleXAxisChange = (field: string) => {
+  const handleXAxisChange = (field: Field) => {
     setAggregateX(field);
+    setSaveAggregateX(field);
   };
 
   return (
@@ -113,25 +130,16 @@ export function ChartDoughnutHeader() {
           Abscisse : <Text as="b">{getLabelFromElkField(aggregateX)}</Text>
         </MenuButton>
         <MenuList>
-          <MenuItem onClick={() => handleXAxisChange('sex')}>
-            <Text as={aggregateX === 'sex' ? 'b' : 'span'}>Sexe</Text>
-          </MenuItem>
-          <MenuItem onClick={() => handleXAxisChange('age')}>
-            <Text as={aggregateX === 'age' ? 'b' : 'span'}>Age</Text>
-          </MenuItem>
-          <MenuItem onClick={() => handleXAxisChange('death_location')}>
-            <Text as={aggregateX === 'death_location' ? 'b' : 'span'}>
-              Lieu de décès
-            </Text>
-          </MenuItem>
-          <MenuItem onClick={() => handleXAxisChange('department')}>
-            <Text as={aggregateX === 'department' ? 'b' : 'span'}>
-              Département
-            </Text>
-          </MenuItem>
-          <MenuItem onClick={() => handleXAxisChange('years')}>
-            <Text as={aggregateX === 'years' ? 'b' : 'span'}>Année</Text>
-          </MenuItem>
+          {availableFields.map(field => (
+            <MenuItem
+              key={field.value}
+              onClick={() => handleXAxisChange(field.value)}
+            >
+              <Text as={aggregateX === field.value ? 'b' : 'span'}>
+                {field.label}
+              </Text>
+            </MenuItem>
+          ))}
         </MenuList>
       </Menu>
     </Flex>

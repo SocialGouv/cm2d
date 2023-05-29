@@ -19,6 +19,7 @@ department_dict = {
 
 category_1 = ['suicide', 'avc', 'cancer', 'tuberculose']
 category_2 = ['vih', 'tuberculose', 'diabete']
+death_locations = ['domicile', 'hopital', 'clinique privée', 'maison retraite', 'voie publique','autres', 'etablissement penitentiaire']
 
 # Maintain a list of departments for random choice
 departments = list(department_dict.keys())
@@ -38,7 +39,7 @@ with open('sample_data.csv', mode='w', newline='') as csv_file:
         row['categories_level_2'] = random.choice(category_2)
         row['age'] = fake.random_int(min=1, max=100)
         row['sex'] = random.choice(['homme', 'femme', 'indéterminé'])
-        row['death_location'] = random.choice(['domicile', 'hopital', 'autre'])
+        row['death_location'] = random.choice(death_locations)
         row['department'] = np.random.choice(departments, p=weights)  # Select department based on weights
         row['home_location'] = random.choice(department_dict[row['department']])
         row['coordinates'] = f"{fake.latitude()}, {fake.longitude()}"
