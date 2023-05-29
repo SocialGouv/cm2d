@@ -182,7 +182,10 @@ export function getViewDatasets(
                   }
                 : x
             ),
-          total: data.result.hits.total.value
+          total: data.result.aggregations.aggregated_x.buckets.reduce(
+            (acc: number, b: any) => acc + b.doc_count,
+            0
+          )
         }
       ];
     }
