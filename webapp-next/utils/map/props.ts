@@ -35,6 +35,13 @@ export const getMapProps = (
     return hit ? (isNC(hit.doc_count) ? 'NC' : hit.doc_count) : 0;
   };
 
+  const getPercentage = (key: number): string => {
+    const hit = hits.find(h => h.key === key);
+    if (!hit || !total) return '0%';
+    if (isNC(hit.doc_count)) return 'NC';
+    return `${Math.round((hit.doc_count / total) * 10000) / 100}%`;
+  };
+
   const getColorFromPercentage = (
     key: number,
     kind: 'initial' | 'hover'
@@ -155,49 +162,49 @@ export const getMapProps = (
     },
     state_specific: {
       FRA5289: {
-        name: 'Essonne',
+        name: `Essonne (${getPercentage(91)})`,
         description: getFullDescription(91),
         color: getColorFromPercentage(91, 'initial'),
         hover_color: getColorFromPercentage(91, 'hover')
       },
       FRA5306: {
-        name: 'Hauts-de-Seine',
+        name: `Hauts-de-Seine (${getPercentage(92)})`,
         description: getFullDescription(92),
         color: getColorFromPercentage(92, 'initial'),
         hover_color: getColorFromPercentage(92, 'hover')
       },
       FRA5333: {
-        name: 'Paris',
+        name: `Paris (${getPercentage(75)})`,
         description: getFullDescription(75),
         color: getColorFromPercentage(75, 'initial'),
         hover_color: getColorFromPercentage(75, 'hover')
       },
       FRA5342: {
-        name: 'Seine-et-Marne',
+        name: `Seine-et-Marne (${getPercentage(77)})`,
         description: getFullDescription(77),
         color: getColorFromPercentage(77, 'initial'),
         hover_color: getColorFromPercentage(77, 'hover')
       },
       FRA5344: {
-        name: 'Seine-Saint-Denis',
+        name: `Seine-Saint-Denis (${getPercentage(93)})`,
         description: getFullDescription(93),
         color: getColorFromPercentage(93, 'initial'),
         hover_color: getColorFromPercentage(93, 'hover')
       },
       FRA5349: {
-        name: "Val-d'Oise",
+        name: `Val-d'Oise (${getPercentage(95)})`,
         description: getFullDescription(95),
         color: getColorFromPercentage(95, 'initial'),
         hover_color: getColorFromPercentage(95, 'hover')
       },
       FRA5350: {
-        name: 'Val-de-Marne',
+        name: `Val-de-Marne (${getPercentage(94)})`,
         description: getFullDescription(94),
         color: getColorFromPercentage(94, 'initial'),
         hover_color: getColorFromPercentage(94, 'hover')
       },
       FRA5357: {
-        name: 'Yvelines',
+        name: `Yvelines (${getPercentage(78)})`,
         description: getFullDescription(78),
         color: getColorFromPercentage(78, 'initial'),
         hover_color: getColorFromPercentage(78, 'hover')
