@@ -4,6 +4,7 @@ import { ComponentStyleConfig } from '@chakra-ui/react';
 const colors = {
   primary: {
     50: '#F4F8FF',
+    75: '#E9F1FF',
     100: '#b9ccfc',
     200: '#8eaafc',
     300: '#639bf9',

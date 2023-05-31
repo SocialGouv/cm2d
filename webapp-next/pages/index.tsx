@@ -4,6 +4,7 @@ import { ChartLine } from '@/components/charts/line/Line';
 import MapIframe from '@/components/charts/map/Map';
 import { ChartTable } from '@/components/charts/table/Table';
 import { ClosableAlert } from '@/components/layouts/ClosableAlert';
+import { KPI } from '@/components/layouts/KPI';
 import { useData } from '@/utils/api';
 import { Cm2dContext } from '@/utils/cm2d-provider';
 import {
@@ -88,6 +89,7 @@ export default function Home() {
       </Flex>
     );
 
+  const total = data.result?.hits?.total?.value || 0;
   let datasets = getViewDatasets(data, view);
 
   const ChartDisplay = () => {
@@ -127,7 +129,7 @@ export default function Home() {
       <Flex
         flexDir={'column'}
         pt={8}
-        pb={['table'].includes(view) ? 6 : 20}
+        pb={['table', 'map'].includes(view) ? 6 : 36}
         px={6}
         borderRadius={16}
         bg="white"
@@ -148,6 +150,9 @@ export default function Home() {
             {title.charAt(0).toUpperCase() + title.substring(1)}
           </Text>
           <ChartDisplay />
+          <Box mt={8}>
+            <KPI prefix="Total de la sélection" kpi={`${total} décès`} />
+          </Box>
         </Box>
       </Flex>
     </Flex>
