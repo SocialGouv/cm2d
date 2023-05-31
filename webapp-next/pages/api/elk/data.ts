@@ -28,6 +28,7 @@ export default async function handler(
     {
       index: index,
       size: 100,
+      track_total_hits: true,
       body: {
         query: {
           bool: {
