@@ -23,7 +23,7 @@ export function FilterDates() {
     throw new Error('Header must be used within a Cm2dProvider');
   }
 
-  const { filters, setFilters } = context;
+  const { filters, setFilters, firstDate } = context;
 
   useEffect(() => {
     if (startDate && endDate) {
@@ -40,6 +40,7 @@ export function FilterDates() {
       locale={fr}
       selected={startDate}
       maxDate={new Date()}
+      minDate={firstDate}
       onChange={(dates: [Date, Date]) => {
         const [start, end] = dates;
         setStartDate(start);

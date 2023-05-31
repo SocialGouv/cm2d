@@ -9,7 +9,7 @@ export function useSexes() {
   };
 
   const { data, error } = useSWR(
-    `/api/elk?${new URLSearchParams(params)}`,
+    `/api/elk/data?${new URLSearchParams(params)}`,
     async function (input: RequestInfo, init?: RequestInit) {
       const res = await fetch(input, init);
       return superJSONParse<any>(stringify(await res.json()));
@@ -29,7 +29,7 @@ export function useDeathLocations() {
   };
 
   const { data, error } = useSWR(
-    `/api/elk?${new URLSearchParams(params)}`,
+    `/api/elk/data?${new URLSearchParams(params)}`,
     async function (input: RequestInfo, init?: RequestInit) {
       const res = await fetch(input, init);
       return superJSONParse<any>(stringify(await res.json()));
@@ -49,7 +49,7 @@ export function useCauses() {
   };
 
   const { data, error } = useSWR(
-    `/api/elk?${new URLSearchParams(params)}`,
+    `/api/elk/data?${new URLSearchParams(params)}`,
     async function (input: RequestInfo, init?: RequestInit) {
       const res = await fetch(input, init);
       return superJSONParse<any>(stringify(await res.json()));
@@ -69,7 +69,7 @@ export function useDepartments() {
   };
 
   const { data, error } = useSWR(
-    `/api/elk?${new URLSearchParams(params)}`,
+    `/api/elk/data?${new URLSearchParams(params)}`,
     async function (input: RequestInfo, init?: RequestInit) {
       const res = await fetch(input, init);
       return superJSONParse<any>(stringify(await res.json()));
@@ -91,7 +91,7 @@ export function useData(filters: Filters, aggregations: any) {
   };
 
   const { data, error } = useSWR(
-    `/api/elk?${new URLSearchParams(params)}`,
+    `/api/elk/data?${new URLSearchParams(params)}`,
     async function (input: RequestInfo, init?: RequestInit) {
       const res = await fetch(input, init);
       return superJSONParse<any>(stringify(await res.json()));
