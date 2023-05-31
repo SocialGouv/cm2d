@@ -157,7 +157,7 @@ export function ChartTableHeader() {
           variant="light"
           rightIcon={<ChevronDownIcon color="primary.200" w={5} h={5} />}
         >
-          Abscisse : <Text as="b">{getLabelFromElkField(aggregateX)}</Text>
+          Lignes : <Text as="b">{getLabelFromElkField(aggregateX)}</Text>
         </MenuButton>
         <MenuList>
           {availableFields.map(field => (
@@ -179,7 +179,7 @@ export function ChartTableHeader() {
           variant="light"
           rightIcon={<ChevronDownIcon color="primary.200" w={5} h={5} />}
         >
-          Ordonnée : <Text as="b">{getLabelFromElkField(aggregateY)}</Text>
+          Colonnes : <Text as="b">{getLabelFromElkField(aggregateY)}</Text>
         </MenuButton>
         <MenuList>
           {availableFields.map(field => (

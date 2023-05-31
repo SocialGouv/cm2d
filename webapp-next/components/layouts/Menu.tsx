@@ -59,7 +59,13 @@ export function Menu() {
       <Box mt={10} px={6}>
         <MenuTitle title="Filtres" />
         <SubMenu
-          title="Démographie"
+          title={
+            <>
+              Données
+              <br />
+              sociodémographiques
+            </>
+          }
           icon={{
             src: 'icons/user-search-blue.svg',
             srcOpen: 'icons/user-search.svg',
@@ -76,7 +82,13 @@ export function Menu() {
           </Stack>
         </SubMenu>
         <SubMenu
-          title="Données du décès"
+          title={
+            <>
+              Autres données
+              <br />
+              certifiées
+            </>
+          }
           icon={{
             src: 'icons/file-list-search-blue.svg',
             srcOpen: 'icons/file-list-search.svg',

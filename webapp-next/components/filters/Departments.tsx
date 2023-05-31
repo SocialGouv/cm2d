@@ -28,8 +28,8 @@ export const FiltersDepartments = (props: Props) => {
 
   return (
     <Box>
-      <MenuSubTitle title="Département" />
-      <Flex gap={4} flexDirection="row" wrap="wrap">
+      <MenuSubTitle title="Département du décès" />
+      <Flex gap={4} flexDirection="column" wrap="wrap">
         {departments.map(department => (
           <Checkbox
             key={department.id}

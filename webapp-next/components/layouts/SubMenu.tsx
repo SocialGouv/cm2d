@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { ReactNode, useState } from 'react';
 
 type Props = {
-  title: string;
+  title: string | JSX.Element;
   icon: {
     src: string;
     srcOpen?: string;
@@ -26,7 +26,7 @@ export const SubMenu = (props: Props) => {
         onClick={() => setIsCollapsed(!isCollapsed)}
         w="full"
         justifyContent="start"
-        py={7}
+        py={8}
         rounded="md"
       >
         <Image
@@ -39,6 +39,7 @@ export const SubMenu = (props: Props) => {
           ml={2}
           color={isCollapsed ? 'black' : 'primary'}
           fontWeight={isCollapsed ? 400 : 600}
+          textAlign="left"
         >
           {title}
         </Text>
