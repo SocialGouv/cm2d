@@ -118,8 +118,8 @@ export default function Home() {
               Attention : veuillez prendre en compte que les données ne sont pas
               consolidées pour les dates ultérieures au {getSixMonthAgoDate()}.
               <br />
-              En conséquence, l&apos;exactitude de toute information postérieure
-              à cette date ne peut être garantie.
+              En conséquence, l&apos;exhaustivité de toute information
+              postérieure à cette date ne peut être garantie.
             </>
           }
         />

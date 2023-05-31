@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { ReactNode, useState } from 'react';
 
 type Props = {
-  title: string;
+  title: string | JSX.Element;
   icon: {
     src: string;
     srcOpen?: string;
