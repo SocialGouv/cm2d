@@ -1,6 +1,16 @@
 import { useCauses } from '@/utils/api';
 import { Filters } from '@/utils/cm2d-provider';
-import { InputGroup, InputLeftElement } from '@chakra-ui/react';
+import { ChevronDownIcon } from '@chakra-ui/icons';
+import {
+  Flex,
+  InputGroup,
+  InputLeftElement,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Select
+} from '@chakra-ui/react';
 import {
   AutoComplete,
   AutoCompleteInput,
@@ -22,14 +32,6 @@ type Props = {
 export const FilterCauses = (props: Props) => {
   const { filters, setFilters } = props;
   const { data } = useCauses();
-
-  const [inputValue, setInputValue] = useState('');
-
-  useEffect(() => {
-    if (!filters.categories_level_1.length) {
-      setInputValue('');
-    }
-  }, [filters.categories_level_1]);
 
   if (!data) return <>...</>;
 
@@ -56,47 +58,49 @@ export const FilterCauses = (props: Props) => {
           height={24}
         />
       </InputLeftElement>
-      <AutoComplete
-        key={filters.categories_level_1.toString()}
-        openOnFocus
-        onSelectOption={selectedOption => {
-          setFilters({
-            ...filters,
-            categories_level_1: [selectedOption.item.value]
-          });
-
-          setInputValue(selectedOption.item.value);
-        }}
-        restoreOnBlurIfEmpty={false}
-      >
-        <AutoCompleteInput
+      <Menu>
+        <MenuButton
+          px={4}
           pl={10}
-          textTransform="capitalize"
-          bg={!!inputValue ? 'primary.50' : 'white'}
-          onChange={e => {
-            if (!e.target.value) {
-              setFilters({ ...filters, categories_level_1: [] });
-            }
-            setInputValue(e.target.value);
-          }}
-          onBlur={() => {
-            if (!causes.map(c => c.label).includes(inputValue))
-              setInputValue('');
-          }}
-          value={inputValue}
-        />
-        <AutoCompleteList>
+          py={3}
+          w="full"
+          textAlign="left"
+          transition="all 0.2s"
+          borderRadius="md"
+          borderWidth="1px"
+          bg={!!filters.categories_level_1.length ? 'primary.50' : 'white'}
+          _focus={{ borderColor: 'primary.500' }}
+          _hover={{ borderColor: 'primary.500' }}
+        >
+          <Flex alignItems={'center'}>
+            {filters.categories_level_1[0] &&
+              filters.categories_level_1[0].charAt(0).toUpperCase() +
+                filters.categories_level_1[0].substring(1)}
+            <ChevronDownIcon
+              ml="auto"
+              fontSize="2xl"
+              color={
+                !!filters.categories_level_1.length ? 'primary.500' : 'initial'
+              }
+            />
+          </Flex>
+        </MenuButton>
+        <MenuList>
           {causes.map(cause => (
-            <AutoCompleteItem
+            <MenuItem
               key={`option-${cause.id}`}
-              value={cause.label}
-              textTransform="capitalize"
+              onClick={e => {
+                setFilters({
+                  ...filters,
+                  categories_level_1: [cause.label]
+                });
+              }}
             >
-              {cause.label}
-            </AutoCompleteItem>
+              {cause.label.charAt(0).toUpperCase() + cause.label.substring(1)}
+            </MenuItem>
           ))}
-        </AutoCompleteList>
-      </AutoComplete>
+        </MenuList>
+      </Menu>
     </InputGroup>
   );
 };

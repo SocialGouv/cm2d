@@ -6,15 +6,36 @@
   border-width: 1px !important;
 }
 
-/* Override chakra autocomplete */
-.chakra-input:focus-visible {
+/* Override chakra select & autocomplete */
+.chakra-input:focus-visible,
+.chakra-select:focus-visible {
   border-color: #246cf9 !important;
   box-shadow: none !important;
 }
 
+.chakra-select {
+  padding-top: 1rem !important;
+  padding-bottom: 1rem !important;
+  height: auto !important;
+  position: relative;
+  padding-left: 2.2rem !important; /* Add your desired padding value */
+}
+.chakra-select::after {
+  content: '\25BC' !important; /* Unicode character for a downward arrow */
+  position: absolute !important;
+  top: 50% !important;
+  right: 8px !important;
+  transform: translateY(-50%) !important;
+  pointer-events: none !important;
+}
+
+.chakra-select option {
+  padding: 0 !important; /* Reset padding for options */
+}
+
 /* Override date picker */
 .react-datepicker-wrapper input.has-value {
-  background-color: #e3ebfd;
+  background-color: #f4f8ff;
 }
 .react-datepicker-wrapper input {
   padding: 0.7rem 0.5rem 0.7rem 2.5rem;
