@@ -1,5 +1,9 @@
 import { Cm2dContext, Filters } from '@/utils/cm2d-provider';
-import { ISODateToMonthYear, getLabelFromElkField } from '@/utils/tools';
+import {
+  ISODateToMonthYear,
+  getLabelFromElkField,
+  getLabelFromKey
+} from '@/utils/tools';
 import { CloseIcon } from '@chakra-ui/icons';
 import { Box, Tag, Text } from '@chakra-ui/react';
 import { useContext } from 'react';
@@ -92,11 +96,12 @@ export function FiltersShortcut() {
           case 'categories_level_1':
           case 'death_location':
           case 'sex':
+          case 'department':
             return filters[key].map(value => (
               <CustomTag
                 key={`${key}-${value}`}
                 field_name={key}
-                value={value}
+                value={getLabelFromKey(value)}
                 onDelete={() => {
                   setFilters({
                     ...filters,

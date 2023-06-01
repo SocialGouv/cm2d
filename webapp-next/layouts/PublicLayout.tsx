@@ -4,7 +4,7 @@ import { ReactNode } from 'react';
 
 export function PublicLayout({ children }: { children: ReactNode }) {
   return (
-    <Box bg="gray.50" minH="100vh">
+    <Box  minH="100vh">
       <Head>
         <title>CM2D</title>
         <meta

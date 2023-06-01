@@ -47,13 +47,13 @@ export const getLabelFromKey = (
   key: string,
   dateFormat: 'year' | 'month' = 'year'
 ): string => {
+  if (key in departmentRefs)
+    return `${departmentRefs[key as keyof typeof departmentRefs]} (${key})`;
+
   if (isStringContainingDate(key))
     return dateFormat === 'year'
       ? new Date(key).getFullYear().toString()
       : dateToMonthYear(new Date(key));
-
-  if (key in departmentRefs)
-    return `${departmentRefs[key as keyof typeof departmentRefs]} (${key})`;
 
   return key;
 };

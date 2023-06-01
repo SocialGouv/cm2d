@@ -121,7 +121,7 @@ export function ChartDoughnutHeader() {
           variant="light"
           rightIcon={<ChevronDownIcon color="primary.200" w={5} h={5} />}
         >
-          Abscisse : <Text as="b">{getLabelFromElkField(aggregateX)}</Text>
+          Critère : <Text as="b">{getLabelFromElkField(aggregateX)}</Text>
         </MenuButton>
         <MenuList>
           {availableFields.map(field => (

@@ -146,14 +146,18 @@ export function ChartMapHeader() {
           rightIcon={<ChevronDownIcon color="primary.200" w={5} h={5} />}
         >
           Courbe :{' '}
-          <Text as="b">{isAggregated ? 'Vue agrégée' : 'Vue distribuée'}</Text>
+          <Text as="b">
+            {isAggregated ? 'Distribution globale' : 'Distribution stratifiée'}
+          </Text>
         </MenuButton>
         <MenuList>
           <MenuItem onClick={() => handleAggregationChange(true)}>
-            <Text as={isAggregated ? 'b' : 'span'}>Vue agrégée</Text>
+            <Text as={isAggregated ? 'b' : 'span'}>Distribution globale</Text>
           </MenuItem>
           <MenuItem onClick={() => handleAggregationChange(false)}>
-            <Text as={!isAggregated ? 'b' : 'span'}>Vue distribuée</Text>
+            <Text as={!isAggregated ? 'b' : 'span'}>
+              Distribution stratifiée
+            </Text>
           </MenuItem>
         </MenuList>
       </Menu>
@@ -165,7 +169,7 @@ export function ChartMapHeader() {
             variant="light"
             rightIcon={<ChevronDownIcon color="primary.200" w={5} h={5} />}
           >
-            Légende : <Text as="b">{getLabelFromElkField(aggregateField)}</Text>
+            Critère : <Text as="b">{getLabelFromElkField(aggregateField)}</Text>
           </MenuButton>
           <MenuList>
             {availableFields.map(field => (

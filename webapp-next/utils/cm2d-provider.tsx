@@ -3,7 +3,8 @@ import {
   useState,
   Dispatch,
   SetStateAction,
-  ReactNode
+  ReactNode,
+  useEffect
 } from 'react';
 
 export type Filters = {
@@ -20,6 +21,7 @@ export type Filters = {
 };
 
 type Cm2dContextType = {
+  firstDate: Date;
   filters: Filters;
   setFilters: Dispatch<SetStateAction<Filters>>;
   aggregations: any;
@@ -65,10 +67,25 @@ export function Cm2dProvider({ children }: Cm2dProviderProps) {
   const [view, setView] = useState<View>('line');
   const [saveAggregateX, setSaveAggregateX] = useState<string | undefined>();
   const [saveAggregateY, setSaveAggregateY] = useState<string | undefined>();
+  const [firstDate, setFirstDate] = useState<Date>(new Date());
+
+  const fetchFirstData = () => {
+    fetch('/api/elk/first', { method: 'GET' }).then(res =>
+      res.json().then(data => {
+        const date = data?.result?.hits?.hits[0]._source.date;
+        if (date) setFirstDate(new Date(date));
+      })
+    );
+  };
+
+  useEffect(() => {
+    fetchFirstData();
+  }, []);
 
   return (
     <Cm2dContext.Provider
       value={{
+        firstDate,
         filters,
         setFilters,
         aggregations,

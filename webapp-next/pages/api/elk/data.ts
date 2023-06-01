@@ -1,4 +1,6 @@
 import { Client } from '@elastic/elasticsearch';
+import fs from 'fs';
+import path from 'path';
 import {
   AggregationsAggregate,
   SearchResponseBody
@@ -13,7 +15,17 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  const client = new Client({ node: 'http://localhost:9200' });
+  const client = new Client({
+    node: process.env.ELASTIC_HOST,
+    auth: {
+      username: 'elastic',
+      password: process.env.ELASTIC_PASSWORD as string
+    },
+    tls: {
+      ca: fs.readFileSync(path.resolve(process.cwd(), './../certificates/ca.crt')),
+      rejectUnauthorized: false
+    }
+  });
 
   // Parse the filters, aggregations and index from the query parameters
   const filters = req.query.filters
@@ -28,6 +40,7 @@ export default async function handler(
     {
       index: index,
       size: 100,
+      track_total_hits: true,
       body: {
         query: {
           bool: {

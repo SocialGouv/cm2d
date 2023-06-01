@@ -1,8 +1,11 @@
 import { Cm2dContext } from '@/utils/cm2d-provider';
 import { getLastDayOfMonth } from '@/utils/tools';
 import { useContext, useEffect, useRef, useState } from 'react';
-import DatePicker from 'react-datepicker';
+import DatePicker, { registerLocale } from 'react-datepicker';
+import fr from 'date-fns/locale/fr';
 import 'react-datepicker/dist/react-datepicker.css';
+
+registerLocale('fr', fr);
 
 export function FilterDates() {
   const context = useContext(Cm2dContext);
@@ -20,7 +23,7 @@ export function FilterDates() {
     throw new Error('Header must be used within a Cm2dProvider');
   }
 
-  const { filters, setFilters } = context;
+  const { filters, setFilters, firstDate } = context;
 
   useEffect(() => {
     if (startDate && endDate) {
@@ -34,8 +37,10 @@ export function FilterDates() {
 
   return (
     <DatePicker
+      locale={fr}
       selected={startDate}
       maxDate={new Date()}
+      minDate={firstDate}
       onChange={(dates: [Date, Date]) => {
         const [start, end] = dates;
         setStartDate(start);
