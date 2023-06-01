@@ -16,7 +16,7 @@ export default async function handler(
   res: NextApiResponse<Data>
 ) {
   const client = new Client({
-    node: 'https://localhost:9200',
+    node: process.env.ELASTIC_HOST,
     auth: {
       username: 'elastic',
       password: 'cm2d_elastic_password'
@@ -40,6 +40,7 @@ export default async function handler(
     {
       index: index,
       size: 100,
+      track_total_hits: true,
       body: {
         query: {
           bool: {
