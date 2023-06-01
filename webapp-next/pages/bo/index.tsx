@@ -1,8 +1,10 @@
 import { ChartDoughnut } from '@/components/charts/doughnut/Doughnut';
 import { ChartHistogram } from '@/components/charts/histogram/Histogram';
 import { ChartLine } from '@/components/charts/line/Line';
+import MapIframe from '@/components/charts/map/Map';
 import { ChartTable } from '@/components/charts/table/Table';
 import { ClosableAlert } from '@/components/layouts/ClosableAlert';
+import { KPI } from '@/components/layouts/KPI';
 import { useData } from '@/utils/api';
 import { Cm2dContext } from '@/utils/cm2d-provider';
 import {
@@ -87,7 +89,8 @@ export default function Home() {
       </Flex>
     );
 
-  let datasets: { hits: any[] }[] = getViewDatasets(data, view);
+  const total = data.result?.hits?.total?.value || 0;
+  let datasets = getViewDatasets(data, view);
 
   const ChartDisplay = () => {
     switch (view) {
@@ -99,6 +102,8 @@ export default function Home() {
         return <ChartHistogram id="histogram-cm2d" datasets={datasets} />;
       case 'doughnut':
         return <ChartDoughnut id="doughnut-cm2d" datasets={datasets} />;
+      case 'map':
+        return <MapIframe id="map-cm2d" datasets={datasets} />;
       default:
         return <>Pas de dataviz configurée pour cette vue</>;
     }
@@ -115,8 +120,8 @@ export default function Home() {
               Attention : veuillez prendre en compte que les données ne sont pas
               consolidées pour les dates ultérieures au {getSixMonthAgoDate()}.
               <br />
-              En conséquence, l&apos;exactitude de toute information postérieure
-              à cette date ne peut être garantie.
+              En conséquence, l&apos;exhaustivité de toute information
+              postérieure à cette date ne peut être garantie.
             </>
           }
         />
@@ -124,7 +129,7 @@ export default function Home() {
       <Flex
         flexDir={'column'}
         pt={8}
-        pb={['table'].includes(view) ? 6 : 20}
+        pb={['table', 'map'].includes(view) ? 6 : 36}
         px={6}
         borderRadius={16}
         bg="white"
@@ -145,6 +150,9 @@ export default function Home() {
             {title.charAt(0).toUpperCase() + title.substring(1)}
           </Text>
           <ChartDisplay />
+          <Box mt={8}>
+            <KPI prefix="Total de la sélection" kpi={`${total} décès`} />
+          </Box>
         </Box>
       </Flex>
     </Flex>
