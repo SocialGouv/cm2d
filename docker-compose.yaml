@@ -69,6 +69,7 @@ services:
       - elastic
     environment:
         - node.name=elasticsearch
+        - xpack.security.authc.realms.native.native1.order=0
         - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
         - cluster.name=${CLUSTER_NAME}
         - bootstrap.memory_lock=true

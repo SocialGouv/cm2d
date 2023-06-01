@@ -4,3 +4,4 @@ faker/sample_data.csv
 faker/.idea
 certificates/*
 sample_data.csv
+.env
