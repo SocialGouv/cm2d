@@ -19,7 +19,7 @@ export default async function handler(
     node: process.env.ELASTIC_HOST,
     auth: {
       username: 'elastic',
-      password: 'cm2d_elastic_password'
+      password: process.env.ELASTIC_PASSWORD as string
     },
     tls: {
       ca: fs.readFileSync(path.resolve(process.cwd(), './../certificates/ca.crt')),

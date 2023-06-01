@@ -17,3 +17,5 @@ docker-compose up -d
 mkdir certificates
 docker cp elasticsearch:/usr/share/elasticsearch/config/certs/ca/ca.crt ./certificates/ca.crt
 ```
+
+### Don't forget to copy Elastic passsword to webapp-next env environnement
