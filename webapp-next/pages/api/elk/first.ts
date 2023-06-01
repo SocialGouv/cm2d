@@ -1,4 +1,6 @@
 import { Client } from '@elastic/elasticsearch';
+import fs from 'fs';
+import path from 'path';
 import {
   AggregationsAggregate,
   SearchResponseBody
@@ -13,7 +15,17 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  const client = new Client({ node: process.env.ELASTIC_HOST });
+  const client = new Client({
+    node: process.env.ELASTIC_HOST,
+    auth: {
+      username: 'elastic',
+      password: 'cm2d_elastic_password'
+    },
+    tls: {
+      ca: fs.readFileSync(path.resolve(process.cwd(), './../certificates/ca.crt')),
+      rejectUnauthorized: false
+    }
+  });
 
   const index = (req.query.index as string) || 'cm2d_certificate';
 
