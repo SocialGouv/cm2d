@@ -14,15 +14,15 @@ export const Footer = () => {
     >
       <Stack alignItems="center" color={"white"}>
         <HStack alignItems="center">
-          <NextLink href={"/landingpage"}>
+          <NextLink href={"/"}>
             <Text fontSize={["12px", "14px", "16px"]} fontWeight={500} mx={[6, 1, 2]}>Mentions légales</Text>
           </NextLink>
           
-          <NextLink href={"/landingpage"}>
+          <NextLink href={"/"}>
             <Text fontSize={["12px", "14px", "16px"]} fontWeight={500} mx={[6, 1, 2]}>Conditions générales d&apos;utilisation</Text>
           </NextLink>
           
-          <NextLink href={"/landingpage"}>
+          <NextLink href={"/"}>
             <Text fontSize={["12px", "14px", "16px"]} fontWeight={500} mx={[6, 1, 2]}>Politique de confidentialité</Text>
           </NextLink>
         </HStack>
