@@ -34,7 +34,7 @@ export default function ColumnWithImage() {
                 auctor, est vel ullamcorper accumsan, est mauris fringilla nisi,
                 a egestas tellus nisl ac justo.
               </Text>
-              <NextLink href={"/landingpage"}>
+              <NextLink href={"/login"}>
                 <Button
                   variant="ghost"
                   bg={"primary.500"}

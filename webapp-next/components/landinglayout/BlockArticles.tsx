@@ -52,7 +52,7 @@ export const BlockArticles: React.FC<Article> = ({ article }) => {
                   <Text color={"neutral.500"} fontWeight={400} mb={[2, 5, 5]}>
                     {art.description}
                   </Text>
-                  <NextLink href={"/landingpage"}>
+                  <NextLink href={"/"}>
                     <Button
                       variant="outline"
                       borderRadius={5}
