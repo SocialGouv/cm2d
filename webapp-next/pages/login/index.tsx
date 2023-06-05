@@ -1,21 +1,16 @@
-import ContainerLogin from "@/components/loginComponents/ContainerLogin";
-import { Box, Wrap, WrapItem } from "@chakra-ui/react";
-import { ColumnWithImage } from "@/components/loginComponents/ColumnWithImage";
-import { FormLogin } from "@/components/loginComponents/FormLogin";
+import { ColumnWithImage } from '@/components/login/ColumnWithImage';
+import { FormLogin } from '@/components/login/FormLogin';
+import { Box, Flex, Wrap, WrapItem } from '@chakra-ui/react';
 
 export default function LoginPage() {
   return (
-    <ContainerLogin>
-      <Box p={[0, 6]}>
-        <Wrap h={["1200px", "95vh"]} borderLeftRadius={20}>
-          <WrapItem   flex={1} >
-            <ColumnWithImage />
-          </WrapItem>
-          <WrapItem   flex={1} >
-            <FormLogin/>
-          </WrapItem>
-        </Wrap>
-      </Box>
-    </ContainerLogin>
+    <Flex maxH="100vh" px={4} w="full">
+      <Flex display={['none', 'none', 'none', 'none', 'flex']} w="50%" py={6}>
+        <ColumnWithImage />
+      </Flex>
+      <Flex w={['full', 'full', 'full', 'full', '50%']}>
+        <FormLogin />
+      </Flex>
+    </Flex>
   );
 }
