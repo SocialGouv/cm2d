@@ -5,6 +5,7 @@ interface Link {
   label: string;
   icon: string;
   link: string;
+  onClick?: () => void;
 }
 
 interface Props {
@@ -22,6 +23,7 @@ export const MenuLinks: React.FC<Props> = ({ links }) => {
           alignItems="left"
           mt={8}
           key={index}
+          onClick={link.onClick ? link.onClick : () => {}}
         >
           {link.icon && (
             <Image src={link.icon} width={24} height={24} alt="icon" />
