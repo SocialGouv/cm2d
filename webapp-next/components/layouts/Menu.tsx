@@ -11,6 +11,7 @@ import { MenuLinks } from './MenuLinks';
 import { UserCard } from './UserCard';
 import { FilterDates } from '../filters/Dates';
 import { FiltersDepartments } from '../filters/Departments';
+import cookie from 'js-cookie';
 
 export const ageRanges = [
   { from: 0, to: 10, key: '0-10 ans' },
@@ -118,6 +119,9 @@ export function Menu() {
               {
                 label: 'Déconnexion',
                 icon: '/icons/log-out.svg',
+                onClick: () => {
+                  cookie.remove('cm2d_api_key');
+                },
                 link: '/'
               }
             ]}

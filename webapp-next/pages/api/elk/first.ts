@@ -15,11 +15,11 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
+
   const client = new Client({
     node: process.env.ELASTIC_HOST,
     auth: {
-      username: 'elastic',
-      password: process.env.ELASTIC_PASSWORD as string
+      apiKey: req.cookies.cm2d_api_key as string
     },
     tls: {
       ca: fs.readFileSync(path.resolve(process.cwd(), './../certificates/ca.crt')),
