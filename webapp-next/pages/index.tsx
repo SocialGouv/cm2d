@@ -11,7 +11,7 @@ export default function Landing() {
     <ContainerBlock>
       <NavbarLanding />
       <ColumnWithImage />
-      {/* <BlockGaleryimages
+      <BlockGaleryimages
         Imagescontent={[
           { imagelink: '/placeholder-img.svg' },
           { imagelink: '/placeholder-img.svg' },
@@ -22,18 +22,18 @@ export default function Landing() {
         contentimage={{ image: '/Placeholder-image.svg' }}
         contentsgrids={[
           {
-            title: 'Lorem Ipsum',
+            title: 'Un service construit avec les utilisateurs',
             description:
-              'Lörem ipsum bominar mivit om tynade. Hybridkrig bodyssa biosedore preren. Homode krorad hänåns. Nisade nektig vans. Tyde plamoplask osade intrarad dirysk res. Vilina tetrade har automoskap jag homoskade. Pibel miment. '
+              'L’élaboration de cette application a associé des professionnels de santé et agents de l’ARS Ile de France et a pour ambition de rendre les données de mortalité plus accessibles et compréhensibles pour des agents du terrain.'
           },
           {
-            title: 'Lorem Ipsum',
+            title: 'Une première version amenée à évoluer',
             description:
-              'Lörem ipsum bominar mivit om tynade. Hybridkrig bodyssa biosedore preren. Homode krorad hänåns. Nisade nektig vans. Tyde plamoplask osade intrarad dirysk res. Vilina tetrade har automoskap jag homoskade. Pibel miment. '
+              'L’application se concentre aujourd’hui sur 3 pathologies principales : AVC, tuberculose et suicide. Elle sera à amenée à évoluer pour couvrir plus de pathologies, présenter de nouvelles fonctionnalités et être accessible à l’ensemble des ARS.'
           }
         ]}
       />
-      <BlockArticles
+      {/* <BlockArticles
         article={[
           {
             title: 'SubTitle Lorem ipsum',
