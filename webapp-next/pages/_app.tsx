@@ -10,6 +10,7 @@ import { Cm2dProvider } from '@/utils/cm2d-provider';
 import { useRouter } from 'next/router';
 import { ReactNode } from 'react';
 import { PublicLayout } from '@/layouts/PublicLayout';
+import { LightLayout } from '@/layouts/LightLayout';
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -17,6 +18,8 @@ export default function App({ Component, pageProps }: AppProps) {
   const getLayout = (children: ReactNode) => {
     if (router.pathname.startsWith('/bo')) {
       return <DashboardLayout>{children}</DashboardLayout>;
+    } else if (router.pathname.startsWith('/login')) {
+      return <LightLayout>{children}</LightLayout>;
     } else {
       return <PublicLayout>{children}</PublicLayout>;
     }

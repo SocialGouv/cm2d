@@ -1,15 +1,11 @@
-import { BlockArticles } from '@/components/landing/BlockArticles';
 import ColumnWithImage from '@/components/landing/BlockColumnwithimage';
 import BlockGaleryimages from '@/components/landing/BlockGaleryImages';
 import { BlockImageGrids } from '@/components/landing/BlockImageGrids';
-import ContainerBlock from '@/components/landing/ContainerBlock';
 import { Footer } from '@/components/landing/Footer';
-import NavbarLanding from '@/components/landing/NavbarLanding';
 
 export default function Landing() {
   return (
-    <ContainerBlock>
-      <NavbarLanding />
+    <>
       <ColumnWithImage />
       <BlockGaleryimages
         Imagescontent={[
@@ -55,7 +51,6 @@ export default function Landing() {
           }
         ]}
       /> */}
-      <Footer />
-    </ContainerBlock>
+    </>
   );
 }

@@ -13,7 +13,7 @@ export const Footer = () => {
     >
       <Stack alignItems="center" color={'white'}>
         <HStack alignItems="center">
-          <NextLink href={'/'}>
+          <NextLink href={'/legals/mentions-legales'}>
             <Text
               fontSize={['12px', '14px', '16px']}
               fontWeight={500}
@@ -23,7 +23,7 @@ export const Footer = () => {
             </Text>
           </NextLink>
 
-          <NextLink href={'/'}>
+          <NextLink href={'/legals/cgu'}>
             <Text
               fontSize={['12px', '14px', '16px']}
               fontWeight={500}
@@ -33,7 +33,7 @@ export const Footer = () => {
             </Text>
           </NextLink>
 
-          <NextLink href={'/'}>
+          <NextLink href={'/legals/pc'}>
             <Text
               fontSize={['12px', '14px', '16px']}
               fontWeight={500}

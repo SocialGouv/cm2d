@@ -42,7 +42,9 @@ export default function NavbarLanding() {
       <Flex alignItems="center" wrap="wrap">
         <Flex flexGrow={1} justify="center">
           <Box ml={6} mt={[2, 0, 0]}>
-            <Image src="/CM2D.svg" alt="CM2D Logo" w={24} />
+            <NextLink href="/" passHref>
+              <Image src="/CM2D.svg" alt="CM2D Logo" w={24} />
+            </NextLink>
           </Box>
         </Flex>
         {isOpen ? (
