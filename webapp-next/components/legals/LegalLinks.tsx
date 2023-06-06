@@ -11,7 +11,7 @@ const links = [
 export const LegalLinks = () => {
   const router = useRouter();
   return (
-    <Wrap spacing={10} justify="center" mb={10}>
+    <Wrap spacing={10} justify="center" mb={12}>
       {links.map((link, index) => (
         <WrapItem
           key={index}
