@@ -1,4 +1,4 @@
-import { Flex, Box, Text, Image, Wrap, WrapItem } from "@chakra-ui/react";
+import { Flex, Box, Text, Image, Wrap, WrapItem } from '@chakra-ui/react';
 
 type Images = {
   imagelink: string;
@@ -11,31 +11,34 @@ interface Imagescontents {
 const BlockGaleryimages: React.FC<Imagescontents> = ({ Imagescontent }) => {
   return (
     <Flex my={[10, 15, 20]} flexDir="column">
-      <Box mb={5} mx={[5, 20, 36]}>
+      <Box mb={5} mx={[5, 20, 52]}>
         <Text
-          fontSize={["20px", "26px", "36px"]}
+          fontSize={['20px', '26px', '36px']}
           fontWeight="600"
           mb={4}
           lineHeight={1.3}
         >
-          Explorez les données sur les causes de décès
+          Un service inédit à destination des agents des ARS
         </Text>
         <Text
-          color={"neutral.500"}
-          fontWeight={"400"}
-          fontSize={["14px", "16px", "18px"]}
+          color={'neutral.500'}
+          fontWeight={'400'}
+          fontSize={['14px', '16px', '18px']}
         >
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam
-          auctor, est vel ullamcorper accumsan, est mauris fringilla nisi, a
-          egestas tellus nisl ac justo.
+          CM2D offre un accès sécurisé aux données des certificats de décès
+          papiers et électroniques et propose aux utilisateurs de réaliser des
+          requêtes et analyses sur des pathologies ciblées. Les étapes clefs :
         </Text>
       </Box>
 
-      <Wrap justify="center" w={"full"}>
+      <Wrap justify="center" w={'full'} spacing={20}>
         {Imagescontent.map((image, index) => (
           <WrapItem key={index}>
-            <Box mt={10} mx={[5, 10, 28]}>
-              <Image src={image.imagelink ? image.imagelink : ""} alt="Image 1" />
+            <Box mt={10}>
+              <Image
+                src={image.imagelink ? image.imagelink : ''}
+                alt="Image 1"
+              />
             </Box>
           </WrapItem>
         ))}
