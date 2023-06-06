@@ -4,6 +4,7 @@ import {
   AlertTitle,
   Box,
   Button,
+  Flex,
   FormControl,
   FormLabel,
   Heading,
@@ -13,6 +14,7 @@ import {
   InputGroup,
   InputLeftElement,
   InputRightElement,
+  Spinner,
   Text,
   useDisclosure
 } from '@chakra-ui/react';
@@ -37,6 +39,7 @@ export const FormLogin = () => {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const { isOpen, onToggle } = useDisclosure();
 
   const [formError, setFormError] = useState(false);
@@ -55,12 +58,14 @@ export const FormLogin = () => {
     e.preventDefault();
     if (username !== '' && password !== '') {
       try {
+        setIsLoading(true);
         const result = await trigger({ username, password });
         cookie.set('cm2d_api_key', result.encoded);
         router.push('/bo');
       } catch (e) {
         setFormError(true);
       }
+      setIsLoading(false);
     }
   };
 
@@ -90,7 +95,12 @@ export const FormLogin = () => {
         >
           Veuillez vous connecter pour accéder à votre compte.
         </Text>
-        <form onSubmit={e => handleSubmit(e)}>
+        <form
+          onSubmit={e => handleSubmit(e)}
+          onChange={() => {
+            setFormError(false);
+          }}
+        >
           <FormControl mb={[4, 6]}>
             <FormLabel
               htmlFor="username"
@@ -181,6 +191,7 @@ export const FormLogin = () => {
           )}
           <Button
             type="submit"
+            isDisabled={isLoading}
             bg="primary.500"
             _hover={{}}
             loadingText="Connexion en cours..."
@@ -189,7 +200,11 @@ export const FormLogin = () => {
             fontSize={['14px', '16px', '18px']}
             fontWeight={600}
           >
-            Je me connecte -&gt;
+            {isLoading ? (
+              <Spinner color="primary.500" />
+            ) : (
+              <>Je me connecte -&gt;</>
+            )}
           </Button>
         </form>
       </Box>
