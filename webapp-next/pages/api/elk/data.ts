@@ -21,7 +21,9 @@ export default async function handler(
       apiKey: req.cookies.cm2d_api_key as string
     },
     tls: {
-      ca: fs.readFileSync(path.resolve(process.cwd(), './../certificates/ca.crt')),
+      ca: fs.readFileSync(
+        path.resolve(process.cwd(), './../certificates/ca.crt')
+      ),
       rejectUnauthorized: false
     }
   });
