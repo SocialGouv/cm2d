@@ -308,3 +308,56 @@ export function isRangeContainsLastSixMonths(
 export function getSixMonthAgoDate() {
   return moment().subtract(6, 'months').format('DD/MM/YYYY');
 }
+
+export function generateCode(): string {
+  const code = Math.floor(100000 + Math.random() * 900000);
+
+  return code.toString();
+}
+
+export function getCodeEmailHtml(code: string) {
+  return `
+		<!DOCTYPE html>
+		<html>
+			<head>
+				<style>
+					body {
+						font-family: Arial, sans-serif;
+					}
+					.container {
+						max-width: 600px;
+						margin: 0 auto;
+						padding: 20px;
+					}
+					.code {
+						font-size: 24px;
+						font-weight: bold;
+						margin: 20px 0;
+					}
+				</style>
+			</head>
+			<body>
+				<div class="container">
+					<p>Cher utilisateur,</p>
+
+					<p>
+						Vous avez récemment demandé à vous connecter à votre compte. Pour terminer le processus,
+						veuillez entrer le code de vérification suivant dans le formulaire de connexion :
+					</p>
+
+					<p class="code">${code}</p>
+
+					<p>
+						Ce code est valable pour les 10 prochaines minutes. Si vous n'avez pas demandé ce
+						code, veuillez ignorer cet e-mail.
+					</p>
+
+					<p>
+						Merci,<br/>
+						L'équipe CM2D
+					</p>
+				</div>
+			</body>
+		</html>
+	`;
+}
