@@ -14,7 +14,7 @@ interface Props {
 
 export const MenuLinks: React.FC<Props> = ({ links }) => {
   return (
-    <Flex flexDir={'column'} mb={10} bg="white" width={40}>
+    <Flex flexDir={'column'} mb={10} bg="white">
       {links.map((link, index) => (
         <Link
           as={NextLink}

@@ -9,15 +9,19 @@ import {
   useDisclosure,
   Wrap,
   WrapItem,
-  CloseButton
+  CloseButton,
+  Link
 } from '@chakra-ui/react';
 
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
+import cookie from 'js-cookie';
 
 export default function NavbarLanding() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const router = useRouter();
+
+  const hasApiKey = !!cookie.get('cm2d_api_key');
 
   const links = [
     { label: 'Accueil', path: '/' },
@@ -57,56 +61,75 @@ export default function NavbarLanding() {
           <HamburgerIcon onClick={onOpen} display={['inline', 'none']} />
         )}
       </Flex>
-      <Flex
-        display={[isOpen ? 'flex' : 'none', 'flex', 'flex']}
-        bg={'white'}
-        as="nav"
-      >
-        <Wrap
-          align="center"
-          justify="center"
-          mx={[0, 0, 28, 28]}
-          spacing={10}
-          direction={['column', 'column', 'row']}
-          flex={1}
+      {hasApiKey ? (
+        <Flex as="nav" bg="white">
+          <Button
+            as={NextLink}
+            href="/bo"
+            variant="ghost"
+            bg={'primary.500'}
+            color={'white'}
+            _hover={{}}
+            height={12}
+            fontSize={16}
+            fontWeight={'600'}
+            m={2}
+          >
+            RETOURNER À L&apos;APPLICATION -&gt;
+          </Button>
+        </Flex>
+      ) : (
+        <Flex
+          display={[isOpen ? 'flex' : 'none', 'flex', 'flex']}
+          bg={'white'}
+          as="nav"
         >
-          {links.map((link, index) => (
-            <WrapItem key={index}>
-              <NextLink href={link.path} passHref>
-                <Text
+          <Wrap
+            align="center"
+            justify="center"
+            mx={[0, 0, 28, 28]}
+            spacing={10}
+            direction={['column', 'column', 'row']}
+            flex={1}
+          >
+            {links.map((link, index) => (
+              <WrapItem key={index}>
+                <NextLink href={link.path} passHref>
+                  <Text
+                    variant="ghost"
+                    _hover={{ color: 'primary.500' }}
+                    fontSize={16}
+                    color={
+                      router.pathname === link.path ? 'primary.500' : 'inherit'
+                    }
+                    fontWeight={router.pathname === link.path ? '600' : '400'}
+                    m={[2, 2, 4]}
+                  >
+                    {link.label}
+                  </Text>
+                </NextLink>
+              </WrapItem>
+            ))}
+            <WrapItem>
+              <NextLink href="/login" passHref>
+                <Button
                   variant="ghost"
-                  _hover={{ color: 'primary.500' }}
+                  bg={'primary.500'}
+                  color={'white'}
+                  _hover={{}}
+                  height={12}
+                  width={'40'}
                   fontSize={16}
-                  color={
-                    router.pathname === link.path ? 'primary.500' : 'inherit'
-                  }
-                  fontWeight={router.pathname === link.path ? '600' : '400'}
-                  m={[2, 2, 4]}
+                  fontWeight={'600'}
+                  m={2}
                 >
-                  {link.label}
-                </Text>
+                  CONNEXION -&gt;
+                </Button>
               </NextLink>
             </WrapItem>
-          ))}
-          <WrapItem>
-            <NextLink href="/login" passHref>
-              <Button
-                variant="ghost"
-                bg={'primary.500'}
-                color={'white'}
-                _hover={{}}
-                height={12}
-                width={'40'}
-                fontSize={16}
-                fontWeight={'600'}
-                m={2}
-              >
-                CONNEXION -&gt;
-              </Button>
-            </NextLink>
-          </WrapItem>
-        </Wrap>
-      </Flex>
+          </Wrap>
+        </Flex>
+      )}
     </Flex>
   );
 }

@@ -107,14 +107,14 @@ export function Menu() {
           <MenuLinks
             links={[
               {
-                label: 'À propos',
-                icon: '/icons/about-circle.svg',
-                link: '/'
-              },
-              {
                 label: 'Réglages',
                 icon: '/icons/settings.svg',
                 link: '/'
+              },
+              {
+                label: 'Mentions légales',
+                icon: '/icons/about-circle.svg',
+                link: '/legals/mentions-legales'
               },
               {
                 label: 'Déconnexion',
