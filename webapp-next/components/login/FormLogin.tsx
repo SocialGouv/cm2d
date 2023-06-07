@@ -1,9 +1,11 @@
 import {
   Alert,
+  AlertDescription,
   AlertIcon,
   AlertTitle,
   Box,
   Button,
+  Checkbox,
   FormControl,
   FormLabel,
   Heading,
@@ -13,14 +15,16 @@ import {
   InputGroup,
   InputLeftElement,
   InputRightElement,
+  Link,
   Spinner,
   Text,
   useDisclosure
 } from '@chakra-ui/react';
 import cookie from 'js-cookie';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import useSWRMutation from 'swr/mutation';
+import NextLink from 'next/link';
 
 async function auth(
   url: string,
@@ -41,8 +45,11 @@ export const FormLogin = () => {
   const [code, setCode] = useState<number | undefined>();
   const [isLoading, setIsLoading] = useState(false);
   const [showCodeForm, setShowCodeForm] = useState(false);
-  const { isOpen, onToggle } = useDisclosure();
 
+  const [timer, setTimer] = useState(30);
+  const intervalRef = useRef<NodeJS.Timeout | undefined>();
+
+  const { isOpen, onToggle } = useDisclosure();
   const [formError, setFormError] = useState(false);
 
   const { trigger: triggerLogin } = useSWRMutation('/api/auth', auth);
@@ -50,6 +57,21 @@ export const FormLogin = () => {
     '/api/auth/verify-code',
     auth
   );
+
+  const startTimer = () => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    setTimer(30);
+    intervalRef.current = setInterval(() => {
+      setTimer(prevTimer => {
+        if (prevTimer > 0) {
+          return prevTimer - 1;
+        } else {
+          clearInterval(intervalRef.current as NodeJS.Timeout);
+          return 0;
+        }
+      });
+    }, 1000);
+  };
 
   const handleCodeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCode(parseInt(event.target.value));
@@ -83,6 +105,7 @@ export const FormLogin = () => {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+    setFormError(false);
     if (username !== '' && password !== '') {
       try {
         setIsLoading(true);
@@ -91,6 +114,7 @@ export const FormLogin = () => {
           cookie.set('cm2d_api_key', result.encoded);
           router.push('/bo');
         }
+        startTimer();
         setShowCodeForm(true);
       } catch (e) {
         setFormError(true);
@@ -111,7 +135,7 @@ export const FormLogin = () => {
         <FormLabel htmlFor="code" fontSize={['10px', '12px']} fontWeight={500}>
           Code
         </FormLabel>
-        <InputGroup>
+        <InputGroup mb={2}>
           <InputLeftElement pointerEvents="none">
             <Image src={'/icons/lock.svg'} alt="Code Icon" boxSize={9} pt={2} />
           </InputLeftElement>
@@ -127,7 +151,43 @@ export const FormLogin = () => {
             required
           />
         </InputGroup>
+        <Link
+          fontSize="xs"
+          href="#"
+          display="block"
+          textAlign="right"
+          cursor={timer === 0 ? 'pointer' : 'not-allowed'}
+          color={timer === 0 ? 'inherit' : 'gray'}
+          onClick={e => {
+            if (timer === 0) handleSubmit(e);
+          }}
+        >
+          {timer !== 0 && `(${timer}s)`} Non reçu ? Renvoyer un nouveau code
+        </Link>
       </FormControl>
+      <FormControl mb={[4, 6]}>
+        <Checkbox required>
+          <Text fontSize="xs">
+            J&apos;ai lu et j&apos;accepte les{' '}
+            <Link
+              as={NextLink}
+              href="/legals/cgu"
+              target="_blank"
+              textDecor="underline"
+            >
+              conditions générales d&apos;utilisation
+            </Link>
+          </Text>
+        </Checkbox>{' '}
+      </FormControl>
+      {formError && (
+        <Box mb={8}>
+          <Alert status="error" mb={4}>
+            <AlertIcon />
+            <AlertTitle>Code incorrect</AlertTitle>
+          </Alert>
+        </Box>
+      )}
       <Button
         type="submit"
         isDisabled={isLoading}
@@ -255,7 +315,7 @@ export const FormLogin = () => {
       mx={'auto'}
       mt={[8, 0]}
     >
-      <Box maxW="sm" mx={[10, 20]} p={[0, 6]} bgColor="white">
+      <Box maxW="sm" mx={[10, 20]} p={[0, 2]} bgColor="white">
         <Heading
           as="h1"
           size="lg"
