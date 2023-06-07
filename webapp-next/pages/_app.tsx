@@ -17,7 +17,11 @@ export default function App({ Component, pageProps }: AppProps) {
 
   const getLayout = (children: ReactNode) => {
     if (router.pathname.startsWith('/bo')) {
-      return <DashboardLayout>{children}</DashboardLayout>;
+      return (
+        <Cm2dProvider>
+          <DashboardLayout>{children}</DashboardLayout>
+        </Cm2dProvider>
+      );
     } else if (router.pathname.startsWith('/login')) {
       return <LightLayout>{children}</LightLayout>;
     } else {
@@ -27,7 +31,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <ChakraProvider theme={theme}>
-      <Cm2dProvider>{getLayout(<Component {...pageProps} />)}</Cm2dProvider>
+      {getLayout(<Component {...pageProps} />)}
     </ChakraProvider>
   );
 }
