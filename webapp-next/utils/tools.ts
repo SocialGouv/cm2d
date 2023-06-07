@@ -338,10 +338,10 @@ export function getCodeEmailHtml(code: string) {
 			</head>
 			<body>
 				<div class="container">
-					<p>Cher utilisateur,</p>
+					<p>Bonjour,</p>
 
 					<p>
-						Vous avez récemment demandé à vous connecter à votre compte. Pour terminer le processus,
+						Vous vous êtes récemment connecté(e) à votre compte CM2D. Pour terminer le processus, 
 						veuillez entrer le code de vérification suivant dans le formulaire de connexion :
 					</p>
 
