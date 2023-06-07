@@ -3,11 +3,13 @@ import { Filters } from '@/utils/cm2d-provider';
 import { Box, Checkbox, Flex, Text } from '@chakra-ui/react';
 import { Dispatch, SetStateAction } from 'react';
 import { MenuSubTitle } from '../layouts/MenuSubTitle';
+import { sexOrder, sortByOrder } from '@/utils/orders';
 
-type Sexes = {
+type Sex = {
   id: number;
   label: string;
-}[];
+};
+type Sexes = Sex[];
 
 type Props = {
   filters: Filters;
@@ -20,10 +22,12 @@ export const FiltersSexes = (props: Props) => {
 
   if (!data) return <>...</>;
 
-  const sexes: Sexes = data.result.hits.hits.map((d: any) => ({
-    id: d._id,
-    label: d._source.sex
-  }));
+  const sexes: Sexes = data.result.hits.hits
+    .map((d: any) => ({
+      id: d._id,
+      label: d._source.sex
+    }))
+    .sort((a: Sex, b: Sex) => sortByOrder(a.label, b.label, sexOrder));
 
   return (
     <Box>

@@ -143,6 +143,9 @@ const theme = extendTheme({
     heading: `'Inter', sans-serif`,
     body: `'Inter', sans-serif`
   },
+  sizes: {
+    88: '22rem'
+  },
   components: {
     Input: CM2DInput,
     Button: CM2DButton,

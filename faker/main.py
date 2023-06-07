@@ -19,7 +19,15 @@ department_dict = {
 
 category_1 = ['suicide', 'avc', 'cancer', 'tuberculose']
 category_2 = ['vih', 'tuberculose', 'diabete']
-death_locations = ['domicile', 'hopital', 'clinique privée', 'maison retraite', 'voie publique','autres', 'etablissement penitentiaire']
+death_locations = [
+  'Domicile',
+  'EHPAD, Maison de retraite',
+  'Voie publique',
+  'Etablissement de santé public',
+  'Etablissement de santé privé',
+  'Etablissement pénitentiaire',
+  'Autre lieu ou indéterminé'
+]
 
 # Maintain a list of departments for random choice
 departments = list(department_dict.keys())
