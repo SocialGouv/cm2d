@@ -1,5 +1,5 @@
 import { Box, Flex, Image, Spacer, Stack } from '@chakra-ui/react';
-import { Cm2dContext } from '@/utils/cm2d-provider';
+import { Cm2dContext, baseFilters } from '@/utils/cm2d-provider';
 import { useContext } from 'react';
 import { FiltersAges } from '../filters/Ages';
 import { FilterCauses } from '../filters/Causes';
@@ -12,6 +12,7 @@ import { UserCard } from './UserCard';
 import { FilterDates } from '../filters/Dates';
 import { FiltersDepartments } from '../filters/Departments';
 import cookie from 'js-cookie';
+import { hasAtLeastOneFilter } from '@/utils/tools';
 
 export const ageRanges = [
   { from: 0, to: 10, key: '0-10 ans' },
@@ -58,7 +59,24 @@ export function Menu() {
         <FilterDates />
       </Box>
       <Box mt={10} px={6}>
-        <MenuTitle title="Filtres" />
+        <MenuTitle
+          title="Filtres"
+          button={
+            hasAtLeastOneFilter(filters)
+              ? {
+                  label: 'Réinitialiser',
+                  onClick: () => {
+                    setFilters({
+                      ...baseFilters,
+                      categories_level_1: filters.categories_level_1,
+                      start_date: filters.start_date,
+                      end_date: filters.end_date
+                    });
+                  }
+                }
+              : undefined
+          }
+        />
         <SubMenu
           title={
             <>

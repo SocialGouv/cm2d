@@ -1,11 +1,12 @@
-import { Cm2dContext, Filters } from '@/utils/cm2d-provider';
+import { Cm2dContext, Filters, baseFilters } from '@/utils/cm2d-provider';
 import {
   ISODateToMonthYear,
   getLabelFromElkField,
-  getLabelFromKey
+  getLabelFromKey,
+  hasAtLeastOneFilter
 } from '@/utils/tools';
 import { CloseIcon } from '@chakra-ui/icons';
-import { Box, Tag, Text } from '@chakra-ui/react';
+import { Flex, Button, Tag, Text, Image } from '@chakra-ui/react';
 import { useContext } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -70,7 +71,7 @@ export function FiltersShortcut() {
   };
 
   return (
-    <Box py={4}>
+    <Flex py={4} alignItems="center">
       {(Object.keys(filters) as Array<keyof Filters>).map(key => {
         if (!filters[key]) return <></>;
 
@@ -142,6 +143,27 @@ export function FiltersShortcut() {
             );
         }
       })}
-    </Box>
+      {hasAtLeastOneFilter(filters) && (
+        <Button
+          mr={2}
+          mb={2}
+          onClick={() => {
+            setFilters({
+              ...baseFilters,
+              categories_level_1: filters.categories_level_1,
+              start_date: filters.start_date,
+              end_date: filters.end_date
+            });
+          }}
+          variant="ghost"
+          color="primary.500"
+          size="xs"
+          py={1}
+        >
+          <Image src="/icons/rotate-left-circle.svg" mr={1} /> Réinitialiser les
+          filtres
+        </Button>
+      )}
+    </Flex>
   );
 }
