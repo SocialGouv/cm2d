@@ -1,5 +1,5 @@
 import { Cm2dContext } from '@/utils/cm2d-provider';
-import { ChevronDownIcon, HamburgerIcon } from '@chakra-ui/icons';
+import { HamburgerIcon } from '@chakra-ui/icons';
 import { Button, Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/react';
 import { useContext } from 'react';
 

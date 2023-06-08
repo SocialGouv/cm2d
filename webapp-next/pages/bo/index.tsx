@@ -56,7 +56,7 @@ export default function Home() {
 
   useEffect(() => {
     if (data && view) {
-      setCSVData(getCSVDataFromDatasets(getViewDatasets(data, view)));
+      setCSVData(getCSVDataFromDatasets(getViewDatasets(data, view), view));
     }
   }, [data, view]);
 
