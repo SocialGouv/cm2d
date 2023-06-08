@@ -27,7 +27,7 @@ export default function Home() {
 
   const { filters, aggregations, view } = context;
 
-  const { data, isLoading } = useData(filters, aggregations);
+  const { data, dataKind, isLoading } = useData(filters, aggregations);
 
   const fetchNewTitle = async () => {
     setTitle(
@@ -53,7 +53,7 @@ export default function Home() {
     fetchNewTitle();
   }, [filters]);
 
-  if (isLoading)
+  if (isLoading || !dataKind || !data)
     return (
       <Box
         display="flex"
@@ -89,6 +89,10 @@ export default function Home() {
       </Flex>
     );
 
+  const electronicPercentage =
+    ((dataKind.result?.aggregations?.aggregated_x?.buckets[0]?.doc_count || 1) /
+      (dataKind.result?.hits?.total?.value || 1)) *
+    100;
   const total = data.result?.hits?.total?.value || 0;
   let datasets = getViewDatasets(data, view);
 
@@ -150,9 +154,15 @@ export default function Home() {
             {title.charAt(0).toUpperCase() + title.substring(1)}
           </Text>
           <ChartDisplay />
-          <Box mt={8}>
+          <Flex justifyContent={'space-between'} mt={8}>
             <KPI prefix="Total de la sélection" kpi={`${total} décès`} />
-          </Box>
+            <KPI
+              prefix="Taux de certificats électroniques de la sélection"
+              kpi={`${
+                parseInt((electronicPercentage * 100).toString()) / 100
+              }%`}
+            />
+          </Flex>
         </Box>
       </Flex>
     </Flex>

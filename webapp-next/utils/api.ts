@@ -98,9 +98,24 @@ export function useData(filters: Filters, aggregations: any) {
     }
   );
 
+  const paramsKind = {
+    index: 'cm2d_certificate',
+    filters: JSON.stringify(transformFilters(filters)),
+    aggregations: JSON.stringify({ aggregated_x: { terms: { field: 'kind' } } })
+  };
+  const { data: dataKind, error: errorKind } = useSWR(
+    `/api/elk/data?${new URLSearchParams(paramsKind)}`,
+    async function (input: RequestInfo, init?: RequestInit) {
+      const res = await fetch(input, init);
+      return superJSONParse<any>(stringify(await res.json()));
+    }
+  );
+
   return {
     data,
+    dataKind,
+    isErrorKind: errorKind,
     isError: error,
-    isLoading: !error && !data
+    isLoading: !error && !data && !errorKind && !dataKind
   };
 }
