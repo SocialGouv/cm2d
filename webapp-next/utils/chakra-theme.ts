@@ -74,7 +74,7 @@ const CM2DTable: ComponentStyleConfig = {
       th: {
         color: 'neutral.500',
         fontWeight: 400,
-        textTransform: 'capitalize',
+        textTransform: 'normal',
         fontSize: 'sm'
       },
       tr: {

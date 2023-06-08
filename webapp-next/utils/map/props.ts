@@ -1,8 +1,10 @@
+import { orders, sortByOrder } from '../orders';
 import { getLabelFromKey, isNC } from '../tools';
 
 export const getMapProps = (
   id: string,
-  datasets: { hits: any[]; total?: number }[]
+  datasets: { hits: any[]; total?: number }[],
+  saveAggregateX?: string
 ) => {
   if (!datasets[0]) return '';
 
@@ -19,7 +21,15 @@ export const getMapProps = (
         });
         return acc;
       }, [])
-      .sort();
+      .sort((a, b) =>
+        sortByOrder(
+          a,
+          b,
+          orders[
+            (saveAggregateX as 'sex' | 'death_location' | 'department') || 'sex'
+          ]
+        )
+      );
   }
 
   const stateColors = {
