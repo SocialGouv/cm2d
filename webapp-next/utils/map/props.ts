@@ -42,13 +42,14 @@ export const getMapProps = (
 
   const getCountFromKey = (key: number): number => {
     const hit = hits.find(h => h.key === key);
-    return hit ? (isNC(hit.doc_count) ? 'NC' : hit.doc_count) : 0;
+    // return hit ? (isNC(hit.doc_count) ? 'NC' : hit.doc_count) : 0;
+    return hit ? hit.doc_count : 0;
   };
 
   const getPercentage = (key: number): string => {
     const hit = hits.find(h => h.key === key);
     if (!hit || !total) return '0%';
-    if (isNC(hit.doc_count)) return 'NC';
+    // if (isNC(hit.doc_count)) return 'NC';
     return `${Math.round((hit.doc_count / total) * 10000) / 100}%`;
   };
 
@@ -73,7 +74,8 @@ export const getMapProps = (
     if (hit.children) {
       const totalCount = hit.children.reduce(
         (acc: number, child: any) =>
-          acc + (isNC(child.doc_count) ? 0 : child.doc_count),
+          // acc + (isNC(child.doc_count) ? 0 : child.doc_count),
+          acc + child.doc_count,
         0
       );
 
@@ -86,7 +88,8 @@ export const getMapProps = (
             return `<div>${
               label.charAt(0).toUpperCase() + label.substring(1)
             } : ${
-              !child || isNC(child.doc_count) ? 'NC' : child.doc_count
+              // !child || isNC(child.doc_count) ? 'NC' : child.doc_count
+              child ? child.doc_count : 0
             }</div>`;
           })
           .join('')}
