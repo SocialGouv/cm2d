@@ -32,6 +32,8 @@ type Cm2dContextType = {
   setSaveAggregateX: Dispatch<SetStateAction<string | undefined>>;
   saveAggregateY: string | undefined;
   setSaveAggregateY: Dispatch<SetStateAction<string | undefined>>;
+  CSVData: string[][];
+  setCSVData: Dispatch<SetStateAction<string[][]>>;
 };
 
 export const Cm2dContext = createContext<Cm2dContextType | undefined>(
@@ -68,6 +70,7 @@ export function Cm2dProvider({ children }: Cm2dProviderProps) {
   const [saveAggregateX, setSaveAggregateX] = useState<string | undefined>();
   const [saveAggregateY, setSaveAggregateY] = useState<string | undefined>();
   const [firstDate, setFirstDate] = useState<Date>(new Date());
+  const [CSVData, setCSVData] = useState<string[][]>([]);
 
   const fetchFirstData = () => {
     fetch('/api/elk/first', { method: 'GET' }).then(res =>
@@ -95,7 +98,9 @@ export function Cm2dProvider({ children }: Cm2dProviderProps) {
         saveAggregateX,
         setSaveAggregateX,
         saveAggregateY,
-        setSaveAggregateY
+        setSaveAggregateY,
+        CSVData,
+        setCSVData
       }}
     >
       {children}

@@ -8,6 +8,7 @@ import { KPI } from '@/components/layouts/KPI';
 import { useData } from '@/utils/api';
 import { Cm2dContext } from '@/utils/cm2d-provider';
 import {
+  getCSVDataFromDatasets,
   getSixMonthAgoDate,
   getViewDatasets,
   isRangeContainsLastSixMonths
@@ -25,7 +26,7 @@ export default function Home() {
     throw new Error('Menu must be used within a Cm2dProvider');
   }
 
-  const { filters, aggregations, view } = context;
+  const { filters, aggregations, view, setCSVData } = context;
 
   const { data, dataKind, isLoading } = useData(filters, aggregations);
 
@@ -52,6 +53,12 @@ export default function Home() {
   useEffect(() => {
     fetchNewTitle();
   }, [filters]);
+
+  useEffect(() => {
+    if (data && view) {
+      setCSVData(getCSVDataFromDatasets(getViewDatasets(data, view)));
+    }
+  }, [data, view]);
 
   if (isLoading || !dataKind || !data)
     return (

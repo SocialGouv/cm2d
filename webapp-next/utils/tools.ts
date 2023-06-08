@@ -139,10 +139,37 @@ export function isNC(count: number): boolean {
   return count !== 0 && count <= minimumForNC;
 }
 
-export function getViewDatasets(
-  data: any,
-  view: View
-): { hits: any[]; label?: string; total?: number }[] {
+export type Datasets = { hits: any[]; label?: string; total?: number };
+
+export function getCSVDataFromDatasets(datasets: Datasets[]): string[][] {
+  let csvData: string[][] = [];
+  if (!datasets.length) return csvData;
+
+  if (datasets.length === 1) {
+    csvData.push(
+      datasets[0].hits.map(hit => {
+        return getLabelFromKey(hit.key, 'month');
+      })
+    );
+    csvData.push(
+      datasets[0].hits.map(hit => {
+        return hit.doc_count;
+      })
+    );
+  } else {
+    csvData.push([
+      '',
+      ...datasets[0].hits.map(h => getLabelFromKey(h.key, 'month'))
+    ]);
+    datasets.forEach(ds => {
+      csvData.push([ds.label, ...ds.hits.map(h => h.doc_count)]);
+    });
+  }
+
+  return csvData;
+}
+
+export function getViewDatasets(data: any, view: View): Datasets[] {
   if (view === 'line') {
     if (data.result.aggregations.aggregated_date) {
       return [{ hits: data.result.aggregations.aggregated_date.buckets }];
