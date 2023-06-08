@@ -74,7 +74,7 @@ const CM2DTable: ComponentStyleConfig = {
       th: {
         color: 'neutral.500',
         fontWeight: 400,
-        textTransform: 'capitalize',
+        textTransform: 'normal',
         fontSize: 'sm'
       },
       tr: {
@@ -142,6 +142,9 @@ const theme = extendTheme({
   fonts: {
     heading: `'Inter', sans-serif`,
     body: `'Inter', sans-serif`
+  },
+  sizes: {
+    88: '22rem'
   },
   components: {
     Input: CM2DInput,

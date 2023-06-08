@@ -1,4 +1,5 @@
 import { Cm2dContext } from '@/utils/cm2d-provider';
+import { orders, sortByOrder } from '@/utils/orders';
 import { getLabelFromKey, isNC } from '@/utils/tools';
 import {
   Table,
@@ -25,7 +26,7 @@ export const ChartTable = (props: Props) => {
     throw new Error('Menu must be used within a Cm2dProvider');
   }
 
-  const { aggregations } = context;
+  const { aggregations, saveAggregateX, saveAggregateY } = context;
   const { datasets, id } = props;
 
   if (!datasets[0]) return <>...</>;
@@ -55,37 +56,66 @@ export const ChartTable = (props: Props) => {
   };
 
   return (
-    <TableContainer textTransform="capitalize" w="calc(100vw - 28rem)">
+    <TableContainer w="calc(100vw - 28rem)">
       <Table id={id} variant="primary" key={JSON.stringify(aggregations)}>
         <Thead>
           <Th></Th>
-          {availableKeys.map(ak => (
-            <Th key={`head-${ak}`}>{getLabelFromKey(ak, 'month')}</Th>
-          ))}
+          {availableKeys
+            .sort((a, b) =>
+              sortByOrder(
+                a,
+                b,
+                orders[
+                  (saveAggregateY as 'sex' | 'death_location' | 'department') ||
+                    'sex'
+                ]
+              )
+            )
+            .map(ak => (
+              <Th key={`head-${ak}`}>{getLabelFromKey(ak, 'month')}</Th>
+            ))}
           <Th>Total</Th>
         </Thead>
         <Tbody>
-          {datasets.map(ds => (
-            <Tr key={ds.label}>
-              <Td>{ds.label}</Td>
-              {availableKeys.map((ak, index) => {
-                const hit = ds.hits.find(h => h.key === ak);
-                if (!hit) return <Td key={`${ds.label}-${index}`}>0</Td>;
-                return (
-                  <Td key={`${ds.label}-${hit.key}`}>
-                    {isNC(hit.doc_count) ? <NCTag /> : hit.doc_count}
-                  </Td>
-                );
-              })}
-              <Td>
-                {ds.hits.reduce(
-                  (acc, current) =>
-                    acc + (isNC(current.doc_count) ? 0 : current.doc_count),
-                  0
-                )}
-              </Td>
-            </Tr>
-          ))}
+          {datasets
+            .sort((a, b) =>
+              a.label && b.label
+                ? sortByOrder(
+                    a.label,
+                    b.label,
+                    orders[
+                      (saveAggregateX as
+                        | 'sex'
+                        | 'death_location'
+                        | 'department') || 'sex'
+                    ]
+                  )
+                : 0
+            )
+            .map(ds => (
+              <Tr key={ds.label}>
+                <Td>
+                  {ds.label &&
+                    ds.label?.charAt(0).toUpperCase() + ds.label?.substring(1)}
+                </Td>
+                {availableKeys.map((ak, index) => {
+                  const hit = ds.hits.find(h => h.key === ak);
+                  if (!hit) return <Td key={`${ds.label}-${index}`}>0</Td>;
+                  return (
+                    <Td key={`${ds.label}-${hit.key}`}>
+                      {isNC(hit.doc_count) ? <NCTag /> : hit.doc_count}
+                    </Td>
+                  );
+                })}
+                <Td>
+                  {ds.hits.reduce(
+                    (acc, current) =>
+                      acc + (isNC(current.doc_count) ? 0 : current.doc_count),
+                    0
+                  )}
+                </Td>
+              </Tr>
+            ))}
           <Tr>
             <Td>Total</Td>
             {availableKeys.map(ak => (

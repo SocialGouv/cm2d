@@ -1,6 +1,8 @@
 import { histogramProps } from '@/utils/chartjs/props';
+import { Cm2dContext } from '@/utils/cm2d-provider';
+import { orders, sortByOrder } from '@/utils/orders';
 import { getLabelFromKey } from '@/utils/tools';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 
 type Props = {
@@ -9,6 +11,14 @@ type Props = {
 };
 
 export const ChartHistogram = (props: Props) => {
+  const context = useContext(Cm2dContext);
+
+  if (!context) {
+    throw new Error('Menu must be used within a Cm2dProvider');
+  }
+
+  const { saveAggregateX } = context;
+
   const { datasets, id } = props;
   const [displayDatasets, setDisplayDatasets] = useState<any[]>([]);
 
@@ -16,7 +26,18 @@ export const ChartHistogram = (props: Props) => {
     if (datasets && datasets.length)
       setDisplayDatasets(
         datasets.map(ds => {
-          const yValues = ds.hits.map((item: any) => item.doc_count);
+          const yValues = ds.hits
+            .sort((a, b) =>
+              sortByOrder(
+                a.key.toString(),
+                b.key.toString(),
+                orders[
+                  (saveAggregateX as 'sex' | 'death_location' | 'department') ||
+                    'sex'
+                ]
+              )
+            )
+            .map((item: any) => item.doc_count);
           let label = 'nombre de décès';
 
           if (ds.label) {
@@ -36,10 +57,20 @@ export const ChartHistogram = (props: Props) => {
 
   if (!datasets.length) return <></>;
 
-  const xValues = datasets[0].hits.map((item: any) => {
-    const label = getLabelFromKey(item.key);
-    return label.charAt(0).toUpperCase() + label.substring(1);
-  });
+  const xValues = datasets[0].hits
+    .map((item: any) => {
+      const label = getLabelFromKey(item.key);
+      return label.charAt(0).toUpperCase() + label.substring(1);
+    })
+    .sort((a, b) =>
+      sortByOrder(
+        a,
+        b,
+        orders[
+          (saveAggregateX as 'sex' | 'death_location' | 'department') || 'sex'
+        ]
+      )
+    );
 
   return (
     <Bar

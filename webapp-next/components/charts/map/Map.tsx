@@ -1,7 +1,8 @@
 import { getMapProps } from '@/utils/map/props';
 import { Flex } from '@chakra-ui/react';
-import React from 'react';
+import React, { useContext } from 'react';
 import { Legends } from './Legends';
+import { Cm2dContext } from '@/utils/cm2d-provider';
 
 type Props = {
   id: string;
@@ -11,6 +12,13 @@ type Props = {
 export default function MapIframe(props: Props) {
   const iframeRef = React.useRef(null);
   const { datasets, id } = props;
+  const context = useContext(Cm2dContext);
+
+  if (!context) {
+    throw new Error('Menu must be used within a Cm2dProvider');
+  }
+
+  const { saveAggregateX } = context;
 
   const writeHTMLToIframe = () => {
     const iframe = iframeRef.current;
@@ -27,7 +35,7 @@ export default function MapIframe(props: Props) {
 						}, true);
 					</script>
 					<script type="text/javascript">
-						${getMapProps(id, datasets)}
+						${getMapProps(id, datasets, saveAggregateX)}
 					</script>
 					<script type="text/javascript" src="libs/countrymap/countrymap.js"></script>
 					<style>

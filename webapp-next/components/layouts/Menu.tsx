@@ -39,7 +39,7 @@ export function Menu() {
       pt={8}
       borderRadius={16}
       bg="white"
-      w={80}
+      w={88}
       minH={'calc(100vh - 2.5rem)'}
       position="sticky"
       top={0}

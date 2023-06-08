@@ -55,7 +55,7 @@ export const getLabelFromKey = (
       ? new Date(key).getFullYear().toString()
       : dateToMonthYear(new Date(key));
 
-  return key;
+  return key.length > 1 ? key.charAt(0).toUpperCase() + key.substring(1) : key;
 };
 
 export function transformFilters(filters: Filters): any[] {
