@@ -116,6 +116,6 @@ export function useData(filters: Filters, aggregations: any) {
     dataKind,
     isErrorKind: errorKind,
     isError: error,
-    isLoading: !error && !data
+    isLoading: !error && !data && !errorKind && !dataKind
   };
 }

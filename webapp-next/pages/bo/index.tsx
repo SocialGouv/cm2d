@@ -53,7 +53,7 @@ export default function Home() {
     fetchNewTitle();
   }, [filters]);
 
-  if (isLoading)
+  if (isLoading || !dataKind || !data)
     return (
       <Box
         display="flex"
@@ -90,8 +90,8 @@ export default function Home() {
     );
 
   const electronicPercentage =
-    (dataKind.result.aggregations.aggregated_x.buckets[0].doc_count /
-      dataKind.result.hits.total.value) *
+    ((dataKind.result?.aggregations?.aggregated_x?.buckets[0]?.doc_count || 1) /
+      (dataKind.result?.hits?.total?.value || 1)) *
     100;
   const total = data.result?.hits?.total?.value || 0;
   let datasets = getViewDatasets(data, view);
@@ -157,7 +157,7 @@ export default function Home() {
           <Flex justifyContent={'space-between'} mt={8}>
             <KPI prefix="Total de la sélection" kpi={`${total} décès`} />
             <KPI
-              prefix="Pourcentage de certificats électroniques"
+              prefix="Taux de certificats électroniques de la sélection"
               kpi={`${
                 parseInt((electronicPercentage * 100).toString()) / 100
               }%`}
