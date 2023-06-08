@@ -23,8 +23,8 @@ export const getMapProps = (
       }, [])
       .sort((a, b) =>
         sortByOrder(
-          a,
-          b,
+          a.toString(),
+          b.toString(),
           orders[
             (saveAggregateX as 'sex' | 'death_location' | 'department') || 'sex'
           ]

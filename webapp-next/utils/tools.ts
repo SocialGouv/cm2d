@@ -58,6 +58,15 @@ export const getLabelFromKey = (
   return key.length > 1 ? key.charAt(0).toUpperCase() + key.substring(1) : key;
 };
 
+export function hasAtLeastOneFilter(filters: Filters): boolean {
+  return (
+    !!filters.sex.length ||
+    !!filters.death_location.length ||
+    !!filters.department.length ||
+    !!filters.age.length
+  );
+}
+
 export function transformFilters(filters: Filters): any[] {
   const transformed: any[] = [];
 

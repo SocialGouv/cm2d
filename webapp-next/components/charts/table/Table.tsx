@@ -63,8 +63,8 @@ export const ChartTable = (props: Props) => {
           {availableKeys
             .sort((a, b) =>
               sortByOrder(
-                a,
-                b,
+                a.toString(),
+                b.toString(),
                 orders[
                   (saveAggregateY as 'sex' | 'death_location' | 'department') ||
                     'sex'
@@ -81,8 +81,8 @@ export const ChartTable = (props: Props) => {
             .sort((a, b) =>
               a.label && b.label
                 ? sortByOrder(
-                    a.label,
-                    b.label,
+                    a.label.toString(),
+                    b.label.toString(),
                     orders[
                       (saveAggregateX as
                         | 'sex'

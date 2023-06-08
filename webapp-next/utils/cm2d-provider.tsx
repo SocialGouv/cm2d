@@ -44,6 +44,13 @@ type Cm2dProviderProps = {
 
 export type View = 'line' | 'histogram' | 'table' | 'doughnut' | 'map';
 
+export const baseFilters = {
+  categories_level_1: [],
+  death_location: [],
+  age: [],
+  sex: [],
+  department: []
+};
 export const baseAggregation = {
   aggregated_date: {
     date_histogram: {
@@ -54,14 +61,7 @@ export const baseAggregation = {
 };
 
 export function Cm2dProvider({ children }: Cm2dProviderProps) {
-  const [filters, setFilters] = useState<Filters>({
-    categories_level_1: [],
-    death_location: [],
-    age: [],
-    sex: [],
-    department: []
-  });
-
+  const [filters, setFilters] = useState<Filters>(baseFilters);
   const [aggregations, setAggregations] = useState<any>(baseAggregation);
 
   const [view, setView] = useState<View>('line');
