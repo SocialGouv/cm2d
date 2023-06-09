@@ -145,7 +145,7 @@ export function ChartMapHeader() {
           variant="light"
           rightIcon={<ChevronDownIcon color="primary.200" w={5} h={5} />}
         >
-          Courbe :{' '}
+          Carte :{' '}
           <Text as="b">
             {isAggregated ? 'Distribution globale' : 'Distribution stratifiée'}
           </Text>
