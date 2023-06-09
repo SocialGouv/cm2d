@@ -71,7 +71,7 @@ export function FiltersShortcut() {
   };
 
   return (
-    <Flex py={4} alignItems="center">
+    <Flex py={4} alignItems="center" flexWrap={'wrap'}>
       {(Object.keys(filters) as Array<keyof Filters>).map(key => {
         if (!filters[key]) return <></>;
 
