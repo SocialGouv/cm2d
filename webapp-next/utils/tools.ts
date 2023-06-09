@@ -43,19 +43,26 @@ export function getLabelFromElkField(key: string): string {
   return key;
 }
 
+export const capitalizeFirstLetter = (str: string) => {
+  return str.length > 1 ? str.charAt(0).toUpperCase() + str.substring(1) : str;
+};
 export const getLabelFromKey = (
   key: string,
-  dateFormat: 'year' | 'month' = 'year'
+  dateFormat: 'year' | 'month' | 'week' = 'year'
 ): string => {
   if (key in departmentRefs)
     return `${departmentRefs[key as keyof typeof departmentRefs]} (${key})`;
 
-  if (isStringContainingDate(key))
-    return dateFormat === 'year'
-      ? new Date(key).getFullYear().toString()
-      : dateToMonthYear(new Date(key));
+  if (isStringContainingDate(key)) {
+    if (dateFormat === 'year')
+      return capitalizeFirstLetter(new Date(key).getFullYear().toString());
+    if (dateFormat === 'week')
+      return capitalizeFirstLetter(dateToWeekYear(new Date(key)));
+    if (dateFormat === 'month')
+      return capitalizeFirstLetter(dateToMonthYear(new Date(key)));
+  }
 
-  return key.length > 1 ? key.charAt(0).toUpperCase() + key.substring(1) : key;
+  return capitalizeFirstLetter(key);
 };
 
 export function hasAtLeastOneFilter(filters: Filters): boolean {
@@ -139,10 +146,48 @@ export function isNC(count: number): boolean {
   return count !== 0 && count <= minimumForNC;
 }
 
-export function getViewDatasets(
-  data: any,
+export type Datasets = { hits: any[]; label?: string; total?: number };
+
+export function getCSVDataFromDatasets(
+  datasets: Datasets[],
   view: View
-): { hits: any[]; label?: string; total?: number }[] {
+): string[][] {
+  let csvData: string[][] = [];
+  if (!datasets.length) return csvData;
+
+  if (datasets.length === 1) {
+    csvData.push(
+      datasets[0].hits.map(hit => {
+        return getLabelFromKey(
+          hit.key,
+          view === 'line' ? 'week' : view === 'table' ? 'month' : 'year'
+        );
+      })
+    );
+    csvData.push(
+      datasets[0].hits.map(hit => {
+        return hit.doc_count;
+      })
+    );
+  } else {
+    csvData.push([
+      '',
+      ...datasets[0].hits.map(h =>
+        getLabelFromKey(
+          h.key,
+          view === 'line' ? 'week' : view === 'table' ? 'month' : 'year'
+        )
+      )
+    ]);
+    datasets.forEach(ds => {
+      csvData.push([ds.label, ...ds.hits.map(h => h.doc_count)]);
+    });
+  }
+
+  return csvData;
+}
+
+export function getViewDatasets(data: any, view: View): Datasets[] {
   if (view === 'line') {
     if (data.result.aggregations.aggregated_date) {
       return [{ hits: data.result.aggregations.aggregated_date.buckets }];
