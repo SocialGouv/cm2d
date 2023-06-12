@@ -121,6 +121,8 @@ curl -X PUT "localhost:9200/cm2d_certificate" -H 'Content-Type: application/json
 
 ### Index pour les attributs supplémentaires des utilisateurs
 
+Pour stocker des informations supplémentaires concernant les utilisateurs CM2D, nous devons créer un index dédié de la manière suivante :
+
 ```
 curl -X PUT "localhost:9200/cm2d_users" -H 'Content-Type: application/json' -d'
 {
