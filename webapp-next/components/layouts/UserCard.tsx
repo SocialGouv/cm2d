@@ -7,6 +7,9 @@ type UserCardProps = {
 };
 
 export const UserCard: React.FC<UserCardProps> = ({ user }) => {
+
+  const { firstName, lastName, email, username } = user;
+
   return (
     <Box
       borderBottomRadius="lg"
@@ -17,18 +20,18 @@ export const UserCard: React.FC<UserCardProps> = ({ user }) => {
       mt={4}
     >
       <Flex alignItems="center">
-        <SkeletonCircle size="12" mr={2} isLoaded={!!user.firstName}>
+        <SkeletonCircle size="12" mr={2} isLoaded={!!username}>
           <Avatar
-            name={`${user.firstName} ${user.lastName}`}
+            name={firstName && lastName ? `${firstName} ${lastName}` : username}
           />
         </SkeletonCircle>
         <Box>
-          <SkeletonText noOfLines={2} spacing="3" isLoaded={!!user.firstName && !!user.lastName}>
+          <SkeletonText noOfLines={2} spacing="3" isLoaded={!!username}>
             <Text fontSize="md" fontWeight="400">
-              {user.firstName} {user.lastName}
+              {firstName && lastName ? `${firstName} ${lastName}` : username}
             </Text>
             <Text fontSize="sm" color="gray.600">
-              {user.email}
+              {email}
             </Text>
           </SkeletonText>
         </Box>

@@ -97,8 +97,8 @@ export function Cm2dProvider({ children }: Cm2dProviderProps) {
         if (user) {
           setUser({
             username: user.username,
-            firstName: user.full_name.split(' ')[0],
-            lastName: user.full_name.split(' ')[1],
+            firstName: user.full_name ? user.full_name.split(' ')[0] : undefined,
+            lastName: user.full_name ? user.full_name.split(' ')[1] : undefined,
             email: user.email
           });
         }
