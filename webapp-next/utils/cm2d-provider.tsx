@@ -23,8 +23,7 @@ export type Filters = {
 export type User = {
   username?: string;
   email?: string;
-  firstName?: string;
-  lastName?: string;
+  fullName?: string;
 }
 
 type Cm2dContextType = {
@@ -97,8 +96,7 @@ export function Cm2dProvider({ children }: Cm2dProviderProps) {
         if (user) {
           setUser({
             username: user.username,
-            firstName: user.full_name ? user.full_name.split(' ')[0] : undefined,
-            lastName: user.full_name ? user.full_name.split(' ')[1] : undefined,
+            fullName: user.full_name,
             email: user.email
           });
         }
