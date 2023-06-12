@@ -1,38 +1,226 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Causes médicales de décès
 
-## Getting Started
+L'application qui permet aux agents des ARS d’évaluer et d’orienter leurs actions en facilitant l’accès et l’interprétation des données de mortalité.
 
-First, run the development server:
+## Démarrage de l'application
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+Pour démarrer la suite ELK localement :
+
+```
+docker compose up -d
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Au premier run ELK, lancez cette suite de commande
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+```
+mkdir certificates
+docker cp elasticsearch:/usr/share/elasticsearch/config/certs/ca/ca.crt ./certificates/ca.crt
+```
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+Pour initialiser les variables d'environnement
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+```
+cd webapp-next
+cp .env.example .env
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+Pour démarrer le frontend NextJS localement :
 
-## Learn More
+```
+cd webapp-next
+yarn
+yarn dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+La suite ELK est accessible via l'URL http://localhost:5601/. Pour vous connecter, les identifiants par défaut sont les suivants :
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+Email: elastic
+Mot de passe: elastic_password
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+Ces mêmes identifiants sont valables pour se connecter à l'application. Si vous souhaitez créer un nouvel utilisateur, veuillez suivre la procédure décrite ci-après.
 
-## Deploy on Vercel
+## Création d'un utilisateur CM2D
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Dans le menu principal d'Elastic, sélectionnez "Management" en bas. Dans le sous-menu de "Management", choisissez "Users" qui se trouve sous la section "Security". Astuce : vous pouvez accéder directement à cette section en saisissant "users" dans la barre de recherche.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Pour filtrer et voir uniquement les utilisateurs de l'application, il suffit de décocher l'option "Show reserved users".
+
+Pour créer un nouvel utilisateur, cliquez sur "Create user".
+
+Dans le formulaire de création, utilisez l'adresse email à la fois pour le champ "username" et pour le champ "email". Dans "Full name", indiquez le nom et le prénom de l'utilisateur.
+
+Définissez un mot de passe approprié dans le champ correspondant. Pour le champ "roles", attribuez le rôle "superuser".
+
+Il est maintenant possible de se connecter en utilisant l'adresse email et le mot de passe que vous avez définis précédemment.
+
+## Les variables d'environnement
+
+| Nom de la variable    | Description                                                             |
+| --------------------- | ----------------------------------------------------------------------- |
+| ELASTIC_HOST          | L'URL du serveur Elasticsearch, ici configuré pour une instance locale. |
+| ELASTIC_PASSWORD      | Le mot de passe à utiliser pour se connecter à Elasticsearch.           |
+| AWS_ACCESS_KEY_ID     | Votre ID de clé d'accès AWS pour AWS SES.                               |
+| AWS_SECRET_ACCESS_KEY | Votre clé d'accès secrète AWS pour AWS SES.                             |
+| AWS_REGION            | La région AWS dans laquelle AWS SES est configuré.                      |
+| EMAIL_SOURCE          | L'adresse e-mail utilisée pour envoyer les e-mails.                     |
+
+## Initialisation de l'environnement ELK
+
+### Indexation des certificats
+
+Création de l'index principal destiné à rassembler les informations relatives aux certificats.
+
+```
+curl -X PUT "localhost:9200/cm2d_certificate" -H 'Content-Type: application/json' -d'
+{
+  "mappings": {
+    "_meta": {
+      "created_by": "curl-user"
+    },
+    "properties": {
+      "@timestamp": {
+        "type": "date"
+      },
+      "age": {
+        "type": "long"
+      },
+      "categories_level_1": {
+        "type": "keyword"
+      },
+      "categories_level_2": {
+        "type": "keyword"
+      },
+      "coordinates": {
+        "type": "keyword"
+      },
+      "date": {
+        "type": "date",
+        "format": "iso8601"
+      },
+      "death_location": {
+        "type": "keyword"
+      },
+      "department": {
+        "type": "long"
+      },
+      "home_location": {
+        "type": "keyword"
+      },
+      "kind": {
+        "type": "keyword"
+      },
+      "sex": {
+        "type": "keyword"
+      }
+    }
+  }
+}'
+```
+
+### Index pour les attributs supplémentaires des utilisateurs
+
+Pour stocker des informations supplémentaires concernant les utilisateurs CM2D, nous devons créer un index dédié de la manière suivante :
+
+```
+curl -X PUT "localhost:9200/cm2d_users" -H 'Content-Type: application/json' -d'
+{
+  "mappings": {
+    "properties": {
+      "username": { "type": "text" },
+      "versionCGU": { "type": "text" }
+    }
+  }
+}'
+
+```
+
+### Mise en place des transformations
+
+En utilisant l'interface ELK, naviguez jusqu'à Stack Management > Transform, et installez les indices de transformation suivants :
+
+##### 1. Compilation des causes
+
+Transform à partir de l'index : `cm2d_certificate`
+
+Type de transform : `Pivot`
+
+Group by : `categories_level_1`
+Aggregation : `@timestamp.value_count`
+
+Transform ID : `cm2d_level_1_categories`
+Transform description : `Available causes`
+Destination Index : `cm2d_level_1_categories`
+
+Continous mode
+Date field for continous mode : `@timestamp`
+Delay : `60s`
+
+##### 2. Compilation des comorbidités
+
+Transform à partir de l'index : `cm2d_certificate`
+
+Type de transform : `Pivot`
+
+Group by : `categories_level_2`
+Aggregation : `@timestamp.value_count`
+
+Transform ID : `cm2d_level_2_categories`
+Transform description : `Available causes`
+Destination Index : `cm2d_level_2_categories`
+
+Continous mode
+Date field for continous mode : `@timestamp`
+Delay : `60s`
+
+##### 3. Compilation des lieux institutionnels de décès
+
+Transform à partir de l'index : `cm2d_certificate`
+
+Type de transform : `Latest`
+
+Unique keys : `death_location`
+Sort field : `date`
+
+Transform ID : `cm2d_death_locations`
+Transform description : `Available death locations`
+Destination Index : `cm2d_death_locations`
+
+Continous mode
+Date field for continous mode : `@timestamp`
+Delay : `60s`
+
+##### 4. Compilation des sexes
+
+Transform à partir de l'index : `cm2d_certificate`
+
+Type de transform : `Latest`
+
+Unique keys : `sex`
+Sort field : `date`
+
+Transform ID : `cm2d_sexes`
+Transform description : `Available sexes`
+Destination Index : `cm2d_sexes`
+
+Continous mode
+Date field for continous mode : `@timestamp`
+Delay : `60s`
+
+##### 5. Compilation des départements
+
+Transform à partir de l'index : `cm2d_certificate`
+
+Type de transform : `Latest`
+
+Unique keys : `department`
+Sort field : `date`
+
+Transform ID : `cm2d_departments`
+Transform description : `Available departments`
+Destination Index : `cm2d_departments`
+
+Continous mode
+Date field for continous mode : `@timestamp`
+Delay : `60s`
