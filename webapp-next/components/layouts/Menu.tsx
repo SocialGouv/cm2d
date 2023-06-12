@@ -32,7 +32,7 @@ export function Menu() {
     throw new Error('Menu must be used within a Cm2dProvider');
   }
 
-  const { filters, setFilters } = context;
+  const { filters, setFilters, user } = context;
 
   return (
     <Flex
@@ -146,11 +146,7 @@ export function Menu() {
           />
         </Box>
         <UserCard
-          user={{
-            firstName: 'Jeanne',
-            lastName: 'Dupont',
-            email: 'jeanne.dupont@lorem.com'
-          }}
+          user={user}
         />
       </Box>
     </Flex>
