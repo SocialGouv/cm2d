@@ -1,4 +1,4 @@
-import { generateCode, getCodeEmailHtml } from '@/utils/tools';
+import { generateCode, getCodeEmailHtml, ELASTIC_API_KEY_NAME } from '@/utils/tools';
 import { Client } from '@elastic/elasticsearch';
 import fs from 'fs';
 import type { NextApiRequest, NextApiResponse } from 'next';
@@ -41,7 +41,7 @@ export default async function handler(
       const securityToken = await client.security.grantApiKey({
         grant_type: 'password',
         api_key: {
-          name: 'cm2d_api_key',
+          name: ELASTIC_API_KEY_NAME,
           expiration: '1d'
         },
         username,

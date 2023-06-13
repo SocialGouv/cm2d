@@ -28,6 +28,7 @@ import cookie from 'js-cookie';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 import useSWRMutation from 'swr/mutation';
+import { ELASTIC_API_KEY_NAME } from '@/utils/tools';
 
 async function auth(
   url: string,
@@ -94,7 +95,7 @@ export const FormLogin = () => {
 
   const handleModalTermsAccept = () => {
     if (cm2dApiKeyEncoded) {
-      cookie.set('cm2d_api_key', cm2dApiKeyEncoded);
+      cookie.set(ELASTIC_API_KEY_NAME, cm2dApiKeyEncoded);
       onCloseTerms();
       router.push('/bo');
     }
@@ -113,7 +114,7 @@ export const FormLogin = () => {
           setCm2dApiKeyEncoded(result.apiKey.encoded);
           onOpenTerms();
         } else {
-          cookie.set('cm2d_api_key', result.apiKey.encoded);
+          cookie.set(ELASTIC_API_KEY_NAME, result.apiKey.encoded);
           router.push('/bo');
         }
       } catch (e) {
@@ -131,7 +132,7 @@ export const FormLogin = () => {
         setIsLoading(true);
         const result = await triggerLogin({ username, password });
         if (process.env.NODE_ENV === 'development') {
-          cookie.set('cm2d_api_key', result.encoded);
+          cookie.set(ELASTIC_API_KEY_NAME, result.encoded);
           router.push('/bo');
         }
         startTimer();

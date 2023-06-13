@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { ELASTIC_API_KEY_NAME } from '@/utils/tools';
  
 export function middleware(request: NextRequest) {
 
-  const cookie = request.cookies.get('cm2d_api_key')?.value;
+  const cookie = request.cookies.get(ELASTIC_API_KEY_NAME)?.value;
 
   if (request.nextUrl.pathname.startsWith('/bo')) {
     if (!cookie) {

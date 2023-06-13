@@ -12,7 +12,7 @@ import { UserCard } from './UserCard';
 import { FilterDates } from '../filters/Dates';
 import { FiltersDepartments } from '../filters/Departments';
 import cookie from 'js-cookie';
-import { hasAtLeastOneFilter } from '@/utils/tools';
+import { hasAtLeastOneFilter, ELASTIC_API_KEY_NAME } from '@/utils/tools';
 
 export const ageRanges = [
   { from: 0, to: 10, key: '0-10 ans' },
@@ -134,7 +134,7 @@ export function Menu() {
                 label: 'Déconnexion',
                 icon: '/icons/log-out.svg',
                 onClick: () => {
-                  cookie.remove('cm2d_api_key');
+                  cookie.remove(ELASTIC_API_KEY_NAME);
                 },
                 link: '/'
               }

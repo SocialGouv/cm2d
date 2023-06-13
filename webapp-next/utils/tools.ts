@@ -427,3 +427,6 @@ export function getCodeEmailHtml(code: string) {
 		</html>
 	`;
 }
+
+
+export const ELASTIC_API_KEY_NAME = process.env.NEXT_PUBLIC_ELASTIC_API_KEY_NAME as string;

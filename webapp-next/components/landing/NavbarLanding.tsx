@@ -16,12 +16,13 @@ import {
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import cookie from 'js-cookie';
+import { ELASTIC_API_KEY_NAME } from '@/utils/tools';
 
 export default function NavbarLanding() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const router = useRouter();
 
-  const hasApiKey = !!cookie.get('cm2d_api_key');
+  const hasApiKey = !!cookie.get(ELASTIC_API_KEY_NAME);
 
   const links = [
     { label: 'Accueil', path: '/' },
