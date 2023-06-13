@@ -1,7 +1,7 @@
 import { useSexes } from '@/utils/api';
-import { Filters } from '@/utils/cm2d-provider';
+import { Cm2dContext, Filters } from '@/utils/cm2d-provider';
 import { Box, Checkbox, Flex, Text } from '@chakra-ui/react';
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, useContext } from 'react';
 import { MenuSubTitle } from '../layouts/MenuSubTitle';
 import { sexOrder, sortByOrder } from '@/utils/orders';
 
@@ -11,13 +11,17 @@ type Sex = {
 };
 type Sexes = Sex[];
 
-type Props = {
-  filters: Filters;
-  setFilters: Dispatch<SetStateAction<Filters>>;
-};
+type Props = {};
 
 export const FiltersSexes = (props: Props) => {
-  const { filters, setFilters } = props;
+  const context = useContext(Cm2dContext);
+
+  if (!context) {
+    throw new Error('Menu must be used within a Cm2dProvider');
+  }
+
+  const { filters, setFilters, selectedFiltersPile, setSelectedFiltersPile } =
+    context;
   const { data } = useSexes();
 
   if (!data) return <>...</>;
@@ -46,11 +50,20 @@ export const FiltersSexes = (props: Props) => {
                   ...filters,
                   sex: [...filters.sex, e.target.value]
                 });
+                if (selectedFiltersPile.at(-1) !== 'sex')
+                  setSelectedFiltersPile([...selectedFiltersPile, 'sex']);
               } else {
+                const filterSexes = [
+                  ...filters.sex.filter(f => f !== e.target.value)
+                ];
                 setFilters({
                   ...filters,
-                  sex: [...filters.sex.filter(f => f !== e.target.value)]
+                  sex: filterSexes
                 });
+                if (!filterSexes.length)
+                  setSelectedFiltersPile(
+                    selectedFiltersPile.filter(sfp => sfp !== 'sex')
+                  );
               }
             }}
           >

@@ -1,5 +1,5 @@
 import { useCauses } from '@/utils/api';
-import { Filters } from '@/utils/cm2d-provider';
+import { Cm2dContext, Filters } from '@/utils/cm2d-provider';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import {
   Flex,
@@ -18,19 +18,29 @@ import {
   AutoCompleteList
 } from '@choc-ui/chakra-autocomplete';
 import Image from 'next/image';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import {
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState
+} from 'react';
 
 type Causes = {
   id: number;
   label: string;
 }[];
 
-type Props = {
-  filters: Filters;
-  setFilters: Dispatch<SetStateAction<Filters>>;
-};
+type Props = {};
+
 export const FilterCauses = (props: Props) => {
-  const { filters, setFilters } = props;
+  const context = useContext(Cm2dContext);
+
+  if (!context) {
+    throw new Error('Menu must be used within a Cm2dProvider');
+  }
+
+  const { filters, setFilters } = context;
   const { data } = useCauses();
 
   if (!data) return <>...</>;

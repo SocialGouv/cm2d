@@ -1,7 +1,7 @@
 import { useDepartments } from '@/utils/api';
-import { Filters } from '@/utils/cm2d-provider';
+import { Cm2dContext, Filters } from '@/utils/cm2d-provider';
 import { Box, Checkbox, Flex, Text } from '@chakra-ui/react';
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, useContext } from 'react';
 import { MenuSubTitle } from '../layouts/MenuSubTitle';
 import { departmentRefs } from '@/utils/tools';
 
@@ -10,13 +10,17 @@ type Departments = {
   label: string;
 }[];
 
-type Props = {
-  filters: Filters;
-  setFilters: Dispatch<SetStateAction<Filters>>;
-};
+type Props = {};
 
 export const FiltersDepartments = (props: Props) => {
-  const { filters, setFilters } = props;
+  const context = useContext(Cm2dContext);
+
+  if (!context) {
+    throw new Error('Menu must be used within a Cm2dProvider');
+  }
+
+  const { filters, setFilters, selectedFiltersPile, setSelectedFiltersPile } =
+    context;
   const { data } = useDepartments();
 
   if (!data) return <>...</>;
@@ -43,13 +47,23 @@ export const FiltersDepartments = (props: Props) => {
                   ...filters,
                   department: [...filters.department, e.target.value]
                 });
+                if (selectedFiltersPile.at(-1) !== 'department')
+                  setSelectedFiltersPile([
+                    ...selectedFiltersPile,
+                    'department'
+                  ]);
               } else {
+                const filterDepartments = [
+                  ...filters.department.filter(f => f !== e.target.value)
+                ];
                 setFilters({
                   ...filters,
-                  department: [
-                    ...filters.department.filter(f => f !== e.target.value)
-                  ]
+                  department: filterDepartments
                 });
+                if (!filterDepartments.length)
+                  setSelectedFiltersPile(
+                    selectedFiltersPile.filter(sfp => sfp !== 'department')
+                  );
               }
             }}
           >

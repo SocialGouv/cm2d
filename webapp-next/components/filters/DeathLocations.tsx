@@ -1,8 +1,8 @@
 import { useDeathLocations } from '@/utils/api';
-import { Filters } from '@/utils/cm2d-provider';
+import { Cm2dContext, Filters } from '@/utils/cm2d-provider';
 import { deathLocationOrder, sortByOrder } from '@/utils/orders';
 import { Box, Checkbox, Flex, Text } from '@chakra-ui/react';
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, useContext } from 'react';
 import { MenuSubTitle } from '../layouts/MenuSubTitle';
 
 type DeathLocation = {
@@ -11,13 +11,17 @@ type DeathLocation = {
 };
 type DeathLocations = DeathLocation[];
 
-type Props = {
-  filters: Filters;
-  setFilters: Dispatch<SetStateAction<Filters>>;
-};
+type Props = {};
 
 export const FiltersDeathLocations = (props: Props) => {
-  const { filters, setFilters } = props;
+  const context = useContext(Cm2dContext);
+
+  if (!context) {
+    throw new Error('Menu must be used within a Cm2dProvider');
+  }
+
+  const { filters, setFilters, selectedFiltersPile, setSelectedFiltersPile } =
+    context;
   const { data } = useDeathLocations();
 
   if (!data) return <>...</>;
@@ -48,13 +52,23 @@ export const FiltersDeathLocations = (props: Props) => {
                   ...filters,
                   death_location: [...filters.death_location, e.target.value]
                 });
+                if (selectedFiltersPile.at(-1) !== 'death_location')
+                  setSelectedFiltersPile([
+                    ...selectedFiltersPile,
+                    'death_location'
+                  ]);
               } else {
+                const filterDeathLocations = [
+                  ...filters.death_location.filter(f => f !== e.target.value)
+                ];
                 setFilters({
                   ...filters,
-                  death_location: [
-                    ...filters.death_location.filter(f => f !== e.target.value)
-                  ]
+                  death_location: filterDeathLocations
                 });
+                if (!filterDeathLocations.length)
+                  setSelectedFiltersPile(
+                    selectedFiltersPile.filter(sfp => sfp !== 'death_location')
+                  );
               }
             }}
           >

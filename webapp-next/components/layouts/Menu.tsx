@@ -52,7 +52,7 @@ export function Menu() {
       <Box mt={5} h="3px" w="full" bg="gray.50" />
       <Box mt={10} px={6}>
         <MenuTitle title="Cause de décès" />
-        <FilterCauses filters={filters} setFilters={setFilters} />
+        <FilterCauses />
       </Box>
       <Box mt={10} px={6}>
         <MenuTitle title="Période" />
@@ -92,12 +92,8 @@ export function Menu() {
           }}
         >
           <Stack dir="column" spacing={4}>
-            <FiltersSexes filters={filters} setFilters={setFilters} />
-            <FiltersAges
-              filters={filters}
-              setFilters={setFilters}
-              ages={ageRanges}
-            />
+            <FiltersSexes />
+            <FiltersAges ages={ageRanges} />
           </Stack>
         </SubMenu>
         <SubMenu
@@ -115,8 +111,8 @@ export function Menu() {
           }}
         >
           <Stack dir="column" spacing={4}>
-            <FiltersDeathLocations filters={filters} setFilters={setFilters} />
-            <FiltersDepartments filters={filters} setFilters={setFilters} />
+            <FiltersDeathLocations />
+            <FiltersDepartments />
           </Stack>
         </SubMenu>
       </Box>

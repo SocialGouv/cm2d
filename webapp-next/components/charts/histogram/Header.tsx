@@ -1,6 +1,6 @@
 import { ageRanges } from '@/components/layouts/Menu';
 import { Cm2dContext, View, baseAggregation } from '@/utils/cm2d-provider';
-import { getLabelFromElkField, viewRefs } from '@/utils/tools';
+import { getDefaultField, getLabelFromElkField, viewRefs } from '@/utils/tools';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import {
   Button,
@@ -34,11 +34,18 @@ export function ChartHistogramHeader() {
     throw new Error('Menu must be used within a Cm2dProvider');
   }
 
-  const { setAggregations, setView, saveAggregateX, setSaveAggregateX } =
-    context;
+  const {
+    setAggregations,
+    setView,
+    saveAggregateX,
+    setSaveAggregateX,
+    selectedFiltersPile
+  } = context;
 
   const [aggregateX, setAggregateX] = useState<Field>(
-    isValidField(saveAggregateX) ? saveAggregateX : 'sex'
+    isValidField(saveAggregateX)
+      ? saveAggregateX
+      : getDefaultField<Field>(selectedFiltersPile, isValidField, 'sex')
   );
 
   const updateAggregation = () => {

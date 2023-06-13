@@ -257,6 +257,18 @@ export function getViewDatasets(data: any, view: View): Datasets[] {
   return [];
 }
 
+export function getDefaultField<T extends string | undefined>(
+  pile: string[],
+  isValid: (field?: string) => field is T,
+  defaultField: T,
+  indexToCheck: number = -1
+): T {
+  const lastField = pile.at(indexToCheck);
+  if (lastField && isValid(lastField)) return lastField as T;
+
+  return defaultField;
+}
+
 export function ISODateToMonthYear(isoDateString: string): string {
   const date = new Date(isoDateString);
   let month = date.getMonth() + 1; // Les mois sont indexés à partir de 0 en JavaScript
