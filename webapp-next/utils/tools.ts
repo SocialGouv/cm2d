@@ -258,20 +258,13 @@ export function getViewDatasets(data: any, view: View): Datasets[] {
 }
 
 export function getDefaultField<T extends string | undefined>(
-  filters: Filters,
+  pile: string[],
   isValid: (field?: string) => field is T,
-  defaultField: T
+  defaultField: T,
+  indexToCheck: number = -1
 ): T {
-  for (const [key, value] of Object.entries(filters)) {
-    if (
-      ['death_location', 'age', 'sex', 'department'].includes(key) &&
-      Array.isArray(value) &&
-      value.length > 0 &&
-      isValid(key)
-    ) {
-      return key as T;
-    }
-  }
+  const lastField = pile.at(indexToCheck);
+  if (lastField && isValid(lastField)) return lastField as T;
 
   return defaultField;
 }

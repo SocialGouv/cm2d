@@ -1,6 +1,6 @@
 import { ageRanges } from '@/components/layouts/Menu';
 import { Cm2dContext, View, baseAggregation } from '@/utils/cm2d-provider';
-import { getLabelFromElkField, viewRefs } from '@/utils/tools';
+import { getDefaultField, getLabelFromElkField, viewRefs } from '@/utils/tools';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import {
   Button,
@@ -40,14 +40,19 @@ export function ChartTableHeader() {
     saveAggregateX,
     setSaveAggregateX,
     saveAggregateY,
-    setSaveAggregateY
+    setSaveAggregateY,
+    selectedFiltersPile
   } = context;
 
   const [aggregateX, setAggregateX] = useState<Field>(
-    isValidField(saveAggregateX) ? saveAggregateX : 'sex'
+    isValidField(saveAggregateX)
+      ? saveAggregateX
+      : getDefaultField<Field>(selectedFiltersPile, isValidField, 'sex')
   );
   const [aggregateY, setAggregateY] = useState<Field>(
-    isValidField(saveAggregateY) ? saveAggregateY : 'age'
+    isValidField(saveAggregateY)
+      ? saveAggregateY
+      : getDefaultField<Field>(selectedFiltersPile, isValidField, 'age', -2)
   );
 
   const updateAggregation = () => {

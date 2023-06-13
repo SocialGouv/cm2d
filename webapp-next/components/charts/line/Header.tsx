@@ -39,7 +39,7 @@ export function ChartLineHeader() {
     setView,
     saveAggregateX,
     setSaveAggregateX,
-    filters
+    selectedFiltersPile
   } = context;
 
   const [isAggregated, setIsAggregated] = useState<boolean>(
@@ -48,7 +48,7 @@ export function ChartLineHeader() {
   const [aggregateField, setAggregateField] = useState<Field>(
     isValidField(saveAggregateX)
       ? saveAggregateX
-      : getDefaultField<Field>(filters, isValidField, 'sex')
+      : getDefaultField<Field>(selectedFiltersPile, isValidField, 'sex')
   );
 
   const updateAggregation = () => {
@@ -107,7 +107,7 @@ export function ChartLineHeader() {
       setAggregateField(
         isValidField(saveAggregateX)
           ? saveAggregateX
-          : getDefaultField<Field>(filters, isValidField, 'sex')
+          : getDefaultField<Field>(selectedFiltersPile, isValidField, 'sex')
       );
     }
     setSaveAggregateX(isAggregated ? undefined : aggregateField);
