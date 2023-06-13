@@ -20,6 +20,12 @@ export type Filters = {
   end_date?: string;
 };
 
+export type User = {
+  username?: string;
+  email?: string;
+  fullName?: string;
+}
+
 type Cm2dContextType = {
   firstDate: Date;
   filters: Filters;
@@ -36,6 +42,8 @@ type Cm2dContextType = {
   setSaveAggregateY: Dispatch<SetStateAction<string | undefined>>;
   CSVData: string[][];
   setCSVData: Dispatch<SetStateAction<string[][]>>;
+  user: User;
+  setUser: Dispatch<SetStateAction<User>>;
 };
 
 export const Cm2dContext = createContext<Cm2dContextType | undefined>(
@@ -74,6 +82,7 @@ export function Cm2dProvider({ children }: Cm2dProviderProps) {
   const [saveAggregateY, setSaveAggregateY] = useState<string | undefined>();
   const [firstDate, setFirstDate] = useState<Date>(new Date());
   const [CSVData, setCSVData] = useState<string[][]>([]);
+  const [user, setUser] = useState<User>({} as User);
 
   const fetchFirstData = () => {
     fetch('/api/elk/first', { method: 'GET' }).then(res =>
@@ -84,8 +93,23 @@ export function Cm2dProvider({ children }: Cm2dProviderProps) {
     );
   };
 
+  const fetchUser = () => {
+    fetch('/api/auth/user', { method: 'GET' }).then(res =>
+      res.json().then(user => {
+        if (user) {
+          setUser({
+            username: user.username,
+            fullName: user.full_name,
+            email: user.email
+          });
+        }
+      })
+    );
+  };
+
   useEffect(() => {
     fetchFirstData();
+    fetchUser();
   }, []);
 
   return (
@@ -105,7 +129,9 @@ export function Cm2dProvider({ children }: Cm2dProviderProps) {
         saveAggregateY,
         setSaveAggregateY,
         CSVData,
-        setCSVData
+        setCSVData,
+        user,
+        setUser
       }}
     >
       {children}
