@@ -257,6 +257,25 @@ export function getViewDatasets(data: any, view: View): Datasets[] {
   return [];
 }
 
+export function getDefaultField<T extends string | undefined>(
+  filters: Filters,
+  isValid: (field?: string) => field is T,
+  defaultField: T
+): T {
+  for (const [key, value] of Object.entries(filters)) {
+    if (
+      ['death_location', 'age', 'sex', 'department'].includes(key) &&
+      Array.isArray(value) &&
+      value.length > 0 &&
+      isValid(key)
+    ) {
+      return key as T;
+    }
+  }
+
+  return defaultField;
+}
+
 export function ISODateToMonthYear(isoDateString: string): string {
   const date = new Date(isoDateString);
   let month = date.getMonth() + 1; // Les mois sont indexés à partir de 0 en JavaScript

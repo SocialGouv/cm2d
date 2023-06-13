@@ -1,6 +1,6 @@
 import { ageRanges } from '@/components/layouts/Menu';
 import { Cm2dContext, View, baseAggregation } from '@/utils/cm2d-provider';
-import { getLabelFromElkField, viewRefs } from '@/utils/tools';
+import { getDefaultField, getLabelFromElkField, viewRefs } from '@/utils/tools';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import {
   Button,
@@ -34,14 +34,21 @@ export function ChartLineHeader() {
     throw new Error('Menu must be used within a Cm2dProvider');
   }
 
-  const { setAggregations, setView, saveAggregateX, setSaveAggregateX } =
-    context;
+  const {
+    setAggregations,
+    setView,
+    saveAggregateX,
+    setSaveAggregateX,
+    filters
+  } = context;
 
   const [isAggregated, setIsAggregated] = useState<boolean>(
     !isValidField(saveAggregateX)
   );
   const [aggregateField, setAggregateField] = useState<Field>(
-    isValidField(saveAggregateX) ? saveAggregateX : 'sex'
+    isValidField(saveAggregateX)
+      ? saveAggregateX
+      : getDefaultField<Field>(filters, isValidField, 'sex')
   );
 
   const updateAggregation = () => {
@@ -96,6 +103,13 @@ export function ChartLineHeader() {
   }, [isAggregated, aggregateField]);
 
   useEffect(() => {
+    if (!isAggregated) {
+      setAggregateField(
+        isValidField(saveAggregateX)
+          ? saveAggregateX
+          : getDefaultField<Field>(filters, isValidField, 'sex')
+      );
+    }
     setSaveAggregateX(isAggregated ? undefined : aggregateField);
   }, [isAggregated]);
 

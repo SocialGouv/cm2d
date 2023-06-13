@@ -24,6 +24,8 @@ type Cm2dContextType = {
   firstDate: Date;
   filters: Filters;
   setFilters: Dispatch<SetStateAction<Filters>>;
+  selectedFiltersPile: string[];
+  setSelectedFiltersPile: Dispatch<SetStateAction<string[]>>;
   aggregations: any;
   setAggregations: Dispatch<SetStateAction<any>>;
   view: View;
@@ -64,6 +66,7 @@ export const baseAggregation = {
 
 export function Cm2dProvider({ children }: Cm2dProviderProps) {
   const [filters, setFilters] = useState<Filters>(baseFilters);
+  const [selectedFiltersPile, setSelectedFiltersPile] = useState<string[]>([]);
   const [aggregations, setAggregations] = useState<any>(baseAggregation);
 
   const [view, setView] = useState<View>('line');
@@ -91,6 +94,8 @@ export function Cm2dProvider({ children }: Cm2dProviderProps) {
         firstDate,
         filters,
         setFilters,
+        selectedFiltersPile,
+        setSelectedFiltersPile,
         aggregations,
         setAggregations,
         view,
