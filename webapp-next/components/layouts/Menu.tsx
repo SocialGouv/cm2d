@@ -135,6 +135,7 @@ export function Menu() {
                 icon: '/icons/log-out.svg',
                 onClick: () => {
                   cookie.remove(ELASTIC_API_KEY_NAME);
+                  window.location.reload();
                 },
                 link: '/'
               }
