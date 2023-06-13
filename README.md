@@ -72,8 +72,10 @@ Il est maintenant possible de se connecter en utilisant l'adresse email et le mo
 
 Création de l'index principal destiné à rassembler les informations relatives aux certificats.
 
+Rendez-vous dans "Management" > "Dev Tools" et lancez la requête suivante :
+
 ```
-curl -X PUT "localhost:9200/cm2d_certificate" -H 'Content-Type: application/json' -d'
+PUT /cm2d_certificate
 {
   "mappings": {
     "_meta": {
@@ -121,10 +123,12 @@ curl -X PUT "localhost:9200/cm2d_certificate" -H 'Content-Type: application/json
 
 ### Index pour les attributs supplémentaires des utilisateurs
 
-Pour stocker des informations supplémentaires concernant les utilisateurs CM2D, nous devons créer un index dédié de la manière suivante :
+Pour stocker des informations supplémentaires concernant les utilisateurs CM2D, nous devons créer un index dédié.
+
+Rendez-vous dans "Management" > "Dev Tools" et lancez la requête suivante :
 
 ```
-curl -X PUT "localhost:9200/cm2d_users" -H 'Content-Type: application/json' -d'
+PUT /cm2d_users
 {
   "mappings": {
     "properties": {
@@ -132,8 +136,7 @@ curl -X PUT "localhost:9200/cm2d_users" -H 'Content-Type: application/json' -d'
       "versionCGU": { "type": "text" }
     }
   }
-}'
-
+}
 ```
 
 ### Mise en place des transformations
