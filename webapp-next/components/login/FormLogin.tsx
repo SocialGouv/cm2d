@@ -44,7 +44,11 @@ async function auth(
 export const FormLogin = () => {
   const router = useRouter();
 
-  const { isOpen: isOpenTerms, onOpen: onOpenTerms, onClose: onCloseTerms } = useDisclosure();
+  const {
+    isOpen: isOpenTerms,
+    onOpen: onOpenTerms,
+    onClose: onCloseTerms
+  } = useDisclosure();
   const modalBodyRef = useRef<HTMLDivElement>(null);
 
   const [username, setUsername] = useState('');
@@ -345,67 +349,125 @@ export const FormLogin = () => {
           {showCodeForm ? CodeForm : EmailPasswordForm}
         </Box>
       </Box>
-      <Modal isOpen={isOpenTerms} onClose={onCloseTerms} closeOnOverlayClick={false} scrollBehavior="inside" size="6xl">
+      <Modal
+        isOpen={isOpenTerms}
+        onClose={onCloseTerms}
+        closeOnOverlayClick={false}
+        scrollBehavior="inside"
+        size="6xl"
+      >
         <ModalOverlay bg="primaryOverlay" />
-        <ModalTermsContent modalBodyRef={modalBodyRef} onClose={() => router.push('/')} onAccept={() => handleModalTermsAccept()} />
+        <ModalTermsContent
+          modalBodyRef={modalBodyRef}
+          onClose={() => router.push('/')}
+          onAccept={() => handleModalTermsAccept()}
+        />
       </Modal>
     </>
   );
 };
 
-function ModalTermsContent({ modalBodyRef, onClose, onAccept }: { modalBodyRef: any, onClose: () => void, onAccept: () => void }) {
-
+function ModalTermsContent({
+  modalBodyRef,
+  onClose,
+  onAccept
+}: {
+  modalBodyRef: any;
+  onClose: () => void;
+  onAccept: () => void;
+}) {
   const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false);
 
   useEffect(() => {
     const modalBody = modalBodyRef.current;
 
     if (modalBody) {
-      const handleScroll = () => {
-        if (!hasScrolledToBottom) {
-          const scrolledToBottom = modalBody.scrollTop + modalBody.clientHeight >= modalBody.scrollHeight;
-          setHasScrolledToBottom(scrolledToBottom);
-        }
+      const checkScrolledToBottom = () => {
+        const scrolledToBottom =
+          modalBody.scrollTop + modalBody.clientHeight >=
+          modalBody.scrollHeight;
+        setHasScrolledToBottom(scrolledToBottom);
       };
-  
-      modalBody.addEventListener("scroll", handleScroll);
-  
+
+      checkScrolledToBottom();
+
+      modalBody.addEventListener('scroll', checkScrolledToBottom);
+
       return () => {
-        modalBody.removeEventListener("scroll", handleScroll);
+        modalBody.removeEventListener('scroll', checkScrolledToBottom);
       };
     }
-  }, [modalBodyRef, hasScrolledToBottom]);
+  }, [modalBodyRef]);
 
   return (
     <ModalContent>
       <ModalHeader>Conditions générales d&apos;utilisation</ModalHeader>
       <ModalBody ref={modalBodyRef}>
         <p>
-          Donec quis mauris id mauris ultricies pulvinar. Phasellus ex libero, tristique eu odio eu, imperdiet rutrum tortor. Pellentesque pulvinar nulla dolor, ut ultrices nulla pretium sed. Ut nec molestie dolor. Donec et molestie lectus. Vestibulum posuere iaculis justo sit amet tristique. Integer a ullamcorper elit. Mauris rhoncus sed metus quis fringilla. Nam egestas elementum justo in fermentum.
+          Donec quis mauris id mauris ultricies pulvinar. Phasellus ex libero,
+          tristique eu odio eu, imperdiet rutrum tortor. Pellentesque pulvinar
+          nulla dolor, ut ultrices nulla pretium sed. Ut nec molestie dolor.
+          Donec et molestie lectus. Vestibulum posuere iaculis justo sit amet
+          tristique. Integer a ullamcorper elit. Mauris rhoncus sed metus quis
+          fringilla. Nam egestas elementum justo in fermentum.
         </p>
-        <br/>
+        <br />
         <p>
-          Integer augue odio, tincidunt ac magna eget, consequat auctor ante. Proin pretium urna sem, a volutpat libero malesuada quis. Nam a fermentum urna, quis ultrices justo. Donec eu volutpat enim. Nulla facilisi. Pellentesque tincidunt ex in dui lacinia placerat. Morbi luctus iaculis ante, sit amet porttitor lacus convallis sed. Etiam mollis semper massa ac posuere. Proin mi magna, bibendum vel mattis non, iaculis faucibus ex. In tristique lacinia nisi, ut laoreet augue venenatis egestas.
+          Integer augue odio, tincidunt ac magna eget, consequat auctor ante.
+          Proin pretium urna sem, a volutpat libero malesuada quis. Nam a
+          fermentum urna, quis ultrices justo. Donec eu volutpat enim. Nulla
+          facilisi. Pellentesque tincidunt ex in dui lacinia placerat. Morbi
+          luctus iaculis ante, sit amet porttitor lacus convallis sed. Etiam
+          mollis semper massa ac posuere. Proin mi magna, bibendum vel mattis
+          non, iaculis faucibus ex. In tristique lacinia nisi, ut laoreet augue
+          venenatis egestas.
         </p>
-        <br/>
+        <br />
         <p>
-          In iaculis, est at imperdiet vehicula, quam ipsum dapibus augue, non mattis tortor nisi ac nunc. Curabitur in elementum augue. Nulla consectetur quis leo quis faucibus. Integer et dolor vitae mi efficitur cursus. Curabitur massa neque, pretium id porta eget, pretium non odio. Suspendisse potenti. Integer malesuada eros eu augue accumsan, fermentum auctor eros condimentum. Phasellus ut massa diam. Vestibulum sed porttitor leo. Nulla a pharetra lectus. Vestibulum ut mauris blandit, ultrices libero ornare, molestie nulla. Aenean tincidunt libero vitae tellus sagittis, eu porta massa venenatis. Aliquam sit amet neque eu felis sodales rhoncus non mollis neque.
+          In iaculis, est at imperdiet vehicula, quam ipsum dapibus augue, non
+          mattis tortor nisi ac nunc. Curabitur in elementum augue. Nulla
+          consectetur quis leo quis faucibus. Integer et dolor vitae mi
+          efficitur cursus. Curabitur massa neque, pretium id porta eget,
+          pretium non odio. Suspendisse potenti. Integer malesuada eros eu augue
+          accumsan, fermentum auctor eros condimentum. Phasellus ut massa diam.
+          Vestibulum sed porttitor leo. Nulla a pharetra lectus. Vestibulum ut
+          mauris blandit, ultrices libero ornare, molestie nulla. Aenean
+          tincidunt libero vitae tellus sagittis, eu porta massa venenatis.
+          Aliquam sit amet neque eu felis sodales rhoncus non mollis neque.
         </p>
-        <br/>
+        <br />
         <p>
-          Fusce tempor metus non nibh lobortis sagittis. Donec viverra vestibulum convallis. Nulla non augue in libero commodo dapibus. Duis in malesuada ipsum, et efficitur nulla. Donec scelerisque vestibulum lacus, eget mollis massa ultricies quis. Aliquam eu massa turpis. Pellentesque egestas risus in aliquet facilisis. Nam eu odio sit amet massa suscipit sagittis sit amet non neque. Etiam dolor est, interdum congue risus vel, commodo interdum risus.
+          Fusce tempor metus non nibh lobortis sagittis. Donec viverra
+          vestibulum convallis. Nulla non augue in libero commodo dapibus. Duis
+          in malesuada ipsum, et efficitur nulla. Donec scelerisque vestibulum
+          lacus, eget mollis massa ultricies quis. Aliquam eu massa turpis.
+          Pellentesque egestas risus in aliquet facilisis. Nam eu odio sit amet
+          massa suscipit sagittis sit amet non neque. Etiam dolor est, interdum
+          congue risus vel, commodo interdum risus.
         </p>
-        <br/>
+        <br />
         <p>
-          Suspendisse non risus odio. Etiam aliquet bibendum mi, eu dapibus velit dapibus sit amet. Etiam a tincidunt elit. Donec sit amet lectus tellus. Praesent pulvinar porta vestibulum. In tristique, justo eget porta aliquam, odio massa tempus nisi, sed imperdiet diam dolor ut libero.
+          Suspendisse non risus odio. Etiam aliquet bibendum mi, eu dapibus
+          velit dapibus sit amet. Etiam a tincidunt elit. Donec sit amet lectus
+          tellus. Praesent pulvinar porta vestibulum. In tristique, justo eget
+          porta aliquam, odio massa tempus nisi, sed imperdiet diam dolor ut
+          libero.
         </p>
-        <br/>
+        <br />
         <p>
-          Morbi tincidunt elit consectetur diam ultricies, et maximus tellus condimentum. Sed sit amet lorem libero. Aliquam rhoncus venenatis velit, quis faucibus lorem porttitor non. Mauris ac tortor et ante facilisis laoreet ac a ante. Nullam consequat sem nisl, a cursus arcu euismod quis.
+          Morbi tincidunt elit consectetur diam ultricies, et maximus tellus
+          condimentum. Sed sit amet lorem libero. Aliquam rhoncus venenatis
+          velit, quis faucibus lorem porttitor non. Mauris ac tortor et ante
+          facilisis laoreet ac a ante. Nullam consequat sem nisl, a cursus arcu
+          euismod quis.
         </p>
-        <br/>
+        <br />
         <p>
-          Praesent fringilla massa velit, id efficitur lacus pulvinar eget. Donec sit amet vehicula ex. Etiam a est sit amet metus porttitor molestie non luctus arcu. Duis pulvinar malesuada dui, ac euismod est lobortis vel. Pellentesque porttitor magna ut nisi eleifend pellentesque.
+          Praesent fringilla massa velit, id efficitur lacus pulvinar eget.
+          Donec sit amet vehicula ex. Etiam a est sit amet metus porttitor
+          molestie non luctus arcu. Duis pulvinar malesuada dui, ac euismod est
+          lobortis vel. Pellentesque porttitor magna ut nisi eleifend
+          pellentesque.
         </p>
       </ModalBody>
 
@@ -413,10 +475,15 @@ function ModalTermsContent({ modalBodyRef, onClose, onAccept }: { modalBodyRef: 
         <Button onClick={onClose} mr={4} w="full">
           Refuser
         </Button>
-        <Button colorScheme="primary" w="full" onClick={onAccept} isDisabled={!hasScrolledToBottom}>
+        <Button
+          colorScheme="primary"
+          w="full"
+          onClick={onAccept}
+          isDisabled={!hasScrolledToBottom}
+        >
           Accepter
         </Button>
       </ModalFooter>
     </ModalContent>
-  )
+  );
 }

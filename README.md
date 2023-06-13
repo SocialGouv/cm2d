@@ -32,10 +32,10 @@ yarn
 yarn dev
 ```
 
-La suite ELK est accessible via l'URL http://localhost:5601/. Pour vous connecter, les identifiants par défaut sont les suivants :
+Vous pouvez accéder à la suite ELK via l'URL http://localhost:5601/. Les identifiants de connexion par défaut sont les suivants, à moins qu'ils n'aient été modifiés dans le fichier .env :
 
 ```
-Email: elastic
+Identifiant: elastic
 Mot de passe: elastic_password
 ```
 
