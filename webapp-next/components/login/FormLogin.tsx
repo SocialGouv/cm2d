@@ -30,9 +30,9 @@ import { useEffect, useRef, useState } from 'react';
 import useSWRMutation from 'swr/mutation';
 import { ELASTIC_API_KEY_NAME } from '@/utils/tools';
 
-async function auth(
+async function auth<T>(
   url: string,
-  { arg }: { arg: { username?: string; password?: string; code?: string } }
+  { arg }: { arg: T }
 ) {
   return fetch(url, {
     method: 'POST',
@@ -64,11 +64,12 @@ export const FormLogin = () => {
   const { isOpen, onToggle } = useDisclosure();
   const [formError, setFormError] = useState(false);
 
-  const { trigger: triggerLogin } = useSWRMutation('/api/auth', auth);
+  const { trigger: triggerLogin } = useSWRMutation('/api/auth', auth<{ username: string; password: string; }>);
   const { trigger: triggerVerify } = useSWRMutation(
     '/api/auth/verify-code',
-    auth
+    auth<{ username: string, code: string }>
   );
+  const { trigger: triggerCreateUser } = useSWRMutation('/api/auth/create-user', auth<{ username: string; versionCGU: string }>);
 
   const startTimer = () => {
     if (intervalRef.current) clearInterval(intervalRef.current);
@@ -97,9 +98,10 @@ export const FormLogin = () => {
     setPassword(event.target.value);
   };
 
-  const handleModalTermsAccept = () => {
+  const handleModalTermsAccept = async () => {
     if (cm2dApiKeyEncoded) {
       cookie.set(ELASTIC_API_KEY_NAME, cm2dApiKeyEncoded);
+      await triggerCreateUser({ username, versionCGU: '1' })
       onCloseTerms();
       router.push('/bo');
     }

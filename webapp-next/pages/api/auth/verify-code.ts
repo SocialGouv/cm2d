@@ -33,14 +33,6 @@ export default async function handler(
           id: req.body.username
         })
       } catch (e) {
-        await client.create({
-          index: "cm2d_users",
-          id: req.body.username,
-          document: {
-            username: req.body.username,
-            versionCGU: 1
-          }
-        })
         firstLogin = true;
       }
 
