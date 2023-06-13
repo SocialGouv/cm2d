@@ -128,11 +128,8 @@ export default function Home() {
           mb={8}
           content={
             <>
-              Attention : veuillez prendre en compte que les données ne sont pas
-              consolidées pour les dates ultérieures au {getSixMonthAgoDate()}.
-              <br />
-              En conséquence, l&apos;exhaustivité de toute information
-              postérieure à cette date ne peut être garantie.
+              Attention : les données ne sont pas exhaustives pour les décès
+              ultérieurs à {getSixMonthAgoDate()}.
             </>
           }
         />
