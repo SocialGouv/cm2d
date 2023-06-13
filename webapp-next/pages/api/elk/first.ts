@@ -6,6 +6,7 @@ import {
   SearchResponseBody
 } from '@elastic/elasticsearch/lib/api/types';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { ELASTIC_API_KEY_NAME } from '@/utils/tools';
 
 type Data = {
   result: SearchResponseBody<unknown, Record<string, AggregationsAggregate>>;
@@ -19,7 +20,7 @@ export default async function handler(
   const client = new Client({
     node: process.env.ELASTIC_HOST,
     auth: {
-      apiKey: req.cookies.cm2d_api_key as string
+      apiKey: req.cookies[ELASTIC_API_KEY_NAME] as string
     },
     tls: {
       ca: fs.readFileSync(path.resolve(process.cwd(), './../certificates/ca.crt')),
