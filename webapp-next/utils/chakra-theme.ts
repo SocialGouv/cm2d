@@ -2,6 +2,7 @@ import { extendTheme } from '@chakra-ui/react';
 import { ComponentStyleConfig } from '@chakra-ui/react';
 
 const colors = {
+  primaryOverlay: 'rgb(36, 108, 249, 0.8)',
   primary: {
     50: '#F4F8FF',
     75: '#E9F1FF',
