@@ -53,7 +53,7 @@ with open('sample_data.csv', mode='w', newline='') as csv_file:
         row = {}
         row['categories_level_1'] = get_multiple_values(category_1)
         row['categories_level_2'] = get_multiple_values(category_2)
-        row['age'] = fake.random_int(min=1, max=100)
+        row['age'] = fake.random_int(min=0, max=100)
         row['kind'] = random.choice(['Electronique', 'Papier'])
         row['sex'] = random.choice(['homme', 'femme', 'indéterminé'])
         row['death_location'] = random.choice(death_locations)

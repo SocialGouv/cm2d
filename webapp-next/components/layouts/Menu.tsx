@@ -15,7 +15,9 @@ import cookie from 'js-cookie';
 import { hasAtLeastOneFilter, ELASTIC_API_KEY_NAME } from '@/utils/tools';
 
 export const ageRanges = [
-  { from: 0, to: 10, key: '0-10 ans' },
+  { from: 0, to: 0, key: 'Moins de 1 an' },
+  { from: 1, to: 5, key: '1-5 ans' },
+  { from: 6, to: 10, key: '6-10 ans' },
   { from: 11, to: 20, key: '11-20 ans' },
   { from: 21, to: 30, key: '21-30 ans' },
   { from: 31, to: 40, key: '31-40 ans' },
@@ -142,9 +144,7 @@ export function Menu() {
             ]}
           />
         </Box>
-        <UserCard
-          user={user}
-        />
+        <UserCard user={user} />
       </Box>
     </Flex>
   );
