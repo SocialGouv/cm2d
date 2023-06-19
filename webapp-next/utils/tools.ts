@@ -77,12 +77,42 @@ export function hasAtLeastOneFilter(filters: Filters): boolean {
 export function transformFilters(filters: Filters): any[] {
   const transformed: any[] = [];
 
-  if (filters.categories_level_1.length > 0) {
-    transformed.push({
-      terms: {
-        categories_level_1: filters.categories_level_1
-      }
-    });
+  if (filters.categories.length > 0) {
+    switch (filters.categories_search) {
+      case 'full':
+        transformed.push({
+          bool: {
+            should: [
+              {
+                terms: {
+                  categories_level_1: filters.categories
+                }
+              },
+              {
+                terms: {
+                  categories_level_2: filters.categories
+                }
+              }
+            ],
+            minimum_should_match: 1
+          }
+        });
+        break;
+      case 'category_1':
+        transformed.push({
+          terms: {
+            categories_level_1: filters.categories
+          }
+        });
+        break;
+      case 'category_2':
+        transformed.push({
+          terms: {
+            categories_level_2: filters.categories
+          }
+        });
+        break;
+    }
   }
 
   if (filters.age.length > 0) {
@@ -428,5 +458,5 @@ export function getCodeEmailHtml(code: string) {
 	`;
 }
 
-
-export const ELASTIC_API_KEY_NAME = process.env.NEXT_PUBLIC_ELASTIC_API_KEY_NAME as string;
+export const ELASTIC_API_KEY_NAME = process.env
+  .NEXT_PUBLIC_ELASTIC_API_KEY_NAME as string;

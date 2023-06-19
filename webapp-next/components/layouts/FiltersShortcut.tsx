@@ -94,7 +94,7 @@ export function FiltersShortcut() {
                 }}
               />
             ));
-          case 'categories_level_1':
+          case 'categories':
           case 'death_location':
           case 'sex':
           case 'department':
@@ -150,7 +150,7 @@ export function FiltersShortcut() {
           onClick={() => {
             setFilters({
               ...baseFilters,
-              categories_level_1: filters.categories_level_1,
+              categories: filters.categories,
               start_date: filters.start_date,
               end_date: filters.end_date
             });
