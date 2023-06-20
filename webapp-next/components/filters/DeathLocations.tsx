@@ -4,6 +4,7 @@ import { deathLocationOrder, sortByOrder } from '@/utils/orders';
 import { Box, Checkbox, Flex, Text } from '@chakra-ui/react';
 import { Dispatch, SetStateAction, useContext } from 'react';
 import { MenuSubTitle } from '../layouts/MenuSubTitle';
+import { capitalizeString } from '@/utils/tools';
 
 type DeathLocation = {
   id: number;
@@ -79,8 +80,7 @@ export const FiltersDeathLocations = (props: Props) => {
                   : 'span'
               }
             >
-              {death_location.label.charAt(0).toUpperCase() +
-                death_location.label.substring(1)}
+              {capitalizeString(death_location.label)}
             </Text>
           </Checkbox>
         ))}
