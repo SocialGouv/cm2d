@@ -26,8 +26,7 @@ type Field =
   | 'department'
   | 'years'
   | 'categories_level_1'
-  | 'categories_level_2'
-  | 'categories';
+  | 'categories_level_2';
 
 export function ChartLineHeader() {
   const context = useContext(Cm2dContext);
@@ -80,19 +79,25 @@ export function ChartLineHeader() {
     if (isAggregated) {
       aggregation = baseAggregation;
     } else {
-      if (
-        [
-          'sex',
-          'death_location',
-          'department',
-          'categories_level_1',
-          'categories_level_2'
-        ].includes(aggregateField)
-      ) {
+      if (['sex', 'death_location', 'department'].includes(aggregateField)) {
         aggregation = {
           aggregated_parent: {
             terms: {
               field: aggregateField
+            },
+            aggs: {
+              ...baseAggregation
+            }
+          }
+        };
+      } else if (
+        ['categories_level_1', 'categories_level_2'].includes(aggregateField)
+      ) {
+        aggregation = {
+          aggregated_parent: {
+            terms: {
+              field: aggregateField,
+              exclude: filters.categories[0]
             },
             aggs: {
               ...baseAggregation

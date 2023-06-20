@@ -26,8 +26,7 @@ type Field =
   | 'department'
   | 'years'
   | 'categories_level_1'
-  | 'categories_level_2'
-  | 'categories';
+  | 'categories_level_2';
 
 export function ChartDoughnutHeader() {
   const context = useContext(Cm2dContext);
@@ -77,6 +76,18 @@ export function ChartDoughnutHeader() {
         field: aggregateX
       }
     };
+
+    if (
+      aggregateX === 'categories_level_1' ||
+      aggregateX === 'categories_level_2'
+    ) {
+      xAgg = {
+        terms: {
+          field: aggregateX,
+          exclude: filters.categories[0]
+        }
+      };
+    }
 
     if (aggregateX === 'age') {
       xAgg = {

@@ -26,8 +26,7 @@ type Field =
   | 'department'
   | 'months'
   | 'categories_level_1'
-  | 'categories_level_2'
-  | 'categories';
+  | 'categories_level_2';
 
 export function ChartTableHeader() {
   const context = useContext(Cm2dContext);
@@ -114,6 +113,36 @@ export function ChartTableHeader() {
 
       xAgg = aggregateX === 'months' ? dateAgg : xAgg;
       yAgg = aggregateY === 'months' ? dateAgg : yAgg;
+    }
+
+    if (
+      aggregateX === 'categories_level_1' ||
+      aggregateY === 'categories_level_1'
+    ) {
+      const categoriesAgg = {
+        terms: {
+          field: 'categories_level_1',
+          exclude: filters.categories[0]
+        }
+      };
+
+      xAgg = aggregateX === 'categories_level_1' ? categoriesAgg : xAgg;
+      yAgg = aggregateY === 'categories_level_1' ? categoriesAgg : yAgg;
+    }
+
+    if (
+      aggregateX === 'categories_level_2' ||
+      aggregateY === 'categories_level_2'
+    ) {
+      const categoriesAgg = {
+        terms: {
+          field: 'categories_level_2',
+          exclude: filters.categories[0]
+        }
+      };
+
+      xAgg = aggregateX === 'categories_level_2' ? categoriesAgg : xAgg;
+      yAgg = aggregateY === 'categories_level_2' ? categoriesAgg : yAgg;
     }
 
     setAggregations({

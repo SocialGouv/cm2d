@@ -25,8 +25,7 @@ type Field =
   | 'death_location'
   | 'years'
   | 'categories_level_1'
-  | 'categories_level_2'
-  | 'categories';
+  | 'categories_level_2';
 
 export function ChartMapHeader() {
   const context = useContext(Cm2dContext);
@@ -90,6 +89,18 @@ export function ChartMapHeader() {
           field: aggregateField
         }
       };
+
+      if (
+        aggregateField === 'categories_level_1' ||
+        aggregateField === 'categories_level_2'
+      ) {
+        yAgg = {
+          terms: {
+            field: aggregateField,
+            exclude: filters.categories[0]
+          }
+        };
+      }
 
       if (aggregateField === 'age') {
         yAgg = {

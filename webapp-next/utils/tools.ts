@@ -305,13 +305,7 @@ export function concatAdditionnalFields<T extends string | undefined>(
 ): { label: string; value: T }[] {
   switch (categories_search) {
     case 'full':
-      return [
-        ...availableFields,
-        {
-          label: 'Position dans le certificat de décès',
-          value: 'categories' as T
-        }
-      ];
+      return availableFields;
     case 'category_1':
       return [
         ...availableFields,

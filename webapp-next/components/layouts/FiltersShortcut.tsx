@@ -94,7 +94,6 @@ export function FiltersShortcut() {
                 }}
               />
             ));
-          case 'categories':
           case 'death_location':
           case 'sex':
           case 'department':
