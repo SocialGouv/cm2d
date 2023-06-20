@@ -489,7 +489,7 @@ export function getCodeEmailHtml(code: string) {
 export function capitalizeString(str: string): string {
   if (str.length <= 1) return str;
 
-  return str.charAt(0).toUpperCase() + str.substring(1);
+  return str.toString().charAt(0).toUpperCase() + str.toString().substring(1);
 }
 
 export const ELASTIC_API_KEY_NAME = process.env
