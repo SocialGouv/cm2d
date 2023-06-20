@@ -4,6 +4,12 @@ L'application qui permet aux agents des ARS d’évaluer et d’orienter leurs a
 
 ## Démarrage de l'application
 
+Pour initialiser les variables d'environnement ELK
+
+```
+cp .env.example .env
+```
+
 Pour démarrer la suite ELK localement :
 
 ```
@@ -17,7 +23,7 @@ mkdir certificates
 docker cp elasticsearch:/usr/share/elasticsearch/config/certs/ca/ca.crt ./certificates/ca.crt
 ```
 
-Pour initialiser les variables d'environnement
+Pour initialiser les variables d'environnement NextJS
 
 ```
 cd webapp-next
@@ -55,7 +61,15 @@ Définissez un mot de passe approprié dans le champ correspondant. Pour le cham
 
 Il est maintenant possible de se connecter en utilisant l'adresse email et le mot de passe que vous avez définis précédemment.
 
-## Les variables d'environnement
+## Les variables d'environnement ELK
+
+| Nom de la variable | Description                                                   |
+| ------------------ | ------------------------------------------------------------- |
+| ELASTIC_PASSWORD   | Le mot de passe à utiliser pour se connecter à Elasticsearch. |
+| KIBANA_PASSWORD    | Le mot de passe à utiliser pour se connecter à Kibana.        |
+| CLUSTER_NAME       | Le nom du cluster ELK                                         |
+
+## Les variables d'environnement NextJS
 
 | Nom de la variable    | Description                                                             |
 | --------------------- | ----------------------------------------------------------------------- |
