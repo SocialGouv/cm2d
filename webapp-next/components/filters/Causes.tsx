@@ -1,5 +1,6 @@
 import { useCauses } from '@/utils/api';
 import { Cm2dContext, SearchCategory } from '@/utils/cm2d-provider';
+import { capitalizeString } from '@/utils/tools';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import {
   Flex,
@@ -74,9 +75,7 @@ export const FilterCauses = (props: Props) => {
             _hover={{ borderColor: 'primary.500' }}
           >
             <Flex alignItems={'center'}>
-              {filters.categories[0] &&
-                filters.categories[0].charAt(0).toUpperCase() +
-                  filters.categories[0].substring(1)}
+              {filters.categories[0] && capitalizeString(filters.categories[0])}
               <ChevronDownIcon
                 ml="auto"
                 fontSize="2xl"
@@ -95,7 +94,7 @@ export const FilterCauses = (props: Props) => {
                   });
                 }}
               >
-                {cause.label.charAt(0).toUpperCase() + cause.label.substring(1)}
+                {capitalizeString(cause.label)}
               </MenuItem>
             ))}
           </MenuList>

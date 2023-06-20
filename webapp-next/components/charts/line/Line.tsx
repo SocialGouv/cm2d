@@ -1,7 +1,12 @@
 import { lineProps } from '@/utils/chartjs/props';
 import { Cm2dContext } from '@/utils/cm2d-provider';
 import { orders, sortByOrder } from '@/utils/orders';
-import { dateToWeekYear, getLabelFromKey, getRandomColor } from '@/utils/tools';
+import {
+  capitalizeString,
+  dateToWeekYear,
+  getLabelFromKey,
+  getRandomColor
+} from '@/utils/tools';
 import { ScriptableContext } from 'chart.js';
 import { useContext, useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
@@ -37,7 +42,7 @@ export const ChartLine = (props: Props) => {
             }
 
             return {
-              label: label.charAt(0).toUpperCase() + label.substring(1),
+              label: capitalizeString(label),
               data: yValues,
               fill: true,
               borderColor: hasMultipleDatasets ? getRandomColor() : '#246CF9',

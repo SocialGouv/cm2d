@@ -25,6 +25,7 @@ const elkFields = [
   { value: 'sex', label: 'Sexe' },
   { value: 'age', label: 'Age' },
   { value: 'categories_level_1', label: 'Cause' },
+  { value: 'categories', label: 'Cause' },
   { value: 'categories_level_2', label: 'Comorbidité' },
   { value: 'death_location', label: 'Lieu de décès' },
   { value: 'department', label: 'Département' },
@@ -43,9 +44,6 @@ export function getLabelFromElkField(key: string): string {
   return key;
 }
 
-export const capitalizeFirstLetter = (str: string) => {
-  return str.length > 1 ? str.charAt(0).toUpperCase() + str.substring(1) : str;
-};
 export const getLabelFromKey = (
   key: string,
   dateFormat: 'year' | 'month' | 'week' = 'year'
@@ -55,14 +53,14 @@ export const getLabelFromKey = (
 
   if (isStringContainingDate(key)) {
     if (dateFormat === 'year')
-      return capitalizeFirstLetter(new Date(key).getFullYear().toString());
+      return capitalizeString(new Date(key).getFullYear().toString());
     if (dateFormat === 'week')
-      return capitalizeFirstLetter(dateToWeekYear(new Date(key)));
+      return capitalizeString(dateToWeekYear(new Date(key)));
     if (dateFormat === 'month')
-      return capitalizeFirstLetter(dateToMonthYear(new Date(key)));
+      return capitalizeString(dateToMonthYear(new Date(key)));
   }
 
-  return capitalizeFirstLetter(key);
+  return capitalizeString(key);
 };
 
 export function hasAtLeastOneFilter(filters: Filters): boolean {
@@ -486,6 +484,12 @@ export function getCodeEmailHtml(code: string) {
 			</body>
 		</html>
 	`;
+}
+
+export function capitalizeString(str: string): string {
+  if (str.length <= 1) return str;
+
+  return str.charAt(0).toUpperCase() + str.substring(1);
 }
 
 export const ELASTIC_API_KEY_NAME = process.env

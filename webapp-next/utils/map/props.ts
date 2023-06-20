@@ -1,5 +1,5 @@
 import { orders, sortByOrder } from '../orders';
-import { getLabelFromKey, isNC } from '../tools';
+import { capitalizeString, getLabelFromKey, isNC } from '../tools';
 
 export const getMapProps = (
   id: string,
@@ -85,9 +85,7 @@ export const getMapProps = (
           .map((key: any) => {
             const child = hit.children.find((c: any) => c.key === key);
             const label = getLabelFromKey(key);
-            return `<div>${
-              label.charAt(0).toUpperCase() + label.substring(1)
-            } : ${
+            return `<div>${capitalizeString(label)} : ${
               // !child || isNC(child.doc_count) ? 'NC' : child.doc_count
               child ? child.doc_count : 0
             }</div>`;

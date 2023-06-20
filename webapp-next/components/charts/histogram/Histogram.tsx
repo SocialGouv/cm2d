@@ -1,7 +1,7 @@
 import { histogramProps } from '@/utils/chartjs/props';
 import { Cm2dContext } from '@/utils/cm2d-provider';
 import { orders, sortByOrder } from '@/utils/orders';
-import { getLabelFromKey } from '@/utils/tools';
+import { capitalizeString, getLabelFromKey } from '@/utils/tools';
 import { useContext, useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 
@@ -45,7 +45,7 @@ export const ChartHistogram = (props: Props) => {
           }
 
           return {
-            label: label.charAt(0).toUpperCase() + label.substring(1),
+            label: capitalizeString(label),
             data: yValues,
             fill: true,
             backgroundColor: '#246CF9',
@@ -60,7 +60,7 @@ export const ChartHistogram = (props: Props) => {
   const xValues = datasets[0].hits
     .map((item: any) => {
       const label = getLabelFromKey(item.key);
-      return label.charAt(0).toUpperCase() + label.substring(1);
+      return capitalizeString(label);
     })
     .sort((a, b) =>
       sortByOrder(
