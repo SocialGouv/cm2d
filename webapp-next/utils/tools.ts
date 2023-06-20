@@ -1,4 +1,4 @@
-import { Filters, View } from './cm2d-provider';
+import { Filters, SearchCategory, View } from './cm2d-provider';
 import { format } from 'date-fns';
 import moment from 'moment';
 
@@ -77,12 +77,42 @@ export function hasAtLeastOneFilter(filters: Filters): boolean {
 export function transformFilters(filters: Filters): any[] {
   const transformed: any[] = [];
 
-  if (filters.categories_level_1.length > 0) {
-    transformed.push({
-      terms: {
-        categories_level_1: filters.categories_level_1
-      }
-    });
+  if (filters.categories.length > 0) {
+    switch (filters.categories_search) {
+      case 'full':
+        transformed.push({
+          bool: {
+            should: [
+              {
+                terms: {
+                  categories_level_1: filters.categories
+                }
+              },
+              {
+                terms: {
+                  categories_level_2: filters.categories
+                }
+              }
+            ],
+            minimum_should_match: 1
+          }
+        });
+        break;
+      case 'category_1':
+        transformed.push({
+          terms: {
+            categories_level_1: filters.categories
+          }
+        });
+        break;
+      case 'category_2':
+        transformed.push({
+          terms: {
+            categories_level_2: filters.categories
+          }
+        });
+        break;
+    }
   }
 
   if (filters.age.length > 0) {
@@ -269,6 +299,36 @@ export function getDefaultField<T extends string | undefined>(
   return defaultField;
 }
 
+export function concatAdditionnalFields<T extends string | undefined>(
+  availableFields: { label: string; value: T }[],
+  categories_search: SearchCategory
+): { label: string; value: T }[] {
+  switch (categories_search) {
+    case 'full':
+      return availableFields;
+    case 'category_1':
+      return [
+        ...availableFields,
+        {
+          label: 'Autres causes ayant contribué au décès',
+          value: 'categories_level_1' as T
+        },
+        {
+          label: 'Autres comorbidité',
+          value: 'categories_level_2' as T
+        }
+      ];
+    case 'category_2':
+      return [
+        ...availableFields,
+        {
+          label: 'Cause ayant directement contribué au décès',
+          value: 'categories_level_1' as T
+        }
+      ];
+  }
+}
+
 export function ISODateToMonthYear(isoDateString: string): string {
   const date = new Date(isoDateString);
   let month = date.getMonth() + 1; // Les mois sont indexés à partir de 0 en JavaScript
@@ -428,5 +488,5 @@ export function getCodeEmailHtml(code: string) {
 	`;
 }
 
-
-export const ELASTIC_API_KEY_NAME = process.env.NEXT_PUBLIC_ELASTIC_API_KEY_NAME as string;
+export const ELASTIC_API_KEY_NAME = process.env
+  .NEXT_PUBLIC_ELASTIC_API_KEY_NAME as string;

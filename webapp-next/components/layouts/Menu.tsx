@@ -70,7 +70,7 @@ export function Menu() {
                   onClick: () => {
                     setFilters({
                       ...baseFilters,
-                      categories_level_1: filters.categories_level_1,
+                      categories: filters.categories,
                       start_date: filters.start_date,
                       end_date: filters.end_date
                     });

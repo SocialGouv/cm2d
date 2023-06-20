@@ -32,8 +32,8 @@ export default function Home() {
 
   const fetchNewTitle = async () => {
     setTitle(
-      filters.categories_level_1[0]
-        ? `Nombre de décès par ${filters.categories_level_1[0]}`
+      filters.categories[0]
+        ? `Nombre de décès par ${filters.categories[0]}`
         : 'Nombre de décès'
     );
     // setTitle('...');
