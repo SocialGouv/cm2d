@@ -1,4 +1,4 @@
-import { Filters, View } from './cm2d-provider';
+import { Filters, SearchCategory, View } from './cm2d-provider';
 import { format } from 'date-fns';
 import moment from 'moment';
 
@@ -297,6 +297,42 @@ export function getDefaultField<T extends string | undefined>(
   if (lastField && isValid(lastField)) return lastField as T;
 
   return defaultField;
+}
+
+export function concatAdditionnalFields<T extends string | undefined>(
+  availableFields: { label: string; value: T }[],
+  categories_search: SearchCategory
+): { label: string; value: T }[] {
+  switch (categories_search) {
+    case 'full':
+      return [
+        ...availableFields,
+        {
+          label: 'Position dans le certificat de décès',
+          value: 'categories' as T
+        }
+      ];
+    case 'category_1':
+      return [
+        ...availableFields,
+        {
+          label: 'Autres causes ayant contribué au décès',
+          value: 'categories_level_1' as T
+        },
+        {
+          label: 'Autres comorbidité',
+          value: 'categories_level_2' as T
+        }
+      ];
+    case 'category_2':
+      return [
+        ...availableFields,
+        {
+          label: 'Cause ayant directement contribué au décès',
+          value: 'categories_level_1' as T
+        }
+      ];
+  }
 }
 
 export function ISODateToMonthYear(isoDateString: string): string {

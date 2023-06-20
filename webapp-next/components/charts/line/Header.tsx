@@ -1,6 +1,11 @@
 import { ageRanges } from '@/components/layouts/Menu';
 import { Cm2dContext, View, baseAggregation } from '@/utils/cm2d-provider';
-import { getDefaultField, getLabelFromElkField, viewRefs } from '@/utils/tools';
+import {
+  concatAdditionnalFields,
+  getDefaultField,
+  getLabelFromElkField,
+  viewRefs
+} from '@/utils/tools';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import {
   Button,
@@ -14,18 +19,15 @@ import {
 import NextImage from 'next/image';
 import { useContext, useEffect, useState } from 'react';
 
-type Field = 'sex' | 'age' | 'death_location' | 'department' | 'years';
-
-const availableFields: { label: string; value: Field }[] = [
-  { label: 'Sexe', value: 'sex' },
-  { label: 'Age', value: 'age' },
-  { label: 'Lieu de décès', value: 'death_location' },
-  { label: 'Département', value: 'department' },
-  { label: 'Année', value: 'years' }
-];
-
-const isValidField = (field?: string): field is Field =>
-  field ? availableFields.some(({ value }) => value === field) : false;
+type Field =
+  | 'sex'
+  | 'age'
+  | 'death_location'
+  | 'department'
+  | 'years'
+  | 'categories_level_1'
+  | 'categories_level_2'
+  | 'categories';
 
 export function ChartLineHeader() {
   const context = useContext(Cm2dContext);
@@ -39,8 +41,26 @@ export function ChartLineHeader() {
     setView,
     saveAggregateX,
     setSaveAggregateX,
-    selectedFiltersPile
+    selectedFiltersPile,
+    filters
   } = context;
+
+  let availableFields: { label: string; value: Field }[] = [
+    { label: 'Sexe', value: 'sex' },
+    { label: 'Age', value: 'age' },
+    { label: 'Lieu de décès', value: 'death_location' },
+    { label: 'Département', value: 'department' },
+    { label: 'Année', value: 'years' }
+  ];
+
+  if (!!filters.categories.length)
+    availableFields = concatAdditionnalFields<Field>(
+      availableFields,
+      filters.categories_search
+    );
+
+  const isValidField = (field?: string): field is Field =>
+    field ? availableFields.some(({ value }) => value === field) : false;
 
   const [isAggregated, setIsAggregated] = useState<boolean>(
     !isValidField(saveAggregateX)
@@ -51,13 +71,24 @@ export function ChartLineHeader() {
       : getDefaultField<Field>(selectedFiltersPile, isValidField, 'sex')
   );
 
+  if (!availableFields.map(af => af.value).includes(aggregateField))
+    setAggregateField('sex');
+
   const updateAggregation = () => {
     let aggregation: any = {};
 
     if (isAggregated) {
       aggregation = baseAggregation;
     } else {
-      if (['sex', 'death_location', 'department'].includes(aggregateField)) {
+      if (
+        [
+          'sex',
+          'death_location',
+          'department',
+          'categories_level_1',
+          'categories_level_2'
+        ].includes(aggregateField)
+      ) {
         aggregation = {
           aggregated_parent: {
             terms: {
