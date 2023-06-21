@@ -6,6 +6,6 @@ server.shutdownTimeout: "5s"
 elasticsearch.hosts: [ "https://elasticsearch:9200" ]
 elasticsearch.ssl.certificateAuthorities: [ "config/certs/ca/ca.crt" ]
 elasticsearch.username: "kibana_system"
-elasticsearch.password: "${--elasticsearch.password}" # environnement variable set in docker-compose.yml
+elasticsearch.password: "bootstrap.password" # environnement variable set in docker-compose.yml
 
 monitoring.ui.container.elasticsearch.enabled: true
