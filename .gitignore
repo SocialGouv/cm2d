@@ -5,3 +5,5 @@ faker/.idea
 certificates/*
 sample_data.csv
 .env
+
+docker/**/config/ca.crt
