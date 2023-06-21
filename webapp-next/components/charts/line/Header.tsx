@@ -52,12 +52,6 @@ export function ChartLineHeader() {
     { label: 'Année', value: 'years' }
   ];
 
-  if (!!filters.categories.length)
-    availableFields = concatAdditionnalFields<Field>(
-      availableFields,
-      filters.categories_search
-    );
-
   const isValidField = (field?: string): field is Field =>
     field ? availableFields.some(({ value }) => value === field) : false;
 
@@ -69,9 +63,6 @@ export function ChartLineHeader() {
       ? saveAggregateX
       : getDefaultField<Field>(selectedFiltersPile, isValidField, 'sex')
   );
-
-  if (!availableFields.map(af => af.value).includes(aggregateField))
-    setAggregateField('sex');
 
   const updateAggregation = () => {
     let aggregation: any = {};
