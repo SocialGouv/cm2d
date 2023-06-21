@@ -10,18 +10,17 @@ Pour démarrer la suite ELK localement :
 docker compose up -d
 ```
 
-Au premier run ELK, lancez cette suite de commande
-
-```
-mkdir certificates
-docker cp elasticsearch:/usr/share/elasticsearch/config/certs/ca/ca.crt ./certificates/ca.crt
-```
-
 Pour initialiser les variables d'environnement
 
 ```
 cd webapp-next
 cp .env.example .env
+```
+
+Au premier run ELK, lancez cette commande pour initialiser le mot de passe du user "kibana_system" (remplacer {ELASTIC_PASSWORD} et {KIBANA_PASSWORD} par les mots de passe de votre environnement) :
+
+```
+docker exec elasticsearch curl -s -X POST --cacert config/certs/ca/ca.crt -u "elastic:{ELASTIC_PASSWORD}" -H "Content-Type: application/json" https://elasticsearch:9200/_security/user/kibana_system/_password -d "{\"password\":\"{KIBANA_PASSWORD}\"}"
 ```
 
 Pour démarrer le frontend NextJS localement :
