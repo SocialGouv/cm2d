@@ -67,75 +67,14 @@ Il est maintenant possible de se connecter en utilisant l'adresse email et le mo
 
 ## Initialisation de l'environnement ELK
 
-### Indexation des certificats
-
-Création de l'index principal destiné à rassembler les informations relatives aux certificats.
-
-Rendez-vous dans "Management" > "Dev Tools" et lancez la requête suivante :
+### Indexation des certificats et des utilisateurs
 
 ```
-PUT /cm2d_certificate
-{
-  "mappings": {
-    "_meta": {
-      "created_by": "curl-user"
-    },
-    "properties": {
-      "@timestamp": {
-        "type": "date"
-      },
-      "age": {
-        "type": "long"
-      },
-      "categories_level_1": {
-        "type": "keyword"
-      },
-      "categories_level_2": {
-        "type": "keyword"
-      },
-      "coordinates": {
-        "type": "keyword"
-      },
-      "date": {
-        "type": "date",
-        "format": "iso8601"
-      },
-      "death_location": {
-        "type": "keyword"
-      },
-      "department": {
-        "type": "long"
-      },
-      "home_location": {
-        "type": "keyword"
-      },
-      "kind": {
-        "type": "keyword"
-      },
-      "sex": {
-        "type": "keyword"
-      }
-    }
-  }
-}'
-```
-
-### Index pour les attributs supplémentaires des utilisateurs
-
-Pour stocker des informations supplémentaires concernant les utilisateurs CM2D, nous devons créer un index dédié.
-
-Rendez-vous dans "Management" > "Dev Tools" et lancez la requête suivante :
-
-```
-PUT /cm2d_users
-{
-  "mappings": {
-    "properties": {
-      "username": { "type": "text" },
-      "versionCGU": { "type": "text" }
-    }
-  }
-}
+docker run --net=host --rm -ti -e NODE_TLS_REJECT_UNAUTHORIZED=0 -v ./default-indexes:/tmp --entrypoint multielasticdump elasticdump/elasticsearch-dump \
+  --direction=load \
+  --input=./tmp \
+  --output="https://elastic:${ELASTIC_PASSWORD}@localhost:9200" \
+  --tlsAuth
 ```
 
 ### Mise en place des transformations
