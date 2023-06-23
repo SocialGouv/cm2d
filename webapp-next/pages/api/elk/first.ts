@@ -23,7 +23,7 @@ export default async function handler(
       apiKey: req.cookies[ELASTIC_API_KEY_NAME] as string
     },
     tls: {
-      ca: fs.readFileSync(path.resolve(process.cwd(), './../certificates/ca.crt')),
+      ca: fs.readFileSync(path.resolve(process.cwd(), './certs/ca/ca.crt')),
       rejectUnauthorized: false
     }
   });

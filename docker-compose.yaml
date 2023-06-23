@@ -11,6 +11,7 @@ services:
       - certs:/usr/share/elasticsearch/config/certs
     networks:
       - elastic
+      - webapp
     environment:
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
     ulimits:
@@ -37,6 +38,28 @@ services:
     environment:
       - ELASTICSEARCH_PASSWORD=${KIBANA_PASSWORD}
 
+  webapp:
+    build:
+      context: webapp-next
+      args:
+        - NEXT_PUBLIC_ELASTIC_API_KEY_NAME=${NEXT_PUBLIC_ELASTIC_API_KEY_NAME}
+    container_name: webapp
+    depends_on:
+      - elasticsearch
+    ports:
+      - "3000:3000"
+    volumes:
+      - certs:/app/certs
+    networks:
+      - webapp
+    environment:
+      - ELASTIC_HOST=${ELASTIC_HOST}
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_REGION=${AWS_REGION}
+      - EMAIL_SOURCE=${EMAIL_SOURCE}
+
 volumes:
   certs:
     driver: local
@@ -47,4 +70,6 @@ volumes:
 
 networks:
   elastic:
+    driver: bridge
+  webapp:
     driver: bridge

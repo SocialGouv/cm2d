@@ -23,7 +23,7 @@ export default async function handler(
     },
     tls: {
       ca: fs.readFileSync(
-        path.resolve(process.cwd(), './../certificates/ca.crt')
+        path.resolve(process.cwd(), './certs/ca/ca.crt')
       ),
       rejectUnauthorized: false
     }
