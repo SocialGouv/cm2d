@@ -12,7 +12,8 @@ import {
   MenuList,
   Radio,
   RadioGroup,
-  Stack
+  Stack,
+  Text
 } from '@chakra-ui/react';
 import Image from 'next/image';
 import { useContext } from 'react';
@@ -101,27 +102,27 @@ export const FilterCauses = (props: Props) => {
         </Menu>
       </InputGroup>
       {!!filters.categories.length && (
-        <RadioGroup
-          defaultValue={filters.categories_search}
-          mt={6}
-          px={3}
-          onChange={(v: SearchCategory) => {
-            setFilters({ ...filters, categories_search: v });
-          }}
-        >
-          <Stack spacing={5} direction="column">
-            <Radio colorScheme="primary" value="full">
-              Toutes mentions de
-            </Radio>
-            <Radio colorScheme="primary" value="category_1">
-              Cause ayant directement contribué au décès
-            </Radio>
-            <Radio colorScheme="primary" value="category_2">
-              Autre cause associée
-              <br /> ou comorbidité
-            </Radio>
-          </Stack>
-        </RadioGroup>
+        <Flex flexDir={'column'} mt={5} px={3}>
+          <Text mb={4}>Rechercher dans :</Text>
+          <RadioGroup
+            defaultValue={filters.categories_search}
+            onChange={(v: SearchCategory) => {
+              setFilters({ ...filters, categories_search: v });
+            }}
+          >
+            <Stack spacing={5} direction="column">
+              <Radio colorScheme="primary" value="full">
+                Tout le certificat
+              </Radio>
+              <Radio colorScheme="primary" value="category_1">
+                Uniquement parmi les causes ayant directement contribué au décès
+              </Radio>
+              <Radio colorScheme="primary" value="category_2">
+                Uniquement parmi les autres causes associées/comorbidités
+              </Radio>
+            </Stack>
+          </RadioGroup>
+        </Flex>
       )}
     </Flex>
   );
