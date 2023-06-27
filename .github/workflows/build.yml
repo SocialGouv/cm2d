@@ -33,8 +33,6 @@ jobs:
         run: |
           echo "files-changed-elasticsearch=${{ steps.check-files-elasticsearch.outputs.any_changed }}" >> $GITHUB_OUTPUT
           echo "files-changed-kibana=${{ steps.check-files-kibana.outputs.any_changed }}" >> $GITHUB_OUTPUT
-        
-
 
   elasticsearch-build:
     needs: elk-check-files-changed
@@ -54,6 +52,20 @@ jobs:
 
   webapp-build:
     runs-on: ubuntu-latest
+    env:
+      working-directory: webapp-next
 
     steps:
       - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        working-directory: ${{ env.working-directory }}
+        run: yarn --frozen-lockfile
+
+      - name: Build webapp
+        working-directory: ${{ env.working-directory }}
+        run: yarn build
