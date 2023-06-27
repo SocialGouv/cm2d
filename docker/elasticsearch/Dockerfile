@@ -6,6 +6,7 @@
 FROM ubuntu:20.04 AS builder
 
 # Install required packages to extract the Elasticsearch distribution
+
 RUN for iter in {1..10}; do \
       apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y curl  && \
       exit_code=0 && break || \
