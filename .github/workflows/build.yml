@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: ['main']
+
+jobs:
+  elk-check-files-changed:
+    runs-on: ubuntu-latest
+
+    outputs:
+      files-changed-elasticsearch: ${{ steps.set-output.outputs.files-changed-elasticsearch }}
+      files-changed-kibana: ${{ steps.set-output.outputs.files-changed-kibana }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Get changed files in docker for elasticsearch
+        id: check-files-elasticsearch
+        uses: tj-actions/changed-files@v37
+        with:
+          files: docker/elasticsearch
+      
+      - name: Get changed files in docker for kibana
+        id: check-files-kibana
+        uses: tj-actions/changed-files@v37
+        with:
+          files: docker/kibana
+      
+      - name: Set output if files changed in docker for elasticsearch and kibana
+        id: set-output
+        run: |
+          echo "::set-output name=files-changed-elasticsearch::${{ steps.check-files-elasticsearch.outputs.any_changed }}"
+          echo "::set-output name=files-changed-kibana::${{ steps.check-files-kibana.outputs.any_changed }}"
+        
+
+  # kibana-build:
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #     - uses: actions/checkout@v3
+
+  # webapp-build:
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #     - uses: actions/checkout@v3
