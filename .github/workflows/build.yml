@@ -31,18 +31,29 @@ jobs:
       - name: Set output if files changed in docker for elasticsearch and kibana
         id: set-output
         run: |
-          echo "::set-output name=files-changed-elasticsearch::${{ steps.check-files-elasticsearch.outputs.any_changed }}"
-          echo "::set-output name=files-changed-kibana::${{ steps.check-files-kibana.outputs.any_changed }}"
+          echo "files-changed-elasticsearch=${{ steps.check-files-elasticsearch.outputs.any_changed }}" >> $GITHUB_OUTPUT
+          echo "files-changed-kibana=${{ steps.check-files-kibana.outputs.any_changed }}" >> $GITHUB_OUTPUT
         
 
-  # kibana-build:
-  #   runs-on: ubuntu-latest
 
-  #   steps:
-  #     - uses: actions/checkout@v3
+  elasticsearch-build:
+    needs: elk-check-files-changed
+    if: ${{ needs.elk-check-files-changed.outputs.files-changed-elasticsearch == 'true' }}
+    runs-on: ubuntu-latest
 
-  # webapp-build:
-  #   runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
 
-  #   steps:
-  #     - uses: actions/checkout@v3
+  kibana-build:
+    needs: elk-check-files-changed
+    if: ${{ needs.elk-check-files-changed.outputs.files-changed-kibana == 'true' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+  webapp-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
