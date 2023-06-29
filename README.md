@@ -165,3 +165,40 @@ Destination Index : `cm2d_departments`
 Continous mode
 Date field for continous mode : `@timestamp`
 Delay : `60s`
+
+
+
+### Docker production
+
+## Créer les images docker
+```
+docker build -t cm2d-elasticsearch docker/elasticsearch
+docker build -t cm2d-kibana docker/kibana
+docker build -t cm2d-webapp webapp-next
+```
+
+## Créer les réseaux docker
+```
+docker network create elastic
+docker network create webapp
+```
+
+## Elasticsearch
+```
+docker run -d -p 9200:9200 -p 9300:9300 --net elastic -v es_data:/usr/share/elasticsearch/data -v certs:/usr/share/elasticsearch/config/certs -e ELASTIC_PASSWORD=${ELASTIC_PASSWORD} --name elasticsearch cm2d-elasticsearch
+```
+
+## Attacher le réseau webapp à Elasticsearch
+```
+docker network connect webapp elasticsearch
+```
+
+## Kibana
+```
+docker run -d -p 5601:5601 --net elastic -v kibana_data:/usr/share/kibana/data -v certs:/usr/share/kibana/config/certs -e ELASTICSEARCH_PASSWORD=${KIBANA_PASSWORD} --name kibana cm2d-kibana
+```
+
+## Webapp
+```
+docker run -d -p 3000:3000 --net webapp -v certs:/app/certs --env-file ${path_fichier_environnement} --name webapp cm2d-webapp
+```
