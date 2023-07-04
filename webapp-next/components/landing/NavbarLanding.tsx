@@ -124,7 +124,7 @@ export default function NavbarLanding() {
                   fontWeight={'600'}
                   m={2}
                 >
-                  CONNEXION -&gt;
+                  CONNEXION
                 </Button>
               </NextLink>
             </WrapItem>
