@@ -141,8 +141,8 @@ const CM2DAlert: ComponentStyleConfig = {
 const theme = extendTheme({
   colors,
   fonts: {
-    heading: `'Inter', sans-serif`,
-    body: `'Inter', sans-serif`
+    heading: 'Marianne, Georgia, serif',
+    body: 'Marianne, system-ui, sans-serif'
   },
   sizes: {
     88: '22rem'

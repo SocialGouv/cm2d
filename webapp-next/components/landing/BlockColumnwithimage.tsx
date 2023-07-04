@@ -45,7 +45,7 @@ export default function ColumnWithImage() {
               height="12"
               width={'40'}
             >
-              CONNEXION -&gt;
+              CONNEXION
             </Button>
           </NextLink>
         </Box>
