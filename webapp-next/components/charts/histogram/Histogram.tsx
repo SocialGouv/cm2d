@@ -48,7 +48,7 @@ export const ChartHistogram = (props: Props) => {
             label: capitalizeString(label),
             data: yValues,
             fill: true,
-            backgroundColor: '#246CF9',
+            backgroundColor: '#002395',
             borderRadius: 10
           };
         })

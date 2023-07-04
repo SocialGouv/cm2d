@@ -45,7 +45,7 @@ export const ChartLine = (props: Props) => {
               label: capitalizeString(label),
               data: yValues,
               fill: true,
-              borderColor: hasMultipleDatasets ? getRandomColor() : '#246CF9',
+              borderColor: hasMultipleDatasets ? getRandomColor() : '#002395',
               borderWidth: 2,
               backgroundColor: hasMultipleDatasets
                 ? () => {
