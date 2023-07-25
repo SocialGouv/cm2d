@@ -55,7 +55,8 @@ export function ChartDoughnutHeader() {
   if (!!filters.categories.length)
     availableFields = concatAdditionnalFields<Field>(
       availableFields,
-      filters.categories_search
+      filters.categories_search,
+      filters.categories_associate
     );
 
   const isValidField = (field?: string): field is Field =>

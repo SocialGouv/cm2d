@@ -26,6 +26,7 @@ const elkFields = [
   { value: 'age', label: 'Age' },
   { value: 'categories_level_1', label: 'Cause' },
   { value: 'categories', label: 'Cause' },
+  { value: 'categories_associate', label: 'Cause associée' },
   { value: 'categories_level_2', label: 'Comorbidité' },
   { value: 'death_location', label: 'Lieu de décès' },
   { value: 'department', label: 'Département' },
@@ -111,6 +112,21 @@ export function transformFilters(filters: Filters): any[] {
         });
         break;
     }
+  }
+
+  if (filters.categories_associate.length > 0) {
+    transformed.push({
+      bool: {
+        should: filters.categories_associate.map(ca => {
+          return {
+            match: {
+              categories_associate: ca
+            }
+          };
+        }),
+        minimum_should_match: 1
+      }
+    });
   }
 
   if (filters.age.length > 0) {
@@ -299,31 +315,19 @@ export function getDefaultField<T extends string | undefined>(
 
 export function concatAdditionnalFields<T extends string | undefined>(
   availableFields: { label: string; value: T }[],
-  categories_search: SearchCategory
+  categories_search: SearchCategory,
+  categories_associate: string[]
 ): { label: string; value: T }[] {
-  switch (categories_search) {
-    case 'full':
-      return availableFields;
-    case 'category_1':
-      return [
-        ...availableFields,
-        {
-          label: 'Autres causes ayant contribué au décès',
-          value: 'categories_level_1' as T
-        },
-        {
-          label: 'Autres comorbidité',
-          value: 'categories_level_2' as T
-        }
-      ];
-    case 'category_2':
-      return [
-        ...availableFields,
-        {
-          label: 'Cause ayant directement contribué au décès',
-          value: 'categories_level_1' as T
-        }
-      ];
+  if (categories_search === 'full' && categories_associate.length > 1) {
+    return [
+      ...availableFields,
+      {
+        label: 'Cause associée',
+        value: 'categories_associate' as T
+      }
+    ];
+  } else {
+    return availableFields;
   }
 }
 
@@ -490,6 +494,26 @@ export function capitalizeString(str: string): string {
   if (str.length <= 1) return str;
 
   return str.toString().charAt(0).toUpperCase() + str.toString().substring(1);
+}
+
+export function addMissingSizes(obj: any, size: number): any {
+  if (typeof obj === 'object') {
+    if (obj.terms && obj.terms.field === 'categories_associate') {
+      return {
+        ...obj,
+        terms: {
+          ...obj.terms,
+          size: size
+        }
+      };
+    }
+    const newObj: typeof obj = {};
+    for (const key in obj) {
+      newObj[key] = addMissingSizes(obj[key], size);
+    }
+    return newObj;
+  }
+  return obj;
 }
 
 export const ELASTIC_API_KEY_NAME = process.env

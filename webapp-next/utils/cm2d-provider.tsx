@@ -11,6 +11,7 @@ export type SearchCategory = 'full' | 'category_1' | 'category_2';
 
 export type Filters = {
   categories: string[];
+  categories_associate: string[];
   categories_search: SearchCategory;
   death_location: string[];
   age: {
@@ -61,6 +62,7 @@ export type View = 'line' | 'histogram' | 'table' | 'doughnut' | 'map';
 
 export const baseFilters: Filters = {
   categories: [],
+  categories_associate: [],
   categories_search: 'full',
   death_location: [],
   age: [],

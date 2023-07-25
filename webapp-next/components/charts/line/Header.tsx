@@ -1,11 +1,6 @@
 import { ageRanges } from '@/components/layouts/Menu';
 import { Cm2dContext, View, baseAggregation } from '@/utils/cm2d-provider';
-import {
-  concatAdditionnalFields,
-  getDefaultField,
-  getLabelFromElkField,
-  viewRefs
-} from '@/utils/tools';
+import { getDefaultField, getLabelFromElkField, viewRefs } from '@/utils/tools';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import {
   Button,

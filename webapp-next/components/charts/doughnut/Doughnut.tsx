@@ -26,7 +26,6 @@ export const ChartDoughnut = (props: Props) => {
     if (datasets && datasets.length)
       setDisplayDatasets(
         datasets.map(ds => {
-          console.log(ds.hits);
           const yValues = ds.hits
             .sort((a, b) =>
               sortByOrder(
