@@ -17,8 +17,70 @@ department_dict = {
     '95': ['Cergy', 'Argenteuil', 'Sarcelles'],
 }
 
-category_1 = ['suicide', 'avc', 'cancer', 'tuberculose', 'trombose']
+category_1 = ['suicide', 'avc', 'cancer', 'tuberculose', 'thrombose']
 category_2 = ['vih', 'tuberculose', 'diabete', 'avc', 'cancer']
+category_associate = [
+	'Maladies infectieuses intestinales à l’exception de la diarrhée',
+	'Diarrhée et gastro-entérite d’origine infectieuse présumée',
+	'Tuberculose',
+	'Septicémie',
+	'Maladie au virus de l’immunodéficience humaine [VIH]',
+	'Cancer du colon, du rectum ou de l\'anus',
+	'Cancer de la trachée, des bonches ou des poumons',
+	'Cancer de la peau',
+	'Cancer du sein',
+	'Cancer de l\'utérus',
+	'Cancer des ovaires',
+	'Cancer de la prostate',
+	'Cancer de la vessie',
+	'Cancer primitif inconnu',
+  'Diabète',
+	'Hypercholestérolémie',
+  'Démence',
+	'Troubles mentaux et du comportement liés à l\'utilisation d\'alcool',
+	'Troubles mentaux et du comportement liés à l\'utilisation de substances psychoactives',
+	'Schizophrénie, troubles schizotypiques et délirants',
+	'Troubles de l\'humeur [affectifs]',
+  'Maladie d\'Alzheimer',
+	'Sclérose en plaques',
+	'Epilepsie',
+	'Accidents ischémiques cérébraux transitoires et syndromes apparentés',
+	'Maladies hypertensives',
+	'Coronaropathie chronique',
+	'Infarctus du myocarde',
+	'Affections cardiopulmonaires dont les embolies pulmonaires',
+	'Troubles de la conduction et arythmies cardiaques',
+	'Insuffisance cardiaque',
+	'Maladies cérébrovasculaires dont les avc',
+	'Athérosclérose dont les aomi',
+	'Insuffisance veineuse des membres inférieurs',
+  'Infections aiguës des voies respiratoires supérieures et grippe',
+	'Pneumonie',
+	'Maladie pulmonaire obstructive chronique et bronchectasie, dont BPCO',
+	'Asthme',
+	'Covid',
+  'Maladies de l\'appendice',
+	'Maladie de Crohn et rectocolite hémorragique',
+	'Iléus paralytique et occlusion intestinale sans hernie',
+	'Maladie alcoolique du foie',
+	'Lithiase biliaire',
+	'Maladies du pancréas',
+	'Avortement médicamenteux',
+	'Complications de la grossesse principalement dans la période prénatale',
+	'Complications de la grossesse principalement pendant le travail et l\'accouchement',
+	'Accouchement spontané',
+	'Complications principalement liées à la puerpéralité',
+	'Troubles liés à une gestation courte et à un faible poids à la naissance',
+	'Malformations congénitales, déformations et anomalies chromosomiques',
+	'Douleurs abdominales et pelviennes',
+	'Cause de décès inconnue',
+	'Blessure intracrânienne',
+	'Fracture du fémur',
+	'Intoxications par des drogues, des médicaments et des substances biologiques et effets toxiques de substances principalement non médicinales quant à leur origine',
+	'Complications des soins chirurgicaux et médicaux, non classées ailleurs',
+	'Séquelles de blessures, d\'empoisonnement et d\'autres conséquences de causes externes'
+]
+
 death_locations = [
   'Domicile',
   'EHPAD, Maison de retraite',
@@ -41,10 +103,10 @@ def get_multiple_values(category):
     else:
         number_of_values = min(random.randint(2, 5), len(category))
         values = random.sample(category, number_of_values)
-        return ", ".join(values)
+        return " # ".join(values)
 
 with open('sample_data.csv', mode='w', newline='') as csv_file:
-    fieldnames = ['categories_level_1', 'categories_level_2', 'age', 'kind', 'sex', 'death_location', 'home_location', 'department', 'coordinates', 'date']
+    fieldnames = ['categories_level_1', 'categories_level_2', 'categories_associate', 'age', 'kind', 'sex', 'death_location', 'home_location', 'department', 'coordinates', 'date']
     writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
 
     writer.writeheader()
@@ -53,6 +115,7 @@ with open('sample_data.csv', mode='w', newline='') as csv_file:
         row = {}
         row['categories_level_1'] = get_multiple_values(category_1)
         row['categories_level_2'] = get_multiple_values(category_2)
+        row['categories_associate'] = get_multiple_values(category_associate)
         row['age'] = fake.random_int(min=0, max=100)
         row['kind'] = random.choice(['Electronique', 'Papier'])
         row['sex'] = random.choice(['homme', 'femme', 'indéterminé'])

@@ -174,18 +174,18 @@ Continous mode
 Date field for continous mode : `@timestamp`
 Delay : `60s`
 
-##### 2. Compilation des comorbidités
+##### 2. Compilation des causes associées
 
 Transform à partir de l'index : `cm2d_certificate`
 
 Type de transform : `Pivot`
 
-Group by : `categories_level_2`
+Group by : `categories_associate`
 Aggregation : `@timestamp.value_count`
 
-Transform ID : `cm2d_level_2_categories`
+Transform ID : `cm2d_associate_categories`
 Transform description : `Available causes`
-Destination Index : `cm2d_level_2_categories`
+Destination Index : `cm2d_associate_categories`
 
 Continous mode
 Date field for continous mode : `@timestamp`
