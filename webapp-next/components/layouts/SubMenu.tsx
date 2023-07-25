@@ -1,5 +1,5 @@
 import { ChevronDownIcon, ChevronRightIcon } from '@chakra-ui/icons';
-import { Box, Button, Text } from '@chakra-ui/react';
+import { Box, Button, Text, Tooltip } from '@chakra-ui/react';
 import Image from 'next/image';
 import { ReactNode, useState } from 'react';
 
@@ -10,45 +10,57 @@ type Props = {
     srcOpen?: string;
     alt: string;
   };
+  isDisabled?: boolean;
+  disabledMessage?: string;
   children: ReactNode;
 };
 
 export const SubMenu = (props: Props) => {
-  const { title, icon, children } = props;
+  const { title, icon, children, isDisabled, disabledMessage } = props;
 
   const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
 
   return (
     <Box mb={4}>
-      <Button
-        colorScheme="primary"
-        variant={isCollapsed ? 'ghost' : 'solid'}
-        onClick={() => setIsCollapsed(!isCollapsed)}
-        w="full"
-        justifyContent="start"
-        py={8}
-        rounded="md"
+      <Tooltip
+        label={disabledMessage}
+        isDisabled={!isDisabled || !disabledMessage}
+        hasArrow
+        closeDelay={300}
+        px={4}
+        py={2}
       >
-        <Image
-          src={icon.srcOpen && !isCollapsed ? icon.srcOpen : icon.src}
-          alt={icon.alt}
-          width={24}
-          height={24}
-        />{' '}
-        <Text
-          ml={2}
-          color={isCollapsed ? 'black' : 'primary'}
-          fontWeight={isCollapsed ? 400 : 600}
-          textAlign="left"
+        <Button
+          colorScheme="primary"
+          variant={isCollapsed ? 'ghost' : 'solid'}
+          onClick={() => setIsCollapsed(!isCollapsed)}
+          w="full"
+          justifyContent="start"
+          py={8}
+          rounded="md"
+          isDisabled={isDisabled}
         >
-          {title}
-        </Text>
-        {isCollapsed ? (
-          <ChevronRightIcon ml="auto" fontSize="2xl" />
-        ) : (
-          <ChevronDownIcon ml="auto" fontSize="2xl" />
-        )}
-      </Button>
+          <Image
+            src={icon.srcOpen && !isCollapsed ? icon.srcOpen : icon.src}
+            alt={icon.alt}
+            width={24}
+            height={24}
+          />{' '}
+          <Text
+            ml={2}
+            color={isCollapsed ? 'black' : 'primary'}
+            fontWeight={isCollapsed ? 400 : 600}
+            textAlign="left"
+          >
+            {title}
+          </Text>
+          {isCollapsed ? (
+            <ChevronRightIcon ml="auto" fontSize="2xl" />
+          ) : (
+            <ChevronDownIcon ml="auto" fontSize="2xl" />
+          )}
+        </Button>
+      </Tooltip>
 
       {!isCollapsed && (
         <Box px={4} py={5}>
