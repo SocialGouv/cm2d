@@ -19,7 +19,7 @@ export const FilterAssociateCauses = (props: Props) => {
     throw new Error('Menu must be used within a Cm2dProvider');
   }
 
-  const { filters, setFilters } = context;
+  const { filters, setFilters, setView, setSaveAggregateX } = context;
   const { data } = useAssociateCauses();
 
   if (!data) return <>...</>;
@@ -47,6 +47,10 @@ export const FilterAssociateCauses = (props: Props) => {
           textDecor={'underline'}
           mt={3}
           display="block"
+          onClick={() => {
+            setSaveAggregateX('categories_associate');
+            setView('histogram');
+          }}
         >
           Voir la distribution
         </Link>
