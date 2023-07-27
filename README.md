@@ -174,7 +174,7 @@ Delay : `60s`
 ```
 docker build -t cm2d-elasticsearch docker/elasticsearch
 docker build -t cm2d-kibana docker/kibana
-docker build -t cm2d-webapp webapp-next
+docker build --build-arg NEXT_PUBLIC_ELASTIC_API_KEY_NAME=${NEXT_PUBLIC_ELASTIC_API_KEY_NAME} -t cm2d-webapp webapp-next
 ```
 
 ## Créer les réseaux docker
