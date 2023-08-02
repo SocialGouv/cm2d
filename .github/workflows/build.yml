@@ -100,4 +100,4 @@ jobs:
         with:
           context: "{{defaultContext}}:webapp-next"
           push: true
-          tags: ghcr.io/SocialGouv/cm2d-webapp:${{ github.sha }},ghcr.io/SocialGouv/cm2d-webapp:latest
+          tags: ghcr.io/socialgouv/cm2d-webapp:${{ github.sha }},ghcr.io/socialgouv/cm2d-webapp:latest
