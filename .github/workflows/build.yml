@@ -100,4 +100,4 @@ jobs:
         with:
           context: "{{defaultContext}}:webapp-next"
           push: true
-          tags: cm2d/cm2d-webapp:${{ github.sha }},cm2d/cm2d-webapp:latest
+          tags: ghcr.io/cm2d/cm2d-webapp:${{ github.sha }},ghcr.io/cm2d/cm2d-webapp:latest
