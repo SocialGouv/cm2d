@@ -103,7 +103,7 @@ def get_multiple_values(category):
     else:
         number_of_values = min(random.randint(2, 5), len(category))
         values = random.sample(category, number_of_values)
-        return " # ".join(values)
+        return "; ".join(values)
 
 with open('sample_data.csv', mode='w', newline='') as csv_file:
     fieldnames = ['categories_level_1', 'categories_level_2', 'categories_associate', 'age', 'kind', 'sex', 'death_location', 'home_location', 'department', 'coordinates', 'date']
