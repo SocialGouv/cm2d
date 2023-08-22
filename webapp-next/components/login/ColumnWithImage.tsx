@@ -21,9 +21,9 @@ export const ColumnWithImage = () => {
       <Slider
         slideContents={[
           {
-            title: 'Lorem ipsum dolor !',
+            title: 'Explorez les données sur les causes de décès',
             description:
-              'Lörem ipsum eunade betreska. Döll näns. Anterolons terar vapunde pultvätta. Povor rebelt, innan attitydig !'
+              'L’application CM2D permet de générer des visualisations de données sur mesure afin d’orienter et d’évaluer vos actions sur le terrain.'
           }
           // {
           //   title: 'Lorem ipsum dolor !',

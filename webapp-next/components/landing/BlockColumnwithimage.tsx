@@ -11,9 +11,9 @@ export default function ColumnWithImage() {
       flexDirection={['column', 'column', 'column', 'column', 'row']}
     >
       <Flex
-        w={['auto', 'auto', 'auto', 'auto', '45%']}
+        w={['auto', 'auto', 'auto', 'auto', '50%']}
         alignItems="center"
-        pl={[5, 20, 52]}
+        pl={[4, 4, 4, 4, 'calc(50vw - 1252px/2 + 1rem)']}
       >
         <Box>
           <Text
@@ -50,7 +50,12 @@ export default function ColumnWithImage() {
           </NextLink>
         </Box>
       </Flex>
-      <Box pb={[5, 12, 15]} w={['auto', 'auto', 'auto', 'auto', '55%']} mt={10}>
+      <Box
+        pb={[5, 12, 15]}
+        w={['auto', 'auto', 'auto', 'auto', '50%']}
+        display={['none', 'none', 'none', 'none', 'block']}
+        mt={10}
+      >
         <Image src="/dashboard.svg" alt="Image" w="95%" float="right" pt={2} />
       </Box>
 
