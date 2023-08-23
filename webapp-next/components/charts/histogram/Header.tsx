@@ -119,6 +119,11 @@ export function ChartHistogramHeader() {
     updateAggregation();
   }, [aggregateX]);
 
+  useEffect(() => {
+    if (!!saveAggregateX && saveAggregateX !== aggregateX)
+      setAggregateX(saveAggregateX as Field);
+  }, [saveAggregateX]);
+
   const handleViewChange = (view: View) => {
     setView(view);
   };
