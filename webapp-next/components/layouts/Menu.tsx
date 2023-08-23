@@ -13,6 +13,7 @@ import { FilterDates } from '../filters/Dates';
 import { FiltersDepartments } from '../filters/Departments';
 import cookie from 'js-cookie';
 import { hasAtLeastOneFilter, ELASTIC_API_KEY_NAME } from '@/utils/tools';
+import { FilterAssociateCauses } from '../filters/AssociateCauses';
 
 export const ageRanges = [
   { from: 0, to: 0, key: 'Moins de 1 an' },
@@ -115,6 +116,27 @@ export function Menu() {
           <Stack dir="column" spacing={4}>
             <FiltersDeathLocations />
             <FiltersDepartments />
+          </Stack>
+        </SubMenu>
+        <SubMenu
+          title={<>Causes associées</>}
+          icon={{
+            src: 'icons/folder-open-blue.svg',
+            srcOpen: 'icons/folder-open.svg',
+            alt: 'Onglet causes associées'
+          }}
+          isDisabled={
+            !filters.categories.length || filters.categories_search !== 'full'
+          }
+          disabledMessage={
+            !filters.categories.length
+              ? 'Veuillez sélectionner une cause de décès pour accéder aux causes associées'
+              : 'Pour associer des causes, veuillez désélectionner "Rechercher uniquement dans le processus morbide"'
+          }
+          forceCollapse={filters.categories_search !== 'full'}
+        >
+          <Stack dir="column" spacing={4}>
+            <FilterAssociateCauses />
           </Stack>
         </SubMenu>
       </Box>

@@ -8,6 +8,7 @@ import { KPI } from '@/components/layouts/KPI';
 import { useData } from '@/utils/api';
 import { Cm2dContext } from '@/utils/cm2d-provider';
 import {
+  addMissingSizes,
   capitalizeString,
   getCSVDataFromDatasets,
   getSixMonthAgoDate,
@@ -29,7 +30,10 @@ export default function Home() {
 
   const { filters, aggregations, view, setCSVData } = context;
 
-  const { data, dataKind, isLoading } = useData(filters, aggregations);
+  const { data, dataKind, isLoading } = useData(
+    filters,
+    addMissingSizes(aggregations, filters.categories_associate.length)
+  );
 
   const fetchNewTitle = async () => {
     if (!filters.categories[0]) setTitle('Nombre de décès');

@@ -1,19 +1,18 @@
 import { useCauses } from '@/utils/api';
-import { Cm2dContext, SearchCategory } from '@/utils/cm2d-provider';
+import { Cm2dContext } from '@/utils/cm2d-provider';
 import { capitalizeString } from '@/utils/tools';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import {
   Flex,
+  FormControl,
+  FormLabel,
   InputGroup,
   InputLeftElement,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
-  Radio,
-  RadioGroup,
-  Stack,
-  Text
+  Switch
 } from '@chakra-ui/react';
 import Image from 'next/image';
 import { useContext } from 'react';
@@ -102,27 +101,37 @@ export const FilterCauses = (props: Props) => {
         </Menu>
       </InputGroup>
       {!!filters.categories.length && (
-        <Flex flexDir={'column'} mt={5} px={3}>
-          <Text mb={4}>Rechercher dans :</Text>
-          <RadioGroup
-            defaultValue={filters.categories_search}
-            onChange={(v: SearchCategory) => {
-              setFilters({ ...filters, categories_search: v });
+        <FormControl
+          display="flex"
+          alignItems="center"
+          // justifyContent={'center'}
+          pl={4}
+          mt={4}
+        >
+          <Switch
+            id="switch-category-1"
+            size="sm"
+            onChange={e => {
+              setFilters({
+                ...filters,
+                categories_search: e.target.checked ? 'category_1' : 'full',
+                categories_associate: e.target.checked
+                  ? []
+                  : filters.categories_associate
+              });
             }}
+          />
+          <FormLabel
+            htmlFor="switch-category-1"
+            mb="0"
+            cursor="pointer"
+            ml={2}
+            fontSize={'sm'}
+            maxW="65%"
           >
-            <Stack spacing={5} direction="column">
-              <Radio colorScheme="primary" value="full">
-                Tout le certificat
-              </Radio>
-              <Radio colorScheme="primary" value="category_1">
-                Uniquement parmi les causes ayant directement contribué au décès
-              </Radio>
-              <Radio colorScheme="primary" value="category_2">
-                Uniquement parmi les autres causes associées/comorbidités
-              </Radio>
-            </Stack>
-          </RadioGroup>
-        </Flex>
+            Rechercher uniquement dans le processus morbide
+          </FormLabel>
+        </FormControl>
       )}
     </Flex>
   );

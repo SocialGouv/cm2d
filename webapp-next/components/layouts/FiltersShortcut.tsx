@@ -95,6 +95,7 @@ export function FiltersShortcut() {
               />
             ));
           case 'categories':
+          case 'categories_associate':
           case 'death_location':
           case 'sex':
           case 'department':
