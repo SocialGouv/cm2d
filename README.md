@@ -184,7 +184,7 @@ Group by : `categories_associate`
 Aggregation : `@timestamp.value_count`
 
 Transform ID : `cm2d_associate_categories`
-Transform description : `Available causes`
+Transform description : `Available associate causes`
 Destination Index : `cm2d_associate_categories`
 
 Continous mode
