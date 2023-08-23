@@ -1324,6 +1324,11 @@
     "@typescript-eslint/types" "5.59.5"
     eslint-visitor-keys "^3.3.0"
 
+"@uidotdev/usehooks@^2.1.1":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@uidotdev/usehooks/-/usehooks-2.1.1.tgz#982edfb6d4719662572f5867e9224b30770ae2d4"
+  integrity sha512-sVJ1jXU62Edh22dREEa3mHcHnH2MUgokuzLw9guNS30ADCkdhYASNZxg2V8iB83iwY5H+jSeSxjqGaFvsRrNBQ==
+
 "@zag-js/element-size@0.3.2":
   version "0.3.2"
   resolved "https://registry.npmjs.org/@zag-js/element-size/-/element-size-0.3.2.tgz"
@@ -1583,11 +1588,6 @@ caniuse-lite@^1.0.30001406:
   version "1.0.30001486"
   resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001486.tgz"
   integrity sha512-uv7/gXuHi10Whlj0pp5q/tsK/32J2QSqVRKQhs2j8VsDCjgyruAh/eEXHF822VqO9yT6iZKw3nRwZRSPBE9OQg==
-
-chakra-multiselect@^0.4.5:
-  version "0.4.5"
-  resolved "https://registry.yarnpkg.com/chakra-multiselect/-/chakra-multiselect-0.4.5.tgz#953b682e33c8ef2d95efd6926d4890676e6d95ab"
-  integrity sha512-83uZqeLLoU0XG2FbjP20Pw7MY6emgqtRNo7ahkwfjwBUUs+aJvFHQoyprSWEU3DuloK/moNPEyyJHRytCNhT6Q==
 
 chalk@^2.0.0:
   version "2.4.2"

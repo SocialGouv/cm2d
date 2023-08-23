@@ -133,6 +133,7 @@ export function Menu() {
               ? 'Veuillez sélectionner une cause de décès pour accéder aux causes associées'
               : 'Pour associer des causes, veuillez désélectionner "Rechercher uniquement dans le processus morbide"'
           }
+          forceCollapse={filters.categories_search !== 'full'}
         >
           <Stack dir="column" spacing={4}>
             <FilterAssociateCauses />

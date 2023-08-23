@@ -114,7 +114,10 @@ export const FilterCauses = (props: Props) => {
             onChange={e => {
               setFilters({
                 ...filters,
-                categories_search: e.target.checked ? 'category_1' : 'full'
+                categories_search: e.target.checked ? 'category_1' : 'full',
+                categories_associate: e.target.checked
+                  ? []
+                  : filters.categories_associate
               });
             }}
           />

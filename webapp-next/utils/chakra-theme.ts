@@ -1,6 +1,5 @@
 import { extendTheme } from '@chakra-ui/react';
 import { ComponentStyleConfig } from '@chakra-ui/react';
-import { MultiSelectTheme } from 'chakra-multiselect';
 
 const colors = {
   primaryOverlay: 'rgb(36, 108, 249, 0.8)',
@@ -152,8 +151,7 @@ const theme = extendTheme({
     Input: CM2DInput,
     Button: CM2DButton,
     Table: CM2DTable,
-    Alert: CM2DAlert,
-    MultiSelect: MultiSelectTheme
+    Alert: CM2DAlert
   }
 });
 

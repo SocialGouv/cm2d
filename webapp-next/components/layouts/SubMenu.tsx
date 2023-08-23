@@ -1,7 +1,7 @@
 import { ChevronDownIcon, ChevronRightIcon } from '@chakra-ui/icons';
 import { Box, Button, Text, Tooltip } from '@chakra-ui/react';
 import Image from 'next/image';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 
 type Props = {
   title: string | JSX.Element;
@@ -13,12 +13,18 @@ type Props = {
   isDisabled?: boolean;
   disabledMessage?: string;
   children: ReactNode;
+  forceCollapse?: boolean;
 };
 
 export const SubMenu = (props: Props) => {
-  const { title, icon, children, isDisabled, disabledMessage } = props;
+  const { title, icon, children, isDisabled, disabledMessage, forceCollapse } =
+    props;
 
   const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
+
+  useEffect(() => {
+    if (forceCollapse === true) setIsCollapsed(true);
+  }, [forceCollapse]);
 
   return (
     <Box mb={4}>
