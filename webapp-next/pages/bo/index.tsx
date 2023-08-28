@@ -154,7 +154,7 @@ export default function Home() {
           content={
             <>
               Attention : les données ne sont pas exhaustives pour les décès
-              ultérieurs à {getSixMonthAgoDate()}.
+              ultérieurs au {getSixMonthAgoDate()}.
             </>
           }
         />
