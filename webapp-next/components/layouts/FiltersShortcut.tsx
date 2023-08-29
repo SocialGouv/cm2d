@@ -70,80 +70,100 @@ export function FiltersShortcut() {
     );
   };
 
+  console.log(Object.keys(filters));
+
   return (
     <Flex py={4} alignItems="center" flexWrap={'wrap'}>
-      {(Object.keys(filters) as Array<keyof Filters>).map(key => {
-        if (!filters[key]) return <></>;
+      {(Object.keys(filters) as Array<keyof Filters>)
+        .sort((a, b) => {
+          const order = ['categories', 'start_date'];
 
-        switch (key) {
-          case 'age':
-            return filters[key].map(value => (
-              <CustomTag
-                key={`${key}-${value.toString()}`}
-                field_name={key}
-                value={
-                  value.max
-                    ? `entre ${value.min} et ${value.max} ans`
-                    : `à partir de ${value.min}`
+          if (order.includes(a) && order.includes(b)) {
+            return order.indexOf(a) - order.indexOf(b);
+          }
+
+          if (order.includes(a)) {
+            return -1;
+          }
+
+          if (order.includes(b)) {
+            return 1;
+          }
+
+          return 0;
+        })
+        .map(key => {
+          if (!filters[key]) return <></>;
+
+          switch (key) {
+            case 'age':
+              return filters[key].map(value => (
+                <CustomTag
+                  key={`${key}-${value.toString()}`}
+                  field_name={key}
+                  value={
+                    value.max
+                      ? `entre ${value.min} et ${value.max} ans`
+                      : `à partir de ${value.min}`
+                  }
+                  onDelete={() => {
+                    setFilters({
+                      ...filters,
+                      age: [...filters.age.filter(a => a.min !== value.min)]
+                    });
+                  }}
+                />
+              ));
+            case 'categories':
+            case 'categories_associate':
+            case 'death_location':
+            case 'sex':
+            case 'department':
+              return filters[key].map(value => (
+                <CustomTag
+                  key={`${key}-${value}`}
+                  field_name={key}
+                  value={getLabelFromKey(value)}
+                  onDelete={() => {
+                    setFilters({
+                      ...filters,
+                      [key]: filters[key].filter(v => v !== value)
+                    });
+                  }}
+                />
+              ));
+            case 'start_date':
+              let value = `à partir de ${ISODateToMonthYear(
+                filters[key] as string
+              )}`;
+              if (filters['end_date']) {
+                if (
+                  ISODateToMonthYear(filters[key] as string) ===
+                  ISODateToMonthYear(filters['end_date'])
+                ) {
+                  value = `${ISODateToMonthYear(filters[key] as string)}`;
+                } else {
+                  value = `de ${ISODateToMonthYear(
+                    filters[key] as string
+                  )} à ${ISODateToMonthYear(filters['end_date'])}`;
                 }
-                onDelete={() => {
-                  setFilters({
-                    ...filters,
-                    age: [...filters.age.filter(a => a.min !== value.min)]
-                  });
-                }}
-              />
-            ));
-          case 'categories':
-          case 'categories_associate':
-          case 'death_location':
-          case 'sex':
-          case 'department':
-            return filters[key].map(value => (
-              <CustomTag
-                key={`${key}-${value}`}
-                field_name={key}
-                value={getLabelFromKey(value)}
-                onDelete={() => {
-                  setFilters({
-                    ...filters,
-                    [key]: filters[key].filter(v => v !== value)
-                  });
-                }}
-              />
-            ));
-          case 'start_date':
-            let value = `à partir de ${ISODateToMonthYear(
-              filters[key] as string
-            )}`;
-            if (filters['end_date']) {
-              if (
-                ISODateToMonthYear(filters[key] as string) ===
-                ISODateToMonthYear(filters['end_date'])
-              ) {
-                value = `${ISODateToMonthYear(filters[key] as string)}`;
-              } else {
-                value = `de ${ISODateToMonthYear(
-                  filters[key] as string
-                )} à ${ISODateToMonthYear(filters['end_date'])}`;
               }
-            }
-            return (
-              <CustomTag
-                key={`date-${filters['start_date']}`}
-                field_name={key}
-                value={value}
-                onDelete={() => {
-                  setFilters({
-                    ...filters,
-                    start_date: undefined,
-                    end_date: undefined
-                  });
-                }}
-              />
-            );
-        }
-      })}
+              return (
+                <CustomTag
+                  key={`date-${filters['start_date']}`}
+                  field_name={key}
+                  value={value}
+                  onDelete={() => {
+                    setFilters({
+                      ...filters,
+                      start_date: undefined,
+                      end_date: undefined
+                    });
+                  }}
+                />
+              );
+          }
+        })}
       {hasAtLeastOneFilter(filters) && (
         <Button
           mr={2}
