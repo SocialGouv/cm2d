@@ -16,18 +16,17 @@ Pour démarrer la suite ELK localement :
 docker compose up -d
 ```
 
-Au premier run ELK, lancez cette suite de commande
-
-```
-mkdir certificates
-docker cp elasticsearch:/usr/share/elasticsearch/config/certs/ca/ca.crt ./certificates/ca.crt
-```
-
 Pour initialiser les variables d'environnement NextJS
 
 ```
 cd webapp-next
 cp .env.example .env
+```
+
+Au premier run ELK, lancez cette commande pour initialiser le mot de passe du user "kibana_system" (remplacer {ELASTIC_PASSWORD} et {KIBANA_PASSWORD} par les mots de passe de votre environnement) :
+
+```
+docker exec elasticsearch curl -s -X POST --cacert config/certs/ca/ca.crt -u "elastic:{ELASTIC_PASSWORD}" -H "Content-Type: application/json" https://elasticsearch:9200/_security/user/kibana_system/_password -d "{\"password\":\"{KIBANA_PASSWORD}\"}"
 ```
 
 Pour démarrer le frontend NextJS localement :
@@ -82,75 +81,14 @@ Il est maintenant possible de se connecter en utilisant l'adresse email et le mo
 
 ## Initialisation de l'environnement ELK
 
-### Indexation des certificats
-
-Création de l'index principal destiné à rassembler les informations relatives aux certificats.
-
-Rendez-vous dans "Management" > "Dev Tools" et lancez la requête suivante :
+### Indexation des certificats et des utilisateurs
 
 ```
-PUT /cm2d_certificate
-{
-  "mappings": {
-    "_meta": {
-      "created_by": "curl-user"
-    },
-    "properties": {
-      "@timestamp": {
-        "type": "date"
-      },
-      "age": {
-        "type": "long"
-      },
-      "categories_level_1": {
-        "type": "keyword"
-      },
-      "categories_level_2": {
-        "type": "keyword"
-      },
-      "coordinates": {
-        "type": "keyword"
-      },
-      "date": {
-        "type": "date",
-        "format": "iso8601"
-      },
-      "death_location": {
-        "type": "keyword"
-      },
-      "department": {
-        "type": "long"
-      },
-      "home_location": {
-        "type": "keyword"
-      },
-      "kind": {
-        "type": "keyword"
-      },
-      "sex": {
-        "type": "keyword"
-      }
-    }
-  }
-}'
-```
-
-### Index pour les attributs supplémentaires des utilisateurs
-
-Pour stocker des informations supplémentaires concernant les utilisateurs CM2D, nous devons créer un index dédié.
-
-Rendez-vous dans "Management" > "Dev Tools" et lancez la requête suivante :
-
-```
-PUT /cm2d_users
-{
-  "mappings": {
-    "properties": {
-      "username": { "type": "text" },
-      "versionCGU": { "type": "text" }
-    }
-  }
-}
+docker run --net=host --rm -ti -e NODE_TLS_REJECT_UNAUTHORIZED=0 -v ./default-indexes:/tmp --entrypoint multielasticdump elasticdump/elasticsearch-dump \
+  --direction=load \
+  --input=./tmp \
+  --output="https://elastic:${ELASTIC_PASSWORD}@localhost:9200" \
+  --tlsAuth
 ```
 
 ### Mise en place des transformations
@@ -241,3 +179,40 @@ Destination Index : `cm2d_departments`
 Continous mode
 Date field for continous mode : `@timestamp`
 Delay : `60s`
+
+
+
+### Docker production
+
+## Créer les images docker
+```
+docker build -t cm2d-elasticsearch docker/elasticsearch
+docker build -t cm2d-kibana docker/kibana
+docker build --build-arg NEXT_PUBLIC_ELASTIC_API_KEY_NAME=${NEXT_PUBLIC_ELASTIC_API_KEY_NAME} -t cm2d-webapp webapp-next
+```
+
+## Créer les réseaux docker
+```
+docker network create elastic
+docker network create webapp
+```
+
+## Elasticsearch
+```
+docker run -d -p 9200:9200 -p 9300:9300 --net elastic -v es_data:/usr/share/elasticsearch/data -v certs:/usr/share/elasticsearch/config/certs -e ELASTIC_PASSWORD=${ELASTIC_PASSWORD} --name elasticsearch cm2d-elasticsearch
+```
+
+## Attacher le réseau webapp à Elasticsearch
+```
+docker network connect webapp elasticsearch
+```
+
+## Kibana
+```
+docker run -d -p 5601:5601 --net elastic -v kibana_data:/usr/share/kibana/data -v certs:/usr/share/kibana/config/certs -e ELASTICSEARCH_PASSWORD=${KIBANA_PASSWORD} --name kibana cm2d-kibana
+```
+
+## Webapp
+```
+docker run -d -p 3000:3000 --net webapp -v certs:/app/certs --env-file ${path_fichier_environnement} --name webapp cm2d-webapp
+```

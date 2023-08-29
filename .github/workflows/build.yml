@@ -1,0 +1,103 @@
+name: CI
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  elk-check-files-changed:
+    runs-on: ubuntu-latest
+
+    outputs:
+      files-changed-elasticsearch: ${{ steps.set-output.outputs.files-changed-elasticsearch }}
+      files-changed-kibana: ${{ steps.set-output.outputs.files-changed-kibana }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Get changed files in docker for elasticsearch
+        id: check-files-elasticsearch
+        uses: tj-actions/changed-files@v37
+        with:
+          files: docker/elasticsearch
+      
+      - name: Get changed files in docker for kibana
+        id: check-files-kibana
+        uses: tj-actions/changed-files@v37
+        with:
+          files: docker/kibana
+      
+      - name: Set output if files changed in docker for elasticsearch and kibana
+        id: set-output
+        run: |
+          echo "files-changed-elasticsearch=${{ steps.check-files-elasticsearch.outputs.any_changed }}" >> $GITHUB_OUTPUT
+          echo "files-changed-kibana=${{ steps.check-files-kibana.outputs.any_changed }}" >> $GITHUB_OUTPUT
+
+  elasticsearch-build:
+    needs: elk-check-files-changed
+    if: ${{ needs.elk-check-files-changed.outputs.files-changed-elasticsearch == 'true' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          context: "{{defaultContext}}:docker/elasticsearch"
+          push: true
+          tags: cm2d/cm2d-elasticsearch:${{ github.sha }},cm2d/cm2d-elasticsearch:latest
+
+  kibana-build:
+    needs: elk-check-files-changed
+    if: ${{ needs.elk-check-files-changed.outputs.files-changed-kibana == 'true' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          context: "{{defaultContext}}:docker/kibana"
+          push: true
+          tags: cm2d/cm2d-kibana:${{ github.sha }},cm2d/cm2d-kibana:latest
+
+  webapp-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          context: "{{defaultContext}}:webapp-next"
+          push: true
+          tags: ghcr.io/socialgouv/cm2d-webapp:${{ github.sha }},ghcr.io/socialgouv/cm2d-webapp:latest

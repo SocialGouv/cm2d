@@ -5,3 +5,4 @@ faker/.idea
 certificates/*
 sample_data.csv
 .env
+node_modules/
