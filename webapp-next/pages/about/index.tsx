@@ -174,7 +174,9 @@ export default function About() {
       <Text>
         Si vous avez des questions ou si vous souhaitez aller plus loin sur les
         causes médicales de décès, vous pouvez nous contacter à{' '}
-        <Link href="mailto:cm2d@ars.sante.fr">cm2d@ars.sante.fr</Link>
+        <Link href="mailto:ars-idf-cm2d@ars.sante.fr">
+          ars-idf-cm2d@ars.sante.fr
+        </Link>
       </Text>
     </Container>
   );
