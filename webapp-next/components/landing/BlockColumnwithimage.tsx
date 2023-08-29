@@ -56,7 +56,14 @@ export default function ColumnWithImage() {
         display={['none', 'none', 'none', 'none', 'block']}
         mt={10}
       >
-        <Image src="/dashboard.svg" alt="Image" w="95%" float="right" pt={2} />
+        <Image
+          src="/dashboard.png"
+          alt="Image"
+          w="95%"
+          borderRadius={'xl'}
+          float="right"
+          pt={2}
+        />
       </Box>
 
       <Box
