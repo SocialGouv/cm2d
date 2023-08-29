@@ -36,21 +36,25 @@ export default function Home() {
   );
 
   const fetchNewTitle = async () => {
-    if (!filters.categories[0]) setTitle('Nombre de décès');
+    if (!filters.categories[0]) setTitle('Nombre de certificats de décès');
     else
       switch (filters.categories_search) {
         case 'full':
           setTitle(
-            `Nombre de décès faisant mention de la cause “${capitalizeString(
+            `Nombre de certificats de décès faisant mention de la cause “${capitalizeString(
               filters.categories[0]
-            )}”`
+            )}” ${
+              !!filters.categories_associate.length
+                ? '(avec causes associées)'
+                : ''
+            }`
           );
           break;
         case 'category_1':
           setTitle(
-            `Nombre de certificats de décès ayant comme cause directe “${capitalizeString(
+            `Nombre de certificats de décès faisant mention de la cause “${capitalizeString(
               filters.categories[0]
-            )}”`
+            )}” dans le processus morbide`
           );
           break;
         case 'category_2':
