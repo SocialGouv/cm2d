@@ -145,13 +145,13 @@ export function Menu() {
           <MenuLinks
             links={[
               {
-                label: 'Réglages',
-                icon: '/icons/settings.svg',
-                link: '/'
+                label: 'À propos',
+                icon: '/icons/about-circle.svg',
+                link: '/about'
               },
               {
                 label: 'Mentions légales',
-                icon: '/icons/about-circle.svg',
+                icon: '/icons/shield-user.svg',
                 link: '/legals/mentions-legales'
               },
               {
