@@ -12,9 +12,9 @@ export function Header() {
       borderRadius={16}
       bg="white"
       w="full"
-      justifyContent={'space-between'}
+      justifyContent={'end'}
     >
-      <ActionBookmarks />
+      {/* <ActionBookmarks /> */}
       <ActionMenu />
     </Flex>
   );

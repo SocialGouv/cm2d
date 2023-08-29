@@ -8,6 +8,8 @@ import { KPI } from '@/components/layouts/KPI';
 import { useData } from '@/utils/api';
 import { Cm2dContext } from '@/utils/cm2d-provider';
 import {
+  addMissingSizes,
+  capitalizeString,
   getCSVDataFromDatasets,
   getSixMonthAgoDate,
   getViewDatasets,
@@ -28,14 +30,41 @@ export default function Home() {
 
   const { filters, aggregations, view, setCSVData } = context;
 
-  const { data, dataKind, isLoading } = useData(filters, aggregations);
+  const { data, dataKind, isLoading } = useData(
+    filters,
+    addMissingSizes(aggregations, filters.categories_associate.length)
+  );
 
   const fetchNewTitle = async () => {
-    setTitle(
-      filters.categories_level_1[0]
-        ? `Nombre de décès par ${filters.categories_level_1[0]}`
-        : 'Nombre de décès'
-    );
+    if (!filters.categories[0]) setTitle('Nombre de certificats de décès');
+    else
+      switch (filters.categories_search) {
+        case 'full':
+          setTitle(
+            `Nombre de certificats de décès faisant mention de la cause “${capitalizeString(
+              filters.categories[0]
+            )}” ${
+              !!filters.categories_associate.length
+                ? '(avec causes associées)'
+                : ''
+            }`
+          );
+          break;
+        case 'category_1':
+          setTitle(
+            `Nombre de certificats de décès faisant mention de la cause “${capitalizeString(
+              filters.categories[0]
+            )}” dans le processus morbide`
+          );
+          break;
+        case 'category_2':
+          setTitle(
+            `Nombre de certificats de décès ayant comme cause associée ou comorbidité “${capitalizeString(
+              filters.categories[0]
+            )}”`
+          );
+          break;
+      }
     // setTitle('...');
     // const res = await fetch('/api/chat', {
     //   method: 'POST',
@@ -129,7 +158,7 @@ export default function Home() {
           content={
             <>
               Attention : les données ne sont pas exhaustives pour les décès
-              ultérieurs à {getSixMonthAgoDate()}.
+              ultérieurs au {getSixMonthAgoDate()}.
             </>
           }
         />
@@ -155,7 +184,7 @@ export default function Home() {
             fontWeight={700}
             mb={['line', 'histogram', 'doughnut'].includes(view) ? 2 : 6}
           >
-            {title.charAt(0).toUpperCase() + title.substring(1)}
+            {capitalizeString(title)}
           </Text>
           <ChartDisplay />
           <Flex justifyContent={'space-between'} mt={8}>

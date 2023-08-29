@@ -7,8 +7,12 @@ import {
   useEffect
 } from 'react';
 
+export type SearchCategory = 'full' | 'category_1' | 'category_2';
+
 export type Filters = {
-  categories_level_1: string[];
+  categories: string[];
+  categories_associate: string[];
+  categories_search: SearchCategory;
   death_location: string[];
   age: {
     min: number;
@@ -24,7 +28,7 @@ export type User = {
   username?: string;
   email?: string;
   fullName?: string;
-}
+};
 
 type Cm2dContextType = {
   firstDate: Date;
@@ -56,8 +60,10 @@ type Cm2dProviderProps = {
 
 export type View = 'line' | 'histogram' | 'table' | 'doughnut' | 'map';
 
-export const baseFilters = {
-  categories_level_1: [],
+export const baseFilters: Filters = {
+  categories: [],
+  categories_associate: [],
+  categories_search: 'full',
   death_location: [],
   age: [],
   sex: [],

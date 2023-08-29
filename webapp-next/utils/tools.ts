@@ -1,4 +1,4 @@
-import { Filters, View } from './cm2d-provider';
+import { Filters, SearchCategory, View } from './cm2d-provider';
 import { format } from 'date-fns';
 import moment from 'moment';
 
@@ -25,6 +25,8 @@ const elkFields = [
   { value: 'sex', label: 'Sexe' },
   { value: 'age', label: 'Age' },
   { value: 'categories_level_1', label: 'Cause' },
+  { value: 'categories', label: 'Cause' },
+  { value: 'categories_associate', label: 'Cause associée' },
   { value: 'categories_level_2', label: 'Comorbidité' },
   { value: 'death_location', label: 'Lieu de décès' },
   { value: 'department', label: 'Département' },
@@ -43,9 +45,6 @@ export function getLabelFromElkField(key: string): string {
   return key;
 }
 
-export const capitalizeFirstLetter = (str: string) => {
-  return str.length > 1 ? str.charAt(0).toUpperCase() + str.substring(1) : str;
-};
 export const getLabelFromKey = (
   key: string,
   dateFormat: 'year' | 'month' | 'week' = 'year'
@@ -55,14 +54,14 @@ export const getLabelFromKey = (
 
   if (isStringContainingDate(key)) {
     if (dateFormat === 'year')
-      return capitalizeFirstLetter(new Date(key).getFullYear().toString());
+      return capitalizeString(new Date(key).getFullYear().toString());
     if (dateFormat === 'week')
-      return capitalizeFirstLetter(dateToWeekYear(new Date(key)));
+      return capitalizeString(dateToWeekYear(new Date(key)));
     if (dateFormat === 'month')
-      return capitalizeFirstLetter(dateToMonthYear(new Date(key)));
+      return capitalizeString(dateToMonthYear(new Date(key)));
   }
 
-  return capitalizeFirstLetter(key);
+  return capitalizeString(key);
 };
 
 export function hasAtLeastOneFilter(filters: Filters): boolean {
@@ -77,10 +76,55 @@ export function hasAtLeastOneFilter(filters: Filters): boolean {
 export function transformFilters(filters: Filters): any[] {
   const transformed: any[] = [];
 
-  if (filters.categories_level_1.length > 0) {
+  if (filters.categories.length > 0) {
+    switch (filters.categories_search) {
+      case 'full':
+        transformed.push({
+          bool: {
+            should: [
+              {
+                terms: {
+                  categories_level_1: filters.categories
+                }
+              },
+              {
+                terms: {
+                  categories_level_2: filters.categories
+                }
+              }
+            ],
+            minimum_should_match: 1
+          }
+        });
+        break;
+      case 'category_1':
+        transformed.push({
+          terms: {
+            categories_level_1: filters.categories
+          }
+        });
+        break;
+      case 'category_2':
+        transformed.push({
+          terms: {
+            categories_level_2: filters.categories
+          }
+        });
+        break;
+    }
+  }
+
+  if (filters.categories_associate.length > 0) {
     transformed.push({
-      terms: {
-        categories_level_1: filters.categories_level_1
+      bool: {
+        should: filters.categories_associate.map(ca => {
+          return {
+            match: {
+              categories_associate: ca
+            }
+          };
+        }),
+        minimum_should_match: 1
       }
     });
   }
@@ -269,6 +313,24 @@ export function getDefaultField<T extends string | undefined>(
   return defaultField;
 }
 
+export function concatAdditionnalFields<T extends string | undefined>(
+  availableFields: { label: string; value: T }[],
+  categories_search: SearchCategory,
+  categories_associate: string[]
+): { label: string; value: T }[] {
+  if (categories_search === 'full' && categories_associate.length > 1) {
+    return [
+      ...availableFields,
+      {
+        label: 'Cause associée',
+        value: 'categories_associate' as T
+      }
+    ];
+  } else {
+    return availableFields;
+  }
+}
+
 export function ISODateToMonthYear(isoDateString: string): string {
   const date = new Date(isoDateString);
   let month = date.getMonth() + 1; // Les mois sont indexés à partir de 0 en JavaScript
@@ -428,5 +490,39 @@ export function getCodeEmailHtml(code: string) {
 	`;
 }
 
+export function capitalizeString(str: string): string {
+  if (str.length <= 1) return str;
 
-export const ELASTIC_API_KEY_NAME = process.env.NEXT_PUBLIC_ELASTIC_API_KEY_NAME as string;
+  return str.toString().charAt(0).toUpperCase() + str.toString().substring(1);
+}
+
+export function addMissingSizes(obj: any, size: number): any {
+  if (typeof obj === 'object') {
+    if (obj.terms && obj.terms.field === 'categories_associate') {
+      return {
+        ...obj,
+        terms: {
+          ...obj.terms,
+          size: size
+        }
+      };
+    }
+    const newObj: typeof obj = {};
+    if (!Array.isArray(obj)) {
+      for (const key in obj) {
+        newObj[key] = addMissingSizes(obj[key], size);
+      }
+      return newObj;
+    } else {
+      return obj;
+    }
+  }
+  return obj;
+}
+
+export function removeAccents(str: string) {
+  return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
+export const ELASTIC_API_KEY_NAME = process.env
+  .NEXT_PUBLIC_ELASTIC_API_KEY_NAME as string;

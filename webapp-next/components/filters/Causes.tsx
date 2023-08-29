@@ -1,30 +1,21 @@
 import { useCauses } from '@/utils/api';
-import { Cm2dContext, Filters } from '@/utils/cm2d-provider';
+import { Cm2dContext } from '@/utils/cm2d-provider';
+import { capitalizeString } from '@/utils/tools';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import {
   Flex,
+  FormControl,
+  FormLabel,
   InputGroup,
   InputLeftElement,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
-  Select
+  Switch
 } from '@chakra-ui/react';
-import {
-  AutoComplete,
-  AutoCompleteInput,
-  AutoCompleteItem,
-  AutoCompleteList
-} from '@choc-ui/chakra-autocomplete';
 import Image from 'next/image';
-import {
-  Dispatch,
-  SetStateAction,
-  useContext,
-  useEffect,
-  useState
-} from 'react';
+import { useContext } from 'react';
 
 type Causes = {
   id: number;
@@ -51,66 +42,97 @@ export const FilterCauses = (props: Props) => {
   }));
 
   return (
-    <InputGroup zIndex={2}>
-      <InputLeftElement
-        pointerEvents="none"
-        top="50%"
-        transform="translateY(-50%)"
-      >
-        <Image
-          src={
-            !!filters.categories_level_1.length
-              ? 'icons/search-text-blue.svg'
-              : 'icons/search-text.svg'
-          }
-          alt="Icone de recherche"
-          width={24}
-          height={24}
-        />
-      </InputLeftElement>
-      <Menu>
-        <MenuButton
-          px={4}
-          pl={10}
-          py={3}
-          w="full"
-          textAlign="left"
-          transition="all 0.2s"
-          borderRadius="md"
-          borderWidth="1px"
-          bg={!!filters.categories_level_1.length ? 'primary.50' : 'white'}
-          _focus={{ borderColor: 'primary.500' }}
-          _hover={{ borderColor: 'primary.500' }}
+    <Flex flexDir="column">
+      <InputGroup zIndex={2}>
+        <InputLeftElement
+          pointerEvents="none"
+          top="50%"
+          transform="translateY(-50%)"
         >
-          <Flex alignItems={'center'}>
-            {filters.categories_level_1[0] &&
-              filters.categories_level_1[0].charAt(0).toUpperCase() +
-                filters.categories_level_1[0].substring(1)}
-            <ChevronDownIcon
-              ml="auto"
-              fontSize="2xl"
-              color={
-                !!filters.categories_level_1.length ? 'primary.500' : 'initial'
-              }
-            />
-          </Flex>
-        </MenuButton>
-        <MenuList>
-          {causes.map(cause => (
-            <MenuItem
-              key={`option-${cause.id}`}
-              onClick={e => {
-                setFilters({
-                  ...filters,
-                  categories_level_1: [cause.label]
-                });
-              }}
-            >
-              {cause.label.charAt(0).toUpperCase() + cause.label.substring(1)}
-            </MenuItem>
-          ))}
-        </MenuList>
-      </Menu>
-    </InputGroup>
+          <Image
+            src={
+              !!filters.categories.length
+                ? 'icons/search-text-blue.svg'
+                : 'icons/search-text.svg'
+            }
+            alt="Icone de recherche"
+            width={24}
+            height={24}
+          />
+        </InputLeftElement>
+        <Menu>
+          <MenuButton
+            px={4}
+            pl={10}
+            py={3}
+            w="full"
+            textAlign="left"
+            transition="all 0.2s"
+            borderRadius="md"
+            borderWidth="1px"
+            bg={!!filters.categories.length ? 'primary.50' : 'white'}
+            _focus={{ borderColor: 'primary.500' }}
+            _hover={{ borderColor: 'primary.500' }}
+          >
+            <Flex alignItems={'center'}>
+              {filters.categories[0] && capitalizeString(filters.categories[0])}
+              <ChevronDownIcon
+                ml="auto"
+                fontSize="2xl"
+                color={!!filters.categories.length ? 'primary.500' : 'initial'}
+              />
+            </Flex>
+          </MenuButton>
+          <MenuList>
+            {causes.map(cause => (
+              <MenuItem
+                key={`option-${cause.id}`}
+                onClick={e => {
+                  setFilters({
+                    ...filters,
+                    categories: [cause.label]
+                  });
+                }}
+              >
+                {capitalizeString(cause.label)}
+              </MenuItem>
+            ))}
+          </MenuList>
+        </Menu>
+      </InputGroup>
+      {!!filters.categories.length && (
+        <FormControl
+          display="flex"
+          alignItems="center"
+          // justifyContent={'center'}
+          pl={4}
+          mt={4}
+        >
+          <Switch
+            id="switch-category-1"
+            size="sm"
+            onChange={e => {
+              setFilters({
+                ...filters,
+                categories_search: e.target.checked ? 'category_1' : 'full',
+                categories_associate: e.target.checked
+                  ? []
+                  : filters.categories_associate
+              });
+            }}
+          />
+          <FormLabel
+            htmlFor="switch-category-1"
+            mb="0"
+            cursor="pointer"
+            ml={2}
+            fontSize={'sm'}
+            maxW="65%"
+          >
+            Rechercher uniquement dans le processus morbide
+          </FormLabel>
+        </FormControl>
+      )}
+    </Flex>
   );
 };

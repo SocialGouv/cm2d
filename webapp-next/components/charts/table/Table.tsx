@@ -1,6 +1,6 @@
 import { Cm2dContext } from '@/utils/cm2d-provider';
 import { orders, sortByOrder } from '@/utils/orders';
-import { getLabelFromKey, isNC } from '@/utils/tools';
+import { capitalizeString, getLabelFromKey, isNC } from '@/utils/tools';
 import {
   Table,
   TableContainer,
@@ -94,10 +94,7 @@ export const ChartTable = (props: Props) => {
             )
             .map(ds => (
               <Tr key={ds.label}>
-                <Td>
-                  {ds.label &&
-                    ds.label?.charAt(0).toUpperCase() + ds.label?.substring(1)}
-                </Td>
+                <Td>{ds.label && capitalizeString(ds.label)}</Td>
                 {availableKeys.map((ak, index) => {
                   const hit = ds.hits.find(h => h.key === ak);
                   if (!hit) return <Td key={`${ds.label}-${index}`}>0</Td>;

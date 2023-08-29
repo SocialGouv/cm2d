@@ -4,17 +4,17 @@ import { ComponentStyleConfig } from '@chakra-ui/react';
 const colors = {
   primaryOverlay: 'rgb(36, 108, 249, 0.8)',
   primary: {
-    50: '#F4F8FF',
-    75: '#E9F1FF',
-    100: '#b9ccfc',
-    200: '#8eaafc',
-    300: '#639bf9',
-    400: '#3a7cfa',
-    500: '#246CF9',
-    600: '#1e5fd5',
-    700: '#194fb2',
-    800: '#133f8f',
-    900: '#0d3170'
+    '50': '#F2F4FA',
+    '75': '#F2F4FA',
+    '100': '#CCD3EA',
+    '200': '#454C75',
+    '300': '#8091CA',
+    '400': '#0A1547',
+    '500': '#002395',
+    '600': '#001F7C',
+    '700': '#001B64',
+    '800': '#00184C',
+    '900': '#001534'
   },
   secondary: {
     50: '#f5f8fe',
@@ -141,8 +141,8 @@ const CM2DAlert: ComponentStyleConfig = {
 const theme = extendTheme({
   colors,
   fonts: {
-    heading: `'Inter', sans-serif`,
-    body: `'Inter', sans-serif`
+    heading: 'Marianne, Georgia, serif',
+    body: 'Marianne, system-ui, sans-serif'
   },
   sizes: {
     88: '22rem'

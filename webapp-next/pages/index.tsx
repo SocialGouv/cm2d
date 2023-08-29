@@ -9,13 +9,14 @@ export default function Landing() {
       <ColumnWithImage />
       <BlockGaleryimages
         Imagescontent={[
-          { imagelink: '/placeholder-img.svg' },
-          { imagelink: '/placeholder-img.svg' },
-          { imagelink: '/placeholder-img.svg' }
+          { title: '1 | Choisir une cause de décès', imagelink: '/step-1.svg' },
+          { title: '2 | Paramétrer votre requête', imagelink: '/step-2.svg' },
+          { title: '3 | Visualiser vos données', imagelink: '/step-3.svg' },
+          { title: '4 | Extraire vos résultats', imagelink: '/step-4.svg' }
         ]}
       />
       <BlockImageGrids
-        contentimage={{ image: '/Placeholder-image.svg' }}
+        contentimage={{ image: '/tech.svg' }}
         contentsgrids={[
           {
             title: 'Un service construit avec les utilisateurs',

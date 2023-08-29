@@ -6,6 +6,7 @@ import { ChakraProvider } from '@chakra-ui/react';
 import { DashboardLayout } from '@/layouts/DashboardLayout';
 import theme from '@/utils/chakra-theme';
 import '../utils/overrides.css';
+import '../public/fonts.css';
 import { Cm2dProvider } from '@/utils/cm2d-provider';
 import { useRouter } from 'next/router';
 import { ReactNode } from 'react';

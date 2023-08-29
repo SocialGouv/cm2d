@@ -13,6 +13,7 @@ import { FilterDates } from '../filters/Dates';
 import { FiltersDepartments } from '../filters/Departments';
 import cookie from 'js-cookie';
 import { hasAtLeastOneFilter, ELASTIC_API_KEY_NAME } from '@/utils/tools';
+import { FilterAssociateCauses } from '../filters/AssociateCauses';
 
 export const ageRanges = [
   { from: 0, to: 0, key: 'Moins de 1 an' },
@@ -70,7 +71,7 @@ export function Menu() {
                   onClick: () => {
                     setFilters({
                       ...baseFilters,
-                      categories_level_1: filters.categories_level_1,
+                      categories: filters.categories,
                       start_date: filters.start_date,
                       end_date: filters.end_date
                     });
@@ -117,19 +118,40 @@ export function Menu() {
             <FiltersDepartments />
           </Stack>
         </SubMenu>
+        <SubMenu
+          title={<>Causes associées</>}
+          icon={{
+            src: 'icons/folder-open-blue.svg',
+            srcOpen: 'icons/folder-open.svg',
+            alt: 'Onglet causes associées'
+          }}
+          isDisabled={
+            !filters.categories.length || filters.categories_search !== 'full'
+          }
+          disabledMessage={
+            !filters.categories.length
+              ? 'Veuillez sélectionner une cause de décès pour accéder aux causes associées'
+              : 'Pour associer des causes, veuillez désélectionner "Rechercher uniquement dans le processus morbide"'
+          }
+          forceCollapse={filters.categories_search !== 'full'}
+        >
+          <Stack dir="column" spacing={4}>
+            <FilterAssociateCauses />
+          </Stack>
+        </SubMenu>
       </Box>
       <Box mt="auto">
         <Box px={6}>
           <MenuLinks
             links={[
               {
-                label: 'Réglages',
-                icon: '/icons/settings.svg',
-                link: '/'
+                label: 'À propos',
+                icon: '/icons/about-circle.svg',
+                link: '/about'
               },
               {
                 label: 'Mentions légales',
-                icon: '/icons/about-circle.svg',
+                icon: '/icons/shield-user.svg',
                 link: '/legals/mentions-legales'
               },
               {

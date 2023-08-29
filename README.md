@@ -4,13 +4,19 @@ L'application qui permet aux agents des ARS d’évaluer et d’orienter leurs a
 
 ## Démarrage de l'application
 
+Pour initialiser les variables d'environnement ELK
+
+```
+cp .env.example .env
+```
+
 Pour démarrer la suite ELK localement :
 
 ```
 docker compose up -d
 ```
 
-Pour initialiser les variables d'environnement
+Pour initialiser les variables d'environnement NextJS
 
 ```
 cd webapp-next
@@ -54,7 +60,15 @@ Définissez un mot de passe approprié dans le champ correspondant. Pour le cham
 
 Il est maintenant possible de se connecter en utilisant l'adresse email et le mot de passe que vous avez définis précédemment.
 
-## Les variables d'environnement
+## Les variables d'environnement ELK
+
+| Nom de la variable | Description                                                   |
+| ------------------ | ------------------------------------------------------------- |
+| ELASTIC_PASSWORD   | Le mot de passe à utiliser pour se connecter à Elasticsearch. |
+| KIBANA_PASSWORD    | Le mot de passe à utiliser pour se connecter à Kibana.        |
+| CLUSTER_NAME       | Le nom du cluster ELK                                         |
+
+## Les variables d'environnement NextJS
 
 | Nom de la variable    | Description                                                             |
 | --------------------- | ----------------------------------------------------------------------- |
@@ -98,18 +112,18 @@ Continous mode
 Date field for continous mode : `@timestamp`
 Delay : `60s`
 
-##### 2. Compilation des comorbidités
+##### 2. Compilation des causes associées
 
 Transform à partir de l'index : `cm2d_certificate`
 
 Type de transform : `Pivot`
 
-Group by : `categories_level_2`
+Group by : `categories_associate`
 Aggregation : `@timestamp.value_count`
 
-Transform ID : `cm2d_level_2_categories`
-Transform description : `Available causes`
-Destination Index : `cm2d_level_2_categories`
+Transform ID : `cm2d_associate_categories`
+Transform description : `Available associate causes`
+Destination Index : `cm2d_associate_categories`
 
 Continous mode
 Date field for continous mode : `@timestamp`

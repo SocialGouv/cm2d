@@ -1324,6 +1324,11 @@
     "@typescript-eslint/types" "5.59.5"
     eslint-visitor-keys "^3.3.0"
 
+"@uidotdev/usehooks@^2.1.1":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@uidotdev/usehooks/-/usehooks-2.1.1.tgz#982edfb6d4719662572f5867e9224b30770ae2d4"
+  integrity sha512-sVJ1jXU62Edh22dREEa3mHcHnH2MUgokuzLw9guNS30ADCkdhYASNZxg2V8iB83iwY5H+jSeSxjqGaFvsRrNBQ==
+
 "@zag-js/element-size@0.3.2":
   version "0.3.2"
   resolved "https://registry.npmjs.org/@zag-js/element-size/-/element-size-0.3.2.tgz"

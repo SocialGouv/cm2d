@@ -30,10 +30,7 @@ import { useEffect, useRef, useState } from 'react';
 import useSWRMutation from 'swr/mutation';
 import { ELASTIC_API_KEY_NAME } from '@/utils/tools';
 
-async function auth<T>(
-  url: string,
-  { arg }: { arg: T }
-) {
+async function auth<T>(url: string, { arg }: { arg: T }) {
   return fetch(url, {
     method: 'POST',
     body: JSON.stringify(arg),
@@ -64,12 +61,18 @@ export const FormLogin = () => {
   const { isOpen, onToggle } = useDisclosure();
   const [formError, setFormError] = useState(false);
 
-  const { trigger: triggerLogin } = useSWRMutation('/api/auth', auth<{ username: string; password: string; }>);
+  const { trigger: triggerLogin } = useSWRMutation(
+    '/api/auth',
+    auth<{ username: string; password: string }>
+  );
   const { trigger: triggerVerify } = useSWRMutation(
     '/api/auth/verify-code',
-    auth<{ username: string, code: string }>
+    auth<{ username: string; code: string }>
   );
-  const { trigger: triggerCreateUser } = useSWRMutation('/api/auth/create-user', auth<{ username: string; versionCGU: string }>);
+  const { trigger: triggerCreateUser } = useSWRMutation(
+    '/api/auth/create-user',
+    auth<{ username: string; versionCGU: string }>
+  );
 
   const startTimer = () => {
     if (intervalRef.current) clearInterval(intervalRef.current);
@@ -101,7 +104,7 @@ export const FormLogin = () => {
   const handleModalTermsAccept = async () => {
     if (cm2dApiKeyEncoded) {
       cookie.set(ELASTIC_API_KEY_NAME, cm2dApiKeyEncoded);
-      await triggerCreateUser({ username, versionCGU: '1' })
+      await triggerCreateUser({ username, versionCGU: '1' });
       onCloseTerms();
       router.push('/bo');
     }
@@ -481,7 +484,8 @@ function ModalTermsContent({
           colorScheme="primary"
           w="full"
           onClick={onAccept}
-          isDisabled={!hasScrolledToBottom}
+          // Remove for now, issue with some users who can't accept
+          // isDisabled={!hasScrolledToBottom}
         >
           Accepter
         </Button>
