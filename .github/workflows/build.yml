@@ -56,7 +56,7 @@ jobs:
         with:
           context: "{{defaultContext}}:docker/elasticsearch"
           push: true
-          tags: cm2d/cm2d-elasticsearch:${{ github.sha }},cm2d/cm2d-elasticsearch:latest
+          tags: ghcr.io/socialgouv/cm2d-elasticsearch:${{ github.sha }},ghcr.io/socialgouv/cm2d-elasticsearch:latest
 
   kibana-build:
     needs: elk-check-files-changed
@@ -79,7 +79,7 @@ jobs:
         with:
           context: "{{defaultContext}}:docker/kibana"
           push: true
-          tags: cm2d/cm2d-kibana:${{ github.sha }},cm2d/cm2d-kibana:latest
+          tags: ghcr.io/socialgouv/cm2d-kibana:${{ github.sha }},ghcr.io/socialgouv/cm2d-kibana:latest
 
   webapp-build:
     runs-on: ubuntu-latest
