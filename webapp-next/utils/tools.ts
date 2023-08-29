@@ -508,10 +508,14 @@ export function addMissingSizes(obj: any, size: number): any {
       };
     }
     const newObj: typeof obj = {};
-    for (const key in obj) {
-      newObj[key] = addMissingSizes(obj[key], size);
+    if (!Array.isArray(obj)) {
+      for (const key in obj) {
+        newObj[key] = addMissingSizes(obj[key], size);
+      }
+      return newObj;
+    } else {
+      return obj;
     }
-    return newObj;
   }
   return obj;
 }
