@@ -5,6 +5,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import path from 'path';
 const tmpCodes = require('../../../utils/codes');
 import AWS from 'aws-sdk';
+import rateLimit from '@/utils/rate-limit';
 
 AWS.config.update({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -14,12 +15,24 @@ AWS.config.update({
 
 const ses = new AWS.SES({ apiVersion: '2012-10-17' });
 
+const limiter = rateLimit({
+  interval: 60 * 1000, // 60 seconds
+  uniqueTokenPerInterval: 50, // Max 50 users per second
+})
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   if (req.method === 'POST') {
     const { username, password } = req.body;
+
+    const forwarded = req.headers['x-forwarded-for'];
+
+    const userIp = typeof forwarded === 'string' ? forwarded.split(/, /)[0] : req.socket.remoteAddress;
+
+    // Rate limiting to prevent brute force auth
+    await limiter.check(res, 5, userIp as string); // 5 requests max per minute
 
     const client = new Client({
       node: process.env.ELASTIC_HOST,
@@ -77,11 +90,12 @@ export default async function handler(
       }
     } catch (error: any) {
       if (error.statusCode === 401) {
-        res.status(401).end('Unauthorized');
+        res.status(401).end();
       } else {
-        console.log(error);
+        res.status(500).end();
       }
     }
+
   } else {
     res.setHeader('Allow', 'POST');
     res.status(405).end('Method Not Allowed');

@@ -1,5 +1,6 @@
 import {
   Alert,
+  AlertDescription,
   AlertIcon,
   AlertTitle,
   Box,
@@ -35,7 +36,7 @@ async function auth<T>(url: string, { arg }: { arg: T }) {
     method: 'POST',
     body: JSON.stringify(arg),
     headers: { 'Content-Type': 'application/json' }
-  }).then(res => res.json());
+  });
 }
 
 export const FormLogin = () => {
@@ -54,6 +55,8 @@ export const FormLogin = () => {
   const [code, setCode] = useState<number | undefined>();
   const [isLoading, setIsLoading] = useState(false);
   const [showCodeForm, setShowCodeForm] = useState(false);
+
+  const [remaningRequests, setRemaningRequests] = useState(0);
 
   const [timer, setTimer] = useState(30);
   const intervalRef = useRef<NodeJS.Timeout | undefined>();
@@ -74,7 +77,7 @@ export const FormLogin = () => {
     auth<{ username: string; versionCGU: string }>
   );
 
-  const startTimer = () => {
+  const startTimer = (callback?: () => void) => {
     if (intervalRef.current) clearInterval(intervalRef.current);
     setTimer(30);
     intervalRef.current = setInterval(() => {
@@ -83,6 +86,7 @@ export const FormLogin = () => {
           return prevTimer - 1;
         } else {
           clearInterval(intervalRef.current as NodeJS.Timeout);
+          callback && callback();
           return 0;
         }
       });
@@ -113,12 +117,15 @@ export const FormLogin = () => {
   const handleCodeSubmit = async (e: any) => {
     e.preventDefault();
     if (code) {
-      try {
-        setIsLoading(true);
-        const result = await triggerVerify({
-          username: username,
-          code: code.toString()
-        });
+      setIsLoading(true);
+
+      const res = await triggerVerify({
+        username: username,
+        code: code.toString()
+      });
+
+      if (res.ok) {
+        const result = await res.json();
         if (result.firstLogin) {
           setCm2dApiKeyEncoded(result.apiKey.encoded);
           onOpenTerms();
@@ -126,9 +133,10 @@ export const FormLogin = () => {
           cookie.set(ELASTIC_API_KEY_NAME, result.apiKey.encoded);
           router.push('/bo');
         }
-      } catch (e) {
+      } else {
         setFormError(true);
       }
+
       setIsLoading(false);
     }
   };
@@ -137,20 +145,26 @@ export const FormLogin = () => {
     e.preventDefault();
     setFormError(false);
     if (username !== '' && password !== '') {
-      try {
-        setIsLoading(true);
-        const result = await triggerLogin({ username, password });
+      setIsLoading(true);
+      const res = await triggerLogin({ username, password });
+      if (res.ok) {
+        const result = await res.json();
         if (process.env.NODE_ENV === 'development') {
           cookie.set(ELASTIC_API_KEY_NAME, result.encoded);
           router.push('/bo');
         }
         startTimer();
         setShowCodeForm(true);
-      } catch (e) {
-        setFormError(true);
+        setIsLoading(false);
+      } else {
+        setTimeout(() => {
+          setRemaningRequests(
+            parseInt(res.headers.get('X-RateLimit-Remaining') as string) || 0
+          );
+          setFormError(true);
+          setIsLoading(false);
+        }, 1000);
       }
-
-      setIsLoading(false);
     }
   };
 
@@ -298,7 +312,21 @@ export const FormLogin = () => {
         <Box mb={4}>
           <Alert status="error">
             <AlertIcon />
-            <AlertTitle>Erreurs dans les identifiants !</AlertTitle>
+            <Box>
+              <AlertTitle>
+                {remaningRequests === 0 ? "Taux de limite atteint" : "Erreurs dans les identifiants !" }
+              </AlertTitle>
+              {remaningRequests === 0 ? (
+                <AlertDescription>
+                  Vous avez atteint le nombre maximum de tentatives, veuillez
+                  réessayer dans 1 minute.
+                </AlertDescription>
+              ) : (
+                <AlertDescription>
+                  Il vous reste {remaningRequests} essai{remaningRequests > 1 && "s"} !
+                </AlertDescription>
+              )}
+            </Box>
           </Alert>
         </Box>
       )}
