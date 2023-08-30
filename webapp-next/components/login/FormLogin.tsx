@@ -77,7 +77,7 @@ export const FormLogin = () => {
     auth<{ username: string; versionCGU: string }>
   );
 
-  const startTimer = (callback?: () => void) => {
+  const startTimer = () => {
     if (intervalRef.current) clearInterval(intervalRef.current);
     setTimer(30);
     intervalRef.current = setInterval(() => {
@@ -86,7 +86,6 @@ export const FormLogin = () => {
           return prevTimer - 1;
         } else {
           clearInterval(intervalRef.current as NodeJS.Timeout);
-          callback && callback();
           return 0;
         }
       });
