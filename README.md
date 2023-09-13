@@ -70,14 +70,16 @@ Il est maintenant possible de se connecter en utilisant l'adresse email et le mo
 
 ## Les variables d'environnement NextJS
 
-| Nom de la variable    | Description                                                             |
-| --------------------- | ----------------------------------------------------------------------- |
-| ELASTIC_HOST          | L'URL du serveur Elasticsearch, ici configuré pour une instance locale. |
-| ELASTIC_PASSWORD      | Le mot de passe à utiliser pour se connecter à Elasticsearch.           |
-| AWS_ACCESS_KEY_ID     | Votre ID de clé d'accès AWS pour AWS SES.                               |
-| AWS_SECRET_ACCESS_KEY | Votre clé d'accès secrète AWS pour AWS SES.                             |
-| AWS_REGION            | La région AWS dans laquelle AWS SES est configuré.                      |
-| EMAIL_SOURCE          | L'adresse e-mail utilisée pour envoyer les e-mails.                     |
+| Nom de la variable  | Description                                                                  |
+| ------------------- | ---------------------------------------------------------------------------- |
+| ELASTIC_HOST        | L'URL du serveur Elasticsearch, ici configuré pour une instance locale.      |
+| ELASTIC_PASSWORD    | Le mot de passe à utiliser pour se connecter à Elasticsearch.                |
+| NODEMAILER_HOST     | Le host domain pour se connecter au SMTP.                                    |
+| NODEMAILER_PORT     | Le port pour se connecter au SMTP.                                           |
+| NODEMAILER_USER     | Identifiant pour l'authentification au SMTP.                                 |
+| NODEMAILER_PASSWORD | Mot de passe pour l'authentification au SMTP.                                |
+| NODEMAILER_FROM     | L'adresse e-mail utilisée pour envoyer les e-mails.                          |
+| NODEMAILER_BASEURL  | L'URL courante de l'application pour construire les liens envoyés par email. |
 
 ## Initialisation de l'environnement ELK
 
@@ -180,39 +182,43 @@ Continous mode
 Date field for continous mode : `@timestamp`
 Delay : `60s`
 
+## Docker production
 
+### Créer les images docker
 
-### Docker production
-
-## Créer les images docker
 ```
 docker build -t cm2d-elasticsearch docker/elasticsearch
 docker build -t cm2d-kibana docker/kibana
 docker build --build-arg NEXT_PUBLIC_ELASTIC_API_KEY_NAME=${NEXT_PUBLIC_ELASTIC_API_KEY_NAME} -t cm2d-webapp webapp-next
 ```
 
-## Créer les réseaux docker
+### Créer les réseaux docker
+
 ```
 docker network create elastic
 docker network create webapp
 ```
 
-## Elasticsearch
+### Elasticsearch
+
 ```
 docker run -d -p 9200:9200 -p 9300:9300 --net elastic -v es_data:/usr/share/elasticsearch/data -v certs:/usr/share/elasticsearch/config/certs -e ELASTIC_PASSWORD=${ELASTIC_PASSWORD} --name elasticsearch cm2d-elasticsearch
 ```
 
-## Attacher le réseau webapp à Elasticsearch
+### Attacher le réseau webapp à Elasticsearch
+
 ```
 docker network connect webapp elasticsearch
 ```
 
-## Kibana
+### Kibana
+
 ```
 docker run -d -p 5601:5601 --net elastic -v kibana_data:/usr/share/kibana/data -v certs:/usr/share/kibana/config/certs -e ELASTICSEARCH_PASSWORD=${KIBANA_PASSWORD} --name kibana cm2d-kibana
 ```
 
-## Webapp
+### Webapp
+
 ```
 docker run -d -p 3000:3000 --net webapp -v certs:/app/certs --env-file ${path_fichier_environnement} --name webapp cm2d-webapp
 ```
