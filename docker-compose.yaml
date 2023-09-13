@@ -38,29 +38,29 @@ services:
     environment:
       - ELASTICSEARCH_PASSWORD=${KIBANA_PASSWORD}
 
-  webapp:
-    build:
-      context: webapp-next
-      args:
-        - NEXT_PUBLIC_ELASTIC_API_KEY_NAME=${NEXT_PUBLIC_ELASTIC_API_KEY_NAME}
-    container_name: webapp
-    depends_on:
-      - elasticsearch
-    ports:
-      - '3000:3000'
-    volumes:
-      - certs:/app/certs
-    networks:
-      - webapp
-    environment:
-      - ELASTIC_HOST=${ELASTIC_HOST}
-      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
-      - NODEMAILER_HOST=${NODEMAILER_HOST}
-      - NODEMAILER_PORT=${NODEMAILER_PORT}
-      - NODEMAILER_USER=${NODEMAILER_USER}
-      - NODEMAILER_PASSWORD=${NODEMAILER_PASSWORD}
-      - NODEMAILER_FROM=${NODEMAILER_FROM}
-      - NODEMAILER_BASEURL=${NODEMAILER_BASEURL}
+  # webapp:
+  #   build:
+  #     context: webapp-next
+  #     args:
+  #       - NEXT_PUBLIC_ELASTIC_API_KEY_NAME=${NEXT_PUBLIC_ELASTIC_API_KEY_NAME}
+  #   container_name: webapp
+  #   depends_on:
+  #     - elasticsearch
+  #   ports:
+  #     - '3000:3000'
+  #   volumes:
+  #     - certs:/app/certs
+  #   networks:
+  #     - webapp
+  #   environment:
+  #     - ELASTIC_HOST=${ELASTIC_HOST}
+  #     - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+  #     - NODEMAILER_HOST=${NODEMAILER_HOST}
+  #     - NODEMAILER_PORT=${NODEMAILER_PORT}
+  #     - NODEMAILER_USER=${NODEMAILER_USER}
+  #     - NODEMAILER_NODEMAILER_PASSWORDPORT=${NODEMAILER_PASSWORD}
+  #     - NODEMAILER_FROM=${NODEMAILER_FROM}
+  #     - NODEMAILER_BASEURL=${NODEMAILER_BASEURL}
 
 volumes:
   certs:
