@@ -1,18 +1,14 @@
-import { generateCode, getCodeEmailHtml, ELASTIC_API_KEY_NAME } from '@/utils/tools';
+import { sendMail } from '@/utils/mailter';
+import {
+  generateCode,
+  getCodeEmailHtml,
+  ELASTIC_API_KEY_NAME
+} from '@/utils/tools';
 import { Client } from '@elastic/elasticsearch';
 import fs from 'fs';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import path from 'path';
 const tmpCodes = require('../../../utils/codes');
-import AWS from 'aws-sdk';
-
-AWS.config.update({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  region: process.env.AWS_REGION
-});
-
-const ses = new AWS.SES({ apiVersion: '2012-10-17' });
 
 export default async function handler(
   req: NextApiRequest,
@@ -28,9 +24,7 @@ export default async function handler(
         password
       },
       tls: {
-        ca: fs.readFileSync(
-          path.resolve(process.cwd(), './certs/ca/ca.crt')
-        ),
+        ca: fs.readFileSync(path.resolve(process.cwd(), './certs/ca/ca.crt')),
         rejectUnauthorized: false
       }
     });
@@ -53,25 +47,12 @@ export default async function handler(
       } else {
         tmpCodes[username] = { code: generateCode(), apiKey: securityToken };
 
-        await ses
-          .sendEmail({
-            Destination: {
-              ToAddresses: [username]
-            },
-            Message: {
-              Body: {
-                Text: {
-                  Data: `Code de vérification : ${tmpCodes[username].code}`
-                },
-                Html: { Data: getCodeEmailHtml(tmpCodes[username].code) }
-              },
-              Subject: {
-                Data: `Votre code d\'authentification`
-              }
-            },
-            Source: process.env.EMAIL_SOURCE as string
-          })
-          .promise();
+        await sendMail(
+          "Votre code d'authentification",
+          username,
+          getCodeEmailHtml(tmpCodes[username].code),
+          `Code de vérification : ${tmpCodes[username].code}`
+        );
 
         res.status(200).send({ response: 'ok' });
       }
