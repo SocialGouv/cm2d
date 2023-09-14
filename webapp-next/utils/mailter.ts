@@ -8,8 +8,7 @@ export async function sendMail(
 ) {
   var transportOptions: any = {
     host: process.env.NODEMAILER_HOST,
-    port: process.env.NODEMAILER_PORT,
-    secure: true
+    port: process.env.NODEMAILER_PORT
   };
 
   if (process.env.NODEMAILER_USER && process.env.NODEMAILER_PASSWORD) {
