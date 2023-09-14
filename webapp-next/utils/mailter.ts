@@ -6,14 +6,20 @@ export async function sendMail(
   html: string,
   text: string
 ) {
-  var transporter = nodemailer.createTransport({
+  var transportOptions: any = {
     host: process.env.NODEMAILER_HOST,
     port: process.env.NODEMAILER_PORT,
-    auth: {
+    secure: true
+  };
+
+  if (process.env.NODEMAILER_USER && process.env.NODEMAILER_PASSWORD) {
+    transportOptions.auth = {
       user: process.env.NODEMAILER_USER,
       pass: process.env.NODEMAILER_PASSWORD
-    }
-  });
+    };
+  }
+
+  var transporter = nodemailer.createTransport(transportOptions);
 
   var mailOptions = {
     from: process.env.NODEMAILER_FROM,
