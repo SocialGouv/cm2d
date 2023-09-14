@@ -147,6 +147,7 @@ export const FormLogin = () => {
         startTimer();
         setShowCodeForm(true);
       } catch (e) {
+        console.log(e);
         setFormError(true);
       }
 

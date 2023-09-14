@@ -16,6 +16,14 @@ Pour démarrer la suite ELK localement :
 docker compose up -d
 ```
 
+Au premier run ELK, lancez cette suite de commande
+
+```
+cd webapp-next
+mkdir -p certs/ca
+docker cp elasticsearch:/usr/share/elasticsearch/config/certs/ca/ca.crt ./certs/ca/ca.crt
+```
+
 Pour initialiser les variables d'environnement NextJS
 
 ```
