@@ -524,5 +524,5 @@ export function removeAccents(str: string) {
   return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 }
 
-export const ELASTIC_API_KEY_NAME = process.env
-  .NEXT_PUBLIC_ELASTIC_API_KEY_NAME as string;
+export const ELASTIC_API_KEY_NAME =
+  (process.env.NEXT_PUBLIC_ELASTIC_API_KEY_NAME as string) || 'cm2d_api_key';
