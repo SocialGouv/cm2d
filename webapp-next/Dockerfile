@@ -45,6 +45,8 @@ WORKDIR /app
 
 ENV NODE_ENV production
 
+COPY package.json yarn.lock ./
+
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
 
