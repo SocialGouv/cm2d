@@ -1,1 +1,20 @@
-{"cm2d_certificate":{"mappings":{"_meta":{"created_by":"file-data-visualizer"},"properties":{"@timestamp":{"type":"date"},"age":{"type":"long"},"categories_level_1":{"type":"keyword"},"categories_level_2":{"type":"keyword"},"coordinates":{"type":"keyword"},"date":{"type":"date","format":"iso8601"},"death_location":{"type":"keyword"},"department":{"type":"long"},"home_location":{"type":"keyword"},"kind":{"type":"keyword"},"sex":{"type":"keyword"}}}}}
+{
+  "cm2d_certificate": {
+    "mappings": {
+      "_meta": { "created_by": "default-index-sample" },
+      "properties": {
+        "@timestamp": { "type": "date" },
+        "age": { "type": "long" },
+        "categories_level_1": { "type": "keyword" },
+        "categories_level_2": { "type": "keyword" },
+        "coordinates": { "type": "keyword" },
+        "date": { "type": "date", "format": "iso8601" },
+        "death_location": { "type": "keyword" },
+        "department": { "type": "long" },
+        "home_location": { "type": "keyword" },
+        "kind": { "type": "keyword" },
+        "sex": { "type": "keyword" }
+      }
+    }
+  }
+}
