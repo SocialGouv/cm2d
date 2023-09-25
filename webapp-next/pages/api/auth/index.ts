@@ -29,10 +29,22 @@ export default async function handler(
       }
     });
 
+    const adminClient = new Client({
+      node: process.env.ELASTIC_HOST,
+      auth: {
+        username: process.env.ELASTIC_USERNAME as string,
+        password: process.env.ELASTIC_PASSWORD as string
+      },
+      tls: {
+        ca: fs.readFileSync(path.resolve(process.cwd(), './certs/ca/ca.crt')),
+        rejectUnauthorized: false
+      }
+    });
+
     try {
       await client.security.authenticate();
 
-      const securityToken = await client.security.grantApiKey({
+      const securityToken = await adminClient.security.grantApiKey({
         grant_type: 'password',
         api_key: {
           name: ELASTIC_API_KEY_NAME,
@@ -57,6 +69,7 @@ export default async function handler(
         res.status(200).send({ response: 'ok' });
       }
     } catch (error: any) {
+      console.log(error);
       if (error.statusCode === 401) {
         res.status(401).end('Unauthorized');
       } else {
