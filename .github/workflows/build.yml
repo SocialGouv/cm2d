@@ -15,7 +15,7 @@ jobs:
       files-changed-kibana: ${{ steps.set-output.outputs.files-changed-kibana }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Get changed files in docker for elasticsearch
         id: check-files-elasticsearch
