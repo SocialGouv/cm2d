@@ -126,7 +126,9 @@ export default function Home() {
     );
 
   const electronicPercentage =
-    ((dataKind.result?.aggregations?.aggregated_x?.buckets[0]?.doc_count || 1) /
+    ((dataKind.result?.aggregations?.aggregated_x?.buckets.find(
+      (_: { doc_count: number; key: string }) => _.key === 'Electronique'
+    )?.doc_count || 1) /
       (dataKind.result?.hits?.total?.value || 1)) *
     100;
   const total = data.result?.hits?.total?.value || 0;

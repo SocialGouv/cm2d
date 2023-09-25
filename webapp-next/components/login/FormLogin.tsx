@@ -313,7 +313,9 @@ export const FormLogin = () => {
             <AlertIcon />
             <Box>
               <AlertTitle>
-                {remaningRequests === 0 ? "Taux de limite atteint" : "Erreurs dans les identifiants !" }
+                {remaningRequests === 0
+                  ? 'Taux de limite atteint'
+                  : 'Erreurs dans les identifiants !'}
               </AlertTitle>
               {remaningRequests === 0 ? (
                 <AlertDescription>
@@ -322,7 +324,8 @@ export const FormLogin = () => {
                 </AlertDescription>
               ) : (
                 <AlertDescription>
-                  Il vous reste {remaningRequests} essai{remaningRequests > 1 && "s"} !
+                  Il vous reste {remaningRequests} essai
+                  {remaningRequests > 1 && 's'} !
                 </AlertDescription>
               )}
             </Box>

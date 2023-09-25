@@ -21,10 +21,12 @@ FROM node:16-alpine3.17 AS builder
 ARG ELASTIC_HOST
 ARG ELASTIC_PASSWORD
 ARG NEXT_PUBLIC_ELASTIC_API_KEY_NAME
-ARG AWS_ACCESS_KEY_ID
-ARG AWS_SECRET_ACCESS_KEY
-ARG AWS_REGION
-ARG EMAIL_SOURCE
+ARG NODEMAILER_HOST
+ARG NODEMAILER_PORT
+ARG NODEMAILER_USER
+ARG NODEMAILER_PASSWORD
+ARG NODEMAILER_FROM
+ARG NODEMAILER_BASEURL
 
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
@@ -43,18 +45,20 @@ WORKDIR /app
 
 ENV NODE_ENV production
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+COPY package.json yarn.lock ./
 
-COPY --from=builder /app/next.config.js ./
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nextjs
+
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/node_modules ./node_modules
 
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+RUN chmod 1777 /tmp
+RUN chmod 1777 /app
 
-USER nextjs
+USER 1001
+
 EXPOSE 3000
 ENV PORT 3000
-
-CMD ["node", "server.js"]
+CMD ["yarn", "start"]

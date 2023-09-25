@@ -22,13 +22,13 @@ services:
       resources:
         limits:
           memory: 4G
-    
+
   kibana:
     build: docker/kibana
     container_name: kibana
     ports:
       - 5601:5601
-    depends_on: 
+    depends_on:
       - elasticsearch
     volumes:
       - kibana_data:/usr/share/kibana/data
@@ -38,27 +38,29 @@ services:
     environment:
       - ELASTICSEARCH_PASSWORD=${KIBANA_PASSWORD}
 
-  webapp:
-    build:
-      context: webapp-next
-      args:
-        - NEXT_PUBLIC_ELASTIC_API_KEY_NAME=${NEXT_PUBLIC_ELASTIC_API_KEY_NAME}
-    container_name: webapp
-    depends_on:
-      - elasticsearch
-    ports:
-      - "3000:3000"
-    volumes:
-      - certs:/app/certs
-    networks:
-      - webapp
-    environment:
-      - ELASTIC_HOST=${ELASTIC_HOST}
-      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
-      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-      - AWS_REGION=${AWS_REGION}
-      - EMAIL_SOURCE=${EMAIL_SOURCE}
+  # webapp:
+  #   build:
+  #     context: webapp-next
+  #     args:
+  #       - NEXT_PUBLIC_ELASTIC_API_KEY_NAME=${NEXT_PUBLIC_ELASTIC_API_KEY_NAME}
+  #   container_name: webapp
+  #   depends_on:
+  #     - elasticsearch
+  #   ports:
+  #     - '3000:3000'
+  #   volumes:
+  #     - certs:/app/certs
+  #   networks:
+  #     - webapp
+  #   environment:
+  #     - ELASTIC_HOST=${ELASTIC_HOST}
+  #     - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+  #     - NODEMAILER_HOST=${NODEMAILER_HOST}
+  #     - NODEMAILER_PORT=${NODEMAILER_PORT}
+  #     - NODEMAILER_USER=${NODEMAILER_USER}
+  #     - NODEMAILER_NODEMAILER_PASSWORDPORT=${NODEMAILER_PASSWORD}
+  #     - NODEMAILER_FROM=${NODEMAILER_FROM}
+  #     - NODEMAILER_BASEURL=${NODEMAILER_BASEURL}
 
 volumes:
   certs:

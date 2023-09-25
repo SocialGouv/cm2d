@@ -1,4 +1,9 @@
-import { generateCode, getCodeEmailHtml, ELASTIC_API_KEY_NAME } from '@/utils/tools';
+import { sendMail } from '@/utils/mailter';
+import {
+  generateCode,
+  getCodeEmailHtml,
+  ELASTIC_API_KEY_NAME
+} from '@/utils/tools';
 import { Client } from '@elastic/elasticsearch';
 import fs from 'fs';
 import type { NextApiRequest, NextApiResponse } from 'next';
@@ -17,8 +22,8 @@ const ses = new AWS.SES({ apiVersion: '2012-10-17' });
 
 const limiter = rateLimit({
   interval: 60 * 1000, // 60 seconds
-  uniqueTokenPerInterval: 50, // Max 50 users per second
-})
+  uniqueTokenPerInterval: 50 // Max 50 users per second
+});
 
 export default async function handler(
   req: NextApiRequest,
@@ -29,7 +34,10 @@ export default async function handler(
 
     const forwarded = req.headers['x-forwarded-for'];
 
-    const userIp = typeof forwarded === 'string' ? forwarded.split(/, /)[0] : req.socket.remoteAddress;
+    const userIp =
+      typeof forwarded === 'string'
+        ? forwarded.split(/, /)[0]
+        : req.socket.remoteAddress;
 
     // Rate limiting to prevent brute force auth
     await limiter.check(res, 5, userIp as string); // 5 requests max per minute
@@ -41,9 +49,19 @@ export default async function handler(
         password
       },
       tls: {
-        ca: fs.readFileSync(
-          path.resolve(process.cwd(), './certs/ca/ca.crt')
-        ),
+        ca: fs.readFileSync(path.resolve(process.cwd(), './certs/ca/ca.crt')),
+        rejectUnauthorized: false
+      }
+    });
+
+    const adminClient = new Client({
+      node: process.env.ELASTIC_HOST,
+      auth: {
+        username: process.env.ELASTIC_USERNAME as string,
+        password: process.env.ELASTIC_PASSWORD as string
+      },
+      tls: {
+        ca: fs.readFileSync(path.resolve(process.cwd(), './certs/ca/ca.crt')),
         rejectUnauthorized: false
       }
     });
@@ -51,7 +69,7 @@ export default async function handler(
     try {
       await client.security.authenticate();
 
-      const securityToken = await client.security.grantApiKey({
+      const securityToken = await adminClient.security.grantApiKey({
         grant_type: 'password',
         api_key: {
           name: ELASTIC_API_KEY_NAME,
@@ -66,36 +84,23 @@ export default async function handler(
       } else {
         tmpCodes[username] = { code: generateCode(), apiKey: securityToken };
 
-        await ses
-          .sendEmail({
-            Destination: {
-              ToAddresses: [username]
-            },
-            Message: {
-              Body: {
-                Text: {
-                  Data: `Code de vérification : ${tmpCodes[username].code}`
-                },
-                Html: { Data: getCodeEmailHtml(tmpCodes[username].code) }
-              },
-              Subject: {
-                Data: `Votre code d\'authentification`
-              }
-            },
-            Source: process.env.EMAIL_SOURCE as string
-          })
-          .promise();
+        await sendMail(
+          "Votre code d'authentification",
+          username,
+          getCodeEmailHtml(tmpCodes[username].code),
+          `Code de vérification : ${tmpCodes[username].code}`
+        );
 
         res.status(200).send({ response: 'ok' });
       }
     } catch (error: any) {
+      console.log(error);
       if (error.statusCode === 401) {
         res.status(401).end();
       } else {
         res.status(500).end();
       }
     }
-
   } else {
     res.setHeader('Allow', 'POST');
     res.status(405).end('Method Not Allowed');
