@@ -31,8 +31,11 @@ export default async function handler(
         : req.socket.remoteAddress;
 
     // Rate limiting to prevent brute force auth
-    await limiter.check(res, 5, userIp as string); // 5 requests max per minute
-
+    try {
+      await limiter.check(res, 5, userIp as string); // 5 requests max per minute
+    } catch (e: any) {
+      return res.status(e.statusCode).end(e.message);
+    }
     const client = new Client({
       node: process.env.ELASTIC_HOST,
       auth: {
@@ -85,7 +88,7 @@ export default async function handler(
         res.status(200).send({ response: 'ok' });
       }
     } catch (error: any) {
-      console.log(error);
+      // console.log(error);
       if (error.statusCode === 401) {
         res.status(401).end();
       } else {
