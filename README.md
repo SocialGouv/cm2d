@@ -64,7 +64,7 @@ Pour créer un nouvel utilisateur, cliquez sur "Create user".
 
 Dans le formulaire de création, utilisez l'adresse email à la fois pour le champ "username" et pour le champ "email". Dans "Full name", indiquez le nom et le prénom de l'utilisateur.
 
-Définissez un mot de passe approprié dans le champ correspondant. Pour le champ "roles", attribuez le rôle "superuser".
+Définissez un mot de passe approprié dans le champ correspondant. Pour le champ "roles", attribuez le rôle "viewer". Si vous souhaitez créer un administrateur elastic, sélectionnez le rôle "superuser".
 
 Il est maintenant possible de se connecter en utilisant l'adresse email et le mot de passe que vous avez définis précédemment.
 
