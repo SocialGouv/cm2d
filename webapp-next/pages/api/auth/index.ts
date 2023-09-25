@@ -8,7 +8,13 @@ import { Client } from '@elastic/elasticsearch';
 import fs from 'fs';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import path from 'path';
+import rateLimit from '@/utils/rate-limit';
 const tmpCodes = require('../../../utils/codes');
+
+const limiter = rateLimit({
+  interval: 60 * 1000, // 60 seconds
+  uniqueTokenPerInterval: 50 // Max 50 users per second
+});
 
 export default async function handler(
   req: NextApiRequest,
@@ -17,6 +23,19 @@ export default async function handler(
   if (req.method === 'POST') {
     const { username, password } = req.body;
 
+    const forwarded = req.headers['x-forwarded-for'];
+
+    const userIp =
+      typeof forwarded === 'string'
+        ? forwarded.split(/, /)[0]
+        : req.socket.remoteAddress;
+
+    // Rate limiting to prevent brute force auth
+    try {
+      await limiter.check(res, 5, userIp as string); // 5 requests max per minute
+    } catch (e: any) {
+      return res.status(e.statusCode).end(e.message);
+    }
     const client = new Client({
       node: process.env.ELASTIC_HOST,
       auth: {
@@ -69,11 +88,11 @@ export default async function handler(
         res.status(200).send({ response: 'ok' });
       }
     } catch (error: any) {
-      console.log(error);
+      // console.log(error);
       if (error.statusCode === 401) {
-        res.status(401).end('Unauthorized');
+        res.status(401).end();
       } else {
-        console.log(error);
+        res.status(500).end();
       }
     }
   } else {
