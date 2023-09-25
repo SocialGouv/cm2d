@@ -8,17 +8,8 @@ import { Client } from '@elastic/elasticsearch';
 import fs from 'fs';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import path from 'path';
-const tmpCodes = require('../../../utils/codes');
-import AWS from 'aws-sdk';
 import rateLimit from '@/utils/rate-limit';
-
-AWS.config.update({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  region: process.env.AWS_REGION
-});
-
-const ses = new AWS.SES({ apiVersion: '2012-10-17' });
+const tmpCodes = require('../../../utils/codes');
 
 const limiter = rateLimit({
   interval: 60 * 1000, // 60 seconds

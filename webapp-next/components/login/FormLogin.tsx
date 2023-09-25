@@ -118,10 +118,10 @@ export const FormLogin = () => {
     if (code) {
       setIsLoading(true);
 
-      const res = await triggerVerify({
+      const res = (await triggerVerify({
         username: username,
         code: code.toString()
-      });
+      })) as any;
 
       if (res.ok) {
         const result = await res.json();
@@ -145,7 +145,7 @@ export const FormLogin = () => {
     setFormError(false);
     if (username !== '' && password !== '') {
       setIsLoading(true);
-      const res = await triggerLogin({ username, password });
+      const res = (await triggerLogin({ username, password })) as any;
       if (res.ok) {
         const result = await res.json();
         if (process.env.NODE_ENV === 'development') {
