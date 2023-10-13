@@ -105,9 +105,14 @@ export const FormLogin = () => {
   };
 
   const handleModalTermsAccept = async () => {
-    if (cm2dApiKeyEncoded) {
-      cookie.set(ELASTIC_API_KEY_NAME, cm2dApiKeyEncoded);
+    if (code) {
       await triggerCreateUser({ username, versionCGU: '1' });
+      const res = (await triggerVerify({
+        username: username,
+        code: code.toString()
+      })) as any;
+      const result = await res.json();
+      cookie.set(ELASTIC_API_KEY_NAME, result.apiKey.encoded);
       onCloseTerms();
       router.push('/bo');
     }
@@ -126,7 +131,6 @@ export const FormLogin = () => {
       if (res.ok) {
         const result = await res.json();
         if (result.firstLogin) {
-          setCm2dApiKeyEncoded(result.apiKey.encoded);
           onOpenTerms();
         } else {
           cookie.set(ELASTIC_API_KEY_NAME, result.apiKey.encoded);

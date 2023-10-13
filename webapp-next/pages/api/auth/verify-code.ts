@@ -11,7 +11,6 @@ export default async function handler(
   if (req.method === 'POST') {
     const codeObj = tmpCodes[req.body.username];
     if (codeObj && codeObj.code === req.body.code.toString()) {
-
       let firstLogin = false;
 
       const client = new Client({
@@ -20,23 +19,29 @@ export default async function handler(
           apiKey: codeObj.apiKey.encoded
         },
         tls: {
-          ca: fs.readFileSync(
-            path.resolve(process.cwd(), './certs/ca/ca.crt')
-          ),
+          ca: fs.readFileSync(path.resolve(process.cwd(), './certs/ca/ca.crt')),
           rejectUnauthorized: false
         }
       });
 
       try {
         await client.get({
-          index: "cm2d_users",
+          index: 'cm2d_users',
           id: req.body.username
-        })
+        });
       } catch (e) {
         firstLogin = true;
       }
 
-      res.status(200).json({ apiKey: codeObj.apiKey, firstLogin });
+      res
+        .status(200)
+        .json({
+          apiKey:
+            firstLogin && process.env.NODE_ENV !== 'development'
+              ? undefined
+              : codeObj.apiKey,
+          firstLogin
+        });
     } else {
       res.status(401).end('Unauthorized');
     }

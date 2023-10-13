@@ -9,31 +9,29 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method === 'POST') {
-
-    const client = new Client({
+    const adminClient = new Client({
       node: process.env.ELASTIC_HOST,
       auth: {
-        apiKey: req.cookies[ELASTIC_API_KEY_NAME] as string
+        username: process.env.ELASTIC_USERNAME as string,
+        password: process.env.ELASTIC_PASSWORD as string
       },
       tls: {
-        ca: fs.readFileSync(
-          path.resolve(process.cwd(), './certs/ca/ca.crt')
-        ),
+        ca: fs.readFileSync(path.resolve(process.cwd(), './certs/ca/ca.crt')),
         rejectUnauthorized: false
       }
     });
 
     try {
-      await client.create({
-        index: "cm2d_users",
+      await adminClient.create({
+        index: 'cm2d_users',
         id: req.body.username,
         document: {
           username: req.body.username,
-          versionCGU: req.body.versionCGU,
+          versionCGU: req.body.versionCGU
         }
-      })
+      });
 
-      res.status(200).json("OK");
+      res.status(200).json('OK');
     } catch (error) {
       res.status(401).end('Unauthorized');
     }
