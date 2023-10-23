@@ -1,5 +1,7 @@
 # Causes médicales de décès
 
+![CI Workflow](https://github.com/SocialGouv/cm2d/actions/workflows/build.yml/badge.svg)
+
 L'application qui permet aux agents des ARS d’évaluer et d’orienter leurs actions en facilitant l’accès et l’interprétation des données de mortalité.
 
 ## Démarrage de l'application
