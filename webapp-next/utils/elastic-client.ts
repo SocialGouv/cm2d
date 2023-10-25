@@ -1,7 +1,6 @@
 import { Client } from '@elastic/elasticsearch';
 
 const host: string = process.env.ELASTIC_HOST || '';
-console.log(host);
 
 const connector = (): Client => {
   return new Client({

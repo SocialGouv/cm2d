@@ -70,8 +70,6 @@ export function FiltersShortcut() {
     );
   };
 
-  console.log(Object.keys(filters));
-
   return (
     <Flex py={4} alignItems="center" flexWrap={'wrap'}>
       {(Object.keys(filters) as Array<keyof Filters>)
