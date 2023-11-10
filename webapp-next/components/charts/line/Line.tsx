@@ -80,7 +80,12 @@ export const ChartLine = (props: Props) => {
 
   const min = new Date(filters.start_date);
   const max = new Date(filters.end_date);
-  const xValues = datasets[0].hits.map((item: any) => {
+
+  const datasetWithMostHits = datasets.reduce((prev, current) => {
+    return prev.hits.length > current.hits.length ? prev : current;
+  }, datasets[0]);
+
+  const xValues = datasetWithMostHits.hits.map((item: any) => {
     const currentDate = new Date(item.key_as_string);
 
     if (currentDate.getTime() < min.getTime()) return dateToWeekYear(min);
