@@ -46,6 +46,9 @@ export function FilterDates() {
         setStartDate(start);
         setEndDate(end);
       }}
+      onKeyDown={e => {
+        e.preventDefault();
+      }}
       className={startDate && endDate ? 'has-value' : ''}
       wrapperClassName={startDate && endDate ? 'has-value' : ''}
       startDate={startDate}
