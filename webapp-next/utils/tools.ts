@@ -1,6 +1,6 @@
-import { Filters, SearchCategory, View } from './cm2d-provider';
 import { format } from 'date-fns';
 import moment from 'moment';
+import { Filters, SearchCategory, View } from './cm2d-provider';
 
 export const viewRefs: { label: string; value: View }[] = [
   { label: 'Vue courbe', value: 'line' },
@@ -357,10 +357,23 @@ export function dateToMonthYear(date: Date): string {
   return formattedDate;
 }
 
-export function dateToWeekYear(date: Date): string {
-  const weekNumber: string = format(date, 'w');
-  const year: string = format(date, 'yyyy');
-  return `S${weekNumber} ${year}`;
+function getWeekNumber(date: Date): number {
+  const startOfYear = new Date(date.getFullYear(), 0, 1);
+  const millisecondsPerDay = 24 * 60 * 60 * 1000;
+  const dayOfYear = Math.floor(
+    (date.getTime() - startOfYear.getTime()) / millisecondsPerDay
+  );
+  const weekNumber = Math.ceil((dayOfYear + startOfYear.getDay() + 1) / 7);
+
+  return weekNumber;
+}
+
+export function dateToWeekYear(inputDate: Date): string {
+  const year = inputDate.getFullYear();
+  const weekNumber = getWeekNumber(inputDate);
+  const formattedString = `S${weekNumber.toString().padStart(2, '0')} ${year}`;
+
+  return formattedString;
 }
 
 export function getLastDayOfMonth(date: Date): Date {

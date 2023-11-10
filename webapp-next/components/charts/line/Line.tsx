@@ -24,7 +24,7 @@ export const ChartLine = (props: Props) => {
     throw new Error('Menu must be used within a Cm2dProvider');
   }
 
-  const { saveAggregateX } = context;
+  const { filters, saveAggregateX } = context;
 
   const [displayDatasets, setDisplayDatasets] = useState<any[]>([]);
 
@@ -75,9 +75,22 @@ export const ChartLine = (props: Props) => {
       );
   }, [datasets]);
 
-  if (!datasets.length) return <></>;
+  if (!datasets.length || !filters.start_date || !filters.end_date)
+    return <></>;
 
-  const xValues = datasets[0].hits.map((item: any) => {
+  const min = new Date(filters.start_date);
+  const max = new Date(filters.end_date);
+
+  const datasetWithMostHits = datasets.reduce((prev, current) => {
+    return prev.hits.length > current.hits.length ? prev : current;
+  }, datasets[0]);
+
+  const xValues = datasetWithMostHits.hits.map((item: any) => {
+    const currentDate = new Date(item.key_as_string);
+
+    if (currentDate.getTime() < min.getTime()) return dateToWeekYear(min);
+    if (currentDate.getTime() > max.getTime()) return dateToWeekYear(max);
+
     return dateToWeekYear(new Date(item.key_as_string));
   });
 
