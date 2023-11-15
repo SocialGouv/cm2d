@@ -179,6 +179,7 @@ export default function Home() {
           maxH={
             ['line', 'histogram', 'doughnut'].includes(view) ? '30rem' : 'auto'
           }
+          position="relative"
         >
           <Text
             as="h2"

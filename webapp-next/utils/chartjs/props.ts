@@ -1,4 +1,4 @@
-import { ChartOptions } from 'chart.js';
+import { Chart, ChartData, ChartOptions, LegendItem } from 'chart.js';
 import { legendSpacingPlugin, verticalLegendPlugin } from './utils';
 
 export const lineProps: { options: ChartOptions<'line'>; plugins: any[] } = {
@@ -100,14 +100,44 @@ export const doughnutProps: {
   options: {
     responsive: true,
     maintainAspectRatio: false,
+    layout: {
+      padding: {
+        bottom: 36,
+        top: 20
+      }
+    },
     plugins: {
       filler: {
         propagate: false
       },
       legend: {
-        position: 'top',
+        position: 'right',
         align: 'end',
         labels: {
+          generateLabels: function (chart: Chart) {
+            const data = chart.data as ChartData<'doughnut'>;
+            if (data.labels && data.datasets) {
+              return data.labels.map((label, i) => {
+                const dataset = data.datasets[0];
+                const value = dataset?.data[i] || '';
+                const backgroundColor =
+                  dataset?.backgroundColor || ''
+                    ? Array.isArray(dataset.backgroundColor)
+                      ? dataset.backgroundColor[i]
+                      : dataset.backgroundColor
+                    : 'grey';
+                return {
+                  text: `${label} : ${value}`,
+                  fillStyle: backgroundColor,
+                  strokeStyle: backgroundColor,
+                  lineWidth: 1,
+                  hidden: !chart.getDataVisibility(i),
+                  index: i
+                };
+              });
+            }
+            return [];
+          },
           font: {
             size: 14
           },
@@ -117,7 +147,7 @@ export const doughnutProps: {
         }
       }
     },
-    cutout: 140
+    cutout: 160
   },
   plugins: [legendSpacingPlugin]
 };

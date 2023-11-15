@@ -86,7 +86,7 @@ export default function MapIframe(props: Props) {
           }}
         />
         {mapConfig && (
-          <Flex w="30%" maxH="400px" overflowY="auto">
+          <Flex w="30%" maxH="400px" overflowY="auto" mb={20}>
             <MapDetails mapConfig={mapConfig} />
           </Flex>
         )}
