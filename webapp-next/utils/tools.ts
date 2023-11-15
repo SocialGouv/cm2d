@@ -474,6 +474,16 @@ export function generateCode(): string {
   return code.toString();
 }
 
+export function getFirstIntFromString(input: string): number | null {
+  const match = input.match(/\d+/);
+
+  if (match) {
+    return parseInt(match[0], 10);
+  }
+
+  return null;
+}
+
 export function getCodeEmailHtml(code: string) {
   return `
 		<!DOCTYPE html>

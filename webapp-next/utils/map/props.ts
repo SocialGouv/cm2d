@@ -1,12 +1,16 @@
 import { orders, sortByOrder } from '../orders';
 import { capitalizeString, getLabelFromKey, hexToRGB, isNC } from '../tools';
+import { MapConfig } from './type';
 
 export const getMapProps = (
   id: string,
   datasets: { hits: any[]; total?: number }[],
   saveAggregateX?: string
-) => {
-  if (!datasets[0]) return '';
+): {
+  config?: MapConfig;
+  injectJs: string;
+} => {
+  if (!datasets[0]) return { injectJs: '' };
 
   const { hits, total } = datasets[0];
 
@@ -113,10 +117,10 @@ export const getMapProps = (
     return `Nombre de décès : ${getCountFromKey(key)}`;
   };
 
-  const config = {
+  const config: MapConfig = {
     main_settings: {
       //General settings
-      width: 700,
+      width: 600,
       background_color: '#FFFFFF',
       background_transparent: 'yes',
       border_color: '#246CF9',
@@ -254,5 +258,8 @@ export const getMapProps = (
     }
   };
 
-  return `var simplemaps_countrymap_mapdata=${JSON.stringify(config)}`;
+  return {
+    config: config,
+    injectJs: `var simplemaps_countrymap_mapdata=${JSON.stringify(config)}`
+  };
 };

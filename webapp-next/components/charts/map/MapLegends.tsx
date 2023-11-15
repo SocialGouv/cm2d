@@ -1,6 +1,6 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
 
-export function Legends() {
+export function MapLegends() {
   const legends = [
     {
       color: '#c9e7c8',
