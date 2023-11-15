@@ -384,22 +384,33 @@ export function getLastDayOfMonth(date: Date): Date {
   return lastDay;
 }
 
-const availableColors: string[] = [
-  '#91B6FC',
-  '#A0AEC0',
-  '#F56565',
-  '#FF943C',
-  '#ECC94B',
-  '#48BB78',
-  '#38B2AC',
-  '#4299E1',
-  '#0BC5EA',
-  '#9F7AEA',
-  '#ED64A6'
+const availableColors = [
+  '#e41a1c', // Bright red
+  '#377eb8', // Vivid blue
+  '#4daf4a', // Strong green
+  '#984ea3', // Deep purple
+  '#ff7f00', // Bright orange
+  '#000000', // Neon yellow
+  '#a65628', // Dark tan
+  '#999999', // Dark gray
+  '#7fc97f', // Faded green
+  '#beaed4', // Soft purple
+  '#fdc086', // Peach
+  '#fb9a99', // Soft red
+  '#e31a1c', // Another shade of red
+  '#fdbf6f', // Light orange
+  '#cab2d6', // Lilac
+  '#1b9e77', // Jade green
+  '#d95f02', // Dark orange
+  '#6a3d9a', // Plum
+  '#33a02c', // Dark green
+  '#b15928' // Sienna
 ];
-export function getRandomColor(): string {
-  const randomIndex = Math.floor(Math.random() * availableColors.length);
-  return availableColors[randomIndex];
+export function getRandomColor(index?: number): string {
+  let sIndex = index;
+  if (sIndex === undefined || sIndex >= availableColors.length)
+    sIndex = Math.floor(Math.random() * availableColors.length);
+  return availableColors[sIndex];
 }
 
 export function isStringContainingDate(str: string): boolean {

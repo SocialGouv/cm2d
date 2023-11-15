@@ -34,7 +34,6 @@ export const ChartLine = (props: Props) => {
         datasets
           .map(ds => {
             const yValues = ds.hits.map((item: any) => item.doc_count);
-            const hasMultipleDatasets = datasets.length > 1;
             let label = 'nombre de décès';
 
             if (ds.label) {
@@ -45,20 +44,7 @@ export const ChartLine = (props: Props) => {
               label: capitalizeString(label),
               data: yValues,
               fill: true,
-              borderColor: hasMultipleDatasets ? getRandomColor() : '#002395',
               borderWidth: 2,
-              backgroundColor: hasMultipleDatasets
-                ? () => {
-                    return 'transparent';
-                  }
-                : (context: ScriptableContext<'line'>) => {
-                    const ctx = context.chart.ctx;
-                    const gradient = ctx.createLinearGradient(0, 500, 0, 0);
-                    gradient.addColorStop(0, '#FFFFFF');
-                    gradient.addColorStop(0.5, '#EBF1FE');
-                    gradient.addColorStop(1, '#D4E2FE');
-                    return gradient;
-                  },
               tension: 0.5
             };
           })
@@ -72,6 +58,28 @@ export const ChartLine = (props: Props) => {
               ]
             )
           )
+          .map((ds, index) => {
+            const hasMultipleDatasets = datasets.length > 1;
+
+            return {
+              ...ds,
+              borderColor: hasMultipleDatasets
+                ? getRandomColor(index)
+                : '#002395',
+              backgroundColor: hasMultipleDatasets
+                ? () => {
+                    return 'transparent';
+                  }
+                : (context: ScriptableContext<'line'>) => {
+                    const ctx = context.chart.ctx;
+                    const gradient = ctx.createLinearGradient(0, 500, 0, 0);
+                    gradient.addColorStop(0, '#FFFFFF');
+                    gradient.addColorStop(0.5, '#EBF1FE');
+                    gradient.addColorStop(1, '#D4E2FE');
+                    return gradient;
+                  }
+            };
+          })
       );
   }, [datasets]);
 
