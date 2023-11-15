@@ -1,5 +1,5 @@
 import { orders, sortByOrder } from '../orders';
-import { capitalizeString, getLabelFromKey, isNC } from '../tools';
+import { capitalizeString, getLabelFromKey, hexToRGB, isNC } from '../tools';
 
 export const getMapProps = (
   id: string,
@@ -33,11 +33,26 @@ export const getMapProps = (
   }
 
   const stateColors = {
-    GREEN: { initial: '#C6F6D5', hover: '#68D391' },
-    BLUE: { initial: '#E9F1FF', hover: '#A7C4FD' },
-    ORANGE: { initial: '#FEEBCB', hover: '#F8AB4E' },
-    RED: { initial: '#FED7D7', hover: '#FC8181' },
-    NEUTRAL: { initial: '#EDF2F7', hover: '#CBD5E0' }
+    GREEN: {
+      initial: '#c9e7c8',
+      hover: '#4daf4a'
+    },
+    BLUE: {
+      initial: '#c3d8e9',
+      hover: '#377eb8'
+    },
+    ORANGE: {
+      initial: '#ffd8b2',
+      hover: '#ff7f00'
+    },
+    RED: {
+      initial: '#f6baba',
+      hover: '#e41a1c'
+    },
+    NEUTRAL: {
+      initial: '#e0e0e0',
+      hover: '#999999'
+    }
   };
 
   const getCountFromKey = (key: number): number => {
