@@ -1,12 +1,16 @@
 import { orders, sortByOrder } from '../orders';
-import { capitalizeString, getLabelFromKey, isNC } from '../tools';
+import { capitalizeString, getLabelFromKey, hexToRGB, isNC } from '../tools';
+import { MapConfig } from './type';
 
 export const getMapProps = (
   id: string,
   datasets: { hits: any[]; total?: number }[],
   saveAggregateX?: string
-) => {
-  if (!datasets[0]) return '';
+): {
+  config?: MapConfig;
+  injectJs: string;
+} => {
+  if (!datasets[0]) return { injectJs: '' };
 
   const { hits, total } = datasets[0];
 
@@ -33,11 +37,26 @@ export const getMapProps = (
   }
 
   const stateColors = {
-    GREEN: { initial: '#C6F6D5', hover: '#68D391' },
-    BLUE: { initial: '#E9F1FF', hover: '#A7C4FD' },
-    ORANGE: { initial: '#FEEBCB', hover: '#F8AB4E' },
-    RED: { initial: '#FED7D7', hover: '#FC8181' },
-    NEUTRAL: { initial: '#EDF2F7', hover: '#CBD5E0' }
+    GREEN: {
+      initial: '#c9e7c8',
+      hover: '#4daf4a'
+    },
+    BLUE: {
+      initial: '#c3d8e9',
+      hover: '#377eb8'
+    },
+    ORANGE: {
+      initial: '#ffd8b2',
+      hover: '#ff7f00'
+    },
+    RED: {
+      initial: '#f6baba',
+      hover: '#e41a1c'
+    },
+    NEUTRAL: {
+      initial: '#e0e0e0',
+      hover: '#999999'
+    }
   };
 
   const getCountFromKey = (key: number): number => {
@@ -98,10 +117,10 @@ export const getMapProps = (
     return `Nombre de décès : ${getCountFromKey(key)}`;
   };
 
-  const config = {
+  const config: MapConfig = {
     main_settings: {
       //General settings
-      width: 700,
+      width: 600,
       background_color: '#FFFFFF',
       background_transparent: 'yes',
       border_color: '#246CF9',
@@ -239,5 +258,8 @@ export const getMapProps = (
     }
   };
 
-  return `var simplemaps_countrymap_mapdata=${JSON.stringify(config)}`;
+  return {
+    config: config,
+    injectJs: `var simplemaps_countrymap_mapdata=${JSON.stringify(config)}`
+  };
 };

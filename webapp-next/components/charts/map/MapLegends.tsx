@@ -1,25 +1,25 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
 
-export function Legends() {
+export function MapLegends() {
   const legends = [
     {
-      color: 'green.100',
-      borderColor: 'green.300',
+      color: '#c9e7c8',
+      borderColor: '#4daf4a',
       content: '0-10%'
     },
     {
-      color: 'blue.100',
-      borderColor: 'blue.300',
+      color: '#c3d8e9',
+      borderColor: '#377eb8',
       content: '10-20%'
     },
     {
-      color: 'orange.100',
-      borderColor: 'orange.300',
+      color: '#ffd8b2',
+      borderColor: '#ff7f00',
       content: '20-30%'
     },
     {
-      color: 'red.100',
-      borderColor: 'red.300',
+      color: '#f6baba',
+      borderColor: '#e41a1c',
       content: '30%+'
     }
   ];

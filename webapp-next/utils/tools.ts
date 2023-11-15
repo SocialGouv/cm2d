@@ -384,7 +384,7 @@ export function getLastDayOfMonth(date: Date): Date {
   return lastDay;
 }
 
-const availableColors = [
+export const chartsAvailableColors = [
   '#e41a1c', // Bright red
   '#377eb8', // Vivid blue
   '#4daf4a', // Strong green
@@ -408,9 +408,16 @@ const availableColors = [
 ];
 export function getRandomColor(index?: number): string {
   let sIndex = index;
-  if (sIndex === undefined || sIndex >= availableColors.length)
-    sIndex = Math.floor(Math.random() * availableColors.length);
-  return availableColors[sIndex];
+  if (sIndex === undefined || sIndex >= chartsAvailableColors.length)
+    sIndex = Math.floor(Math.random() * chartsAvailableColors.length);
+  return chartsAvailableColors[sIndex];
+}
+
+export function hexToRGB(hex: string): string {
+  let r = parseInt(hex.slice(1, 3), 16);
+  let g = parseInt(hex.slice(3, 5), 16);
+  let b = parseInt(hex.slice(5, 7), 16);
+  return `${r}, ${g}, ${b}`;
 }
 
 export function isStringContainingDate(str: string): boolean {
@@ -465,6 +472,16 @@ export function generateCode(): string {
   const code = Math.floor(100000 + Math.random() * 900000);
 
   return code.toString();
+}
+
+export function getFirstIntFromString(input: string): number | null {
+  const match = input.match(/\d+/);
+
+  if (match) {
+    return parseInt(match[0], 10);
+  }
+
+  return null;
 }
 
 export function getCodeEmailHtml(code: string) {

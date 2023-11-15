@@ -1,7 +1,12 @@
 import { doughnutProps } from '@/utils/chartjs/props';
 import { Cm2dContext } from '@/utils/cm2d-provider';
 import { orders, sortByOrder } from '@/utils/orders';
-import { capitalizeString, getLabelFromKey } from '@/utils/tools';
+import {
+  capitalizeString,
+  chartsAvailableColors,
+  getLabelFromKey
+} from '@/utils/tools';
+import { Box, Flex } from '@chakra-ui/react';
 import { useContext, useEffect, useState } from 'react';
 import { Doughnut } from 'react-chartjs-2';
 
@@ -45,11 +50,17 @@ export const ChartDoughnut = (props: Props) => {
             label = getLabelFromKey(ds.label.toString());
           }
 
+          const colors = yValues.map(
+            (_, index) =>
+              chartsAvailableColors[index % chartsAvailableColors.length]
+          );
+
           return {
             label: capitalizeString(label),
             data: yValues,
             fill: true,
-            borderRadius: 10
+            borderRadius: 10,
+            backgroundColor: colors
           };
         })
       );

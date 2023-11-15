@@ -1,8 +1,10 @@
-import { getMapProps } from '@/utils/map/props';
-import { Flex } from '@chakra-ui/react';
-import React, { useContext } from 'react';
-import { Legends } from './Legends';
 import { Cm2dContext } from '@/utils/cm2d-provider';
+import { getMapProps } from '@/utils/map/props';
+import { MapConfig } from '@/utils/map/type';
+import { Flex } from '@chakra-ui/react';
+import React, { useContext, useState } from 'react';
+import { MapDetails } from './MapDetails';
+import { MapLegends } from './MapLegends';
 
 type Props = {
   id: string;
@@ -12,6 +14,7 @@ type Props = {
 export default function MapIframe(props: Props) {
   const iframeRef = React.useRef(null);
   const { datasets, id } = props;
+  const [mapConfig, setMapConfig] = useState<MapConfig | null>(null);
   const context = useContext(Cm2dContext);
 
   if (!context) {
@@ -25,6 +28,7 @@ export default function MapIframe(props: Props) {
 
     if (iframe) {
       const doc = (iframe as any).contentWindow.document;
+      const mapProps = getMapProps(id, datasets, saveAggregateX);
       doc.open();
       doc.write(`
       <html>
@@ -35,13 +39,13 @@ export default function MapIframe(props: Props) {
 						}, true);
 					</script>
 					<script type="text/javascript">
-						${getMapProps(id, datasets, saveAggregateX)}
+						${mapProps.injectJs}
 					</script>
 					<script type="text/javascript" src="libs/countrymap/countrymap.js"></script>
 					<style>
 						#${id}_access {
 							display: none !important;
-						}
+						}setMapConfig
 					</style>
         </head>
         <body style="display: flex; justify-content: center;">
@@ -50,6 +54,8 @@ export default function MapIframe(props: Props) {
       </html>
     `);
       doc.close();
+
+      if (mapProps.config) setMapConfig(mapProps.config);
     }
   };
 
@@ -65,19 +71,26 @@ export default function MapIframe(props: Props) {
   return (
     <Flex flexDir="column">
       <Flex justifyContent="end">
-        <Legends />
+        <MapLegends />
       </Flex>
-      <iframe
-        title="Map"
-        ref={iframeRef}
-        width={'100%'}
-        height="700px"
-        loading="lazy"
-        onClick={e => {
-          e.preventDefault();
-          e.stopPropagation();
-        }}
-      />
+      <Flex alignItems="center">
+        <iframe
+          title="Map"
+          ref={iframeRef}
+          width={'65%'}
+          height="700px"
+          loading="lazy"
+          onClick={e => {
+            e.preventDefault();
+            e.stopPropagation();
+          }}
+        />
+        {mapConfig && (
+          <Flex w="30%" maxH="400px" overflowY="auto" mb={20}>
+            <MapDetails mapConfig={mapConfig} />
+          </Flex>
+        )}
+      </Flex>
     </Flex>
   );
 }
