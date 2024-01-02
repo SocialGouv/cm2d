@@ -19,13 +19,13 @@ jobs:
 
       - name: Get changed files in docker for elasticsearch
         id: check-files-elasticsearch
-        uses: tj-actions/changed-files@v37
+        uses: tj-actions/changed-files@v41
         with:
           files: docker/elasticsearch
       
       - name: Get changed files in docker for kibana
         id: check-files-kibana
-        uses: tj-actions/changed-files@v37
+        uses: tj-actions/changed-files@v41
         with:
           files: docker/kibana
       
