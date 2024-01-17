@@ -4,8 +4,9 @@ import {
   Link,
   ListItem,
   Text,
-  UnorderedList
-} from '@chakra-ui/react';
+  UnorderedList,
+} from "@chakra-ui/react";
+import NextLink from "next/link";
 
 export default function About() {
   return (
@@ -13,7 +14,7 @@ export default function About() {
       <Heading as="h1" mb={8}>
         À propos
       </Heading>
-      <Heading size={'md'} mb={4}>
+      <Heading size={"md"} mb={4}>
         Présentation
       </Heading>
       <Text>
@@ -49,20 +50,35 @@ export default function About() {
       <Text mt={4}>Ce que nous ne faisons pas :</Text>
       <UnorderedList mt={2} spacing={2}>
         <ListItem>
-          Coder les certificats de décès : il s&apos;agit de la mission du
-          CépiDc. Celui-ci code tous les certificats et extrait la cause
-          initiale de décès en suivant les règles de l&apos;OMS pour garantir
-          une comparabilité internationale et temporelle.
+          Coder les certificats de décès : il s&apos;agit de la mission du{" "}
+          <Link
+            as={NextLink}
+            color="blue"
+            href="https://www.cepidc.inserm.fr/"
+            target="_blank"
+          >
+            CépiDc
+          </Link>
+          . Celui-ci code tous les certificats et extrait la cause initiale de
+          décès en suivant les règles de l&apos;OMS pour garantir une
+          comparabilité internationale et temporelle.
         </ListItem>
         <ListItem>
           De l&apos;épidémiologie à l&apos;échelle nationale : il s&apos;agit de
-          la mission de [Santé publique
-          France](https://www.santepubliquefrance.fr/), en recherchant par
-          exemple des facteurs de risques de pathologies.
+          la mission de{" "}
+          <Link
+            as={NextLink}
+            color="blue"
+            href="https://www.santepubliquefrance.fr/"
+            target="_blank"
+          >
+            Santé publique France
+          </Link>
+          , en recherchant par exemple des facteurs de risques de pathologies.
         </ListItem>
       </UnorderedList>
 
-      <Heading size={'md'} mt={8} mb={4}>
+      <Heading size={"md"} mt={8} mb={4}>
         L&apos;application CM2D
       </Heading>
       <Text>
@@ -85,19 +101,19 @@ export default function About() {
         à des algorithmes intelligents
       </Text>
       <Text mt={2}>
-        <Text as="b">Le code source de l’application est disponible sur </Text>{' '}
-        :{' '}
+        <Text as="b">Le code source de l’application est disponible sur </Text>{" "}
+        :{" "}
         <Link href="https://github.com/SocialGouv/cm2d" target="_blank">
           https://github.com/SocialGouv/cm2d
-        </Link>{' '}
+        </Link>{" "}
         (Licence MIT). L’application front-end mobilise le framework NextJS,
         langage typescript.
       </Text>
 
-      <Heading size={'md'} mt={8} mb={4}>
+      <Heading size={"md"} mt={8} mb={4}>
         Les données
       </Heading>
-      <Text fontWeight={'bold'}>
+      <Text fontWeight={"bold"}>
         Qualité des données et limites des analyses
       </Text>
       <Text mt={2}>
@@ -127,7 +143,7 @@ export default function About() {
         résultats de recherche. Des contrôles qualité sont donc également
         nécessaires sur ce type d’algorithmes.
       </Text>
-      <Text fontWeight={'bold'} mt={4}>
+      <Text fontWeight={"bold"} mt={4}>
         Temporalité
       </Text>
       <Text mt={2}>
@@ -146,8 +162,17 @@ export default function About() {
       <UnorderedList mt={2} spacing={2}>
         <ListItem>
           Le circuit électronique : lorsque le médecin certifie le décès dans
-          l&apos;application CertDc, le volet médical du certificat est envoyé
-          en quelques minutes à l&apos;Inserm-CépiDc
+          l&apos;application{" "}
+          <Link
+            as={NextLink}
+            color="blue"
+            href="https://certdc.inserm.fr/auth/realms/certdc/protocol/openid-connect/auth?response_type=code&client_id=certdc&scope=openid profile email&state=JbFSjE_q2QFvLBJlf4RE-hxpRm0IST7clPZz0ILxg8g%3D&redirect_uri=https://certdc.inserm.fr/certdc-front/login/oauth2/code/certdc&nonce=d4cMnHfpFZhmvQ645C-1DtaT9N-3b9YUBzP3RXuNq5Q"
+            target="_blank"
+          >
+            CertDc
+          </Link>
+          , le volet médical du certificat est envoyé en quelques minutes à
+          l&apos;Inserm-CépiDc
         </ListItem>
         <ListItem>
           Le circuit papier : lorsque le médecin utilise un certificat papier,
@@ -161,19 +186,19 @@ export default function About() {
       <Text mt={4}>
         Aujourd’hui, 60% des décès sont encore certifiés par voie papier.
       </Text>
-      <Text fontWeight={'bold'} mt={4}>
+      <Text fontWeight={"bold"} mt={4}>
         Stockage
       </Text>
       <Text mt={2}>
         Les données sont hébergées sur les serveurs Claranet certifié hébergeur
         de données de santé.
       </Text>
-      <Heading size={'md'} mt={8} mb={4}>
+      <Heading size={"md"} mt={8} mb={4}>
         Contact
       </Heading>
       <Text>
         Si vous avez des questions ou si vous souhaitez aller plus loin sur les
-        causes médicales de décès, vous pouvez nous contacter à{' '}
+        causes médicales de décès, vous pouvez nous contacter à{" "}
         <Link href="mailto:ars-idf-cm2d@ars.sante.fr">
           ars-idf-cm2d@ars.sante.fr
         </Link>
