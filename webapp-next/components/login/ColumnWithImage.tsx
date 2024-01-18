@@ -1,10 +1,10 @@
-import { Box, Flex, Image } from '@chakra-ui/react';
-import Slider from './Slider';
+import { Box, Flex, Image } from "@chakra-ui/react";
+import Slider from "./Slider";
 
 export const ColumnWithImage = () => {
   return (
     <Flex
-      bg={'primary.50'}
+      bg={"primary.50"}
       flexDirection="column"
       h="full"
       w="full"
@@ -14,17 +14,21 @@ export const ColumnWithImage = () => {
       borderLeftRadius="2xl"
       justifyContent="space-between"
     >
-      <Image src="/CM2D.svg" h={7} alignSelf={'flex-start'} />
+      <Flex alignItems="center">
+        <Image src="/CM2D.svg" alt="CM2D Logo" w={24} mr={1.5} />
+        x
+        <Image src="/ARS_logo.svg.png" alt="ARS Logo" w={16} ml={2} mt={3} />
+      </Flex>
 
-      <Image src="/Left.svg" w={'full'} maxH={'60%'} />
+      <Image src="/Left.svg" w={"full"} maxH={"60%"} />
 
       <Slider
         slideContents={[
           {
-            title: 'Explorez les données sur les causes de décès',
+            title: "Explorez les données sur les causes de décès",
             description:
-              'L’application CM2D permet de générer des visualisations de données sur mesure afin d’orienter et d’évaluer vos actions sur le terrain.'
-          }
+              "L’application CM2D permet de générer des visualisations de données sur mesure afin d’orienter et d’évaluer vos actions sur le terrain.",
+          },
           // {
           //   title: 'Lorem ipsum dolor !',
           //   description:
