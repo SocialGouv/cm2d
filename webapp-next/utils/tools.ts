@@ -163,13 +163,14 @@ export function transformFilters(filters: Filters): any[] {
     });
   }
 
-  if (filters.department.length > 0) {
-    transformed.push({
-      terms: {
-        department: filters.department
-      }
-    });
-  }
+  transformed.push({
+    terms: {
+      department:
+        filters.department.length > 0
+          ? filters.department
+          : ['91', '92', '93', '94', '95', '77', '78', '75']
+    }
+  });
 
   if (filters.start_date && filters.end_date) {
     transformed.push({
