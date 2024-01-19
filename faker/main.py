@@ -15,6 +15,9 @@ department_dict = {
     '93': ['Saint-Denis', 'Montreuil', 'Aubervilliers'],
     '94': ['Créteil', 'Vincennes', 'Ivry-sur-Seine'],
     '95': ['Cergy', 'Argenteuil', 'Sarcelles'],
+    '86': ['Poitiers', 'Jaunay-clan', 'Chatellerault'],
+    '17': ['La Rochelle', 'Aytré', 'Ronce-les-bains'],
+    '14': ['Cabourg', 'Honfleur', 'Trouville'],
 }
 
 category_1 = ['suicide', 'avc', 'cancer', 'tuberculose', 'thrombose']
@@ -97,6 +100,9 @@ departments = list(department_dict.keys())
 # Add weighted probabilities for departments
 weights = [0.15 if dept == '75' else 0.4 if dept == '77' else 0.2 if dept == '95' else 0.05 for dept in departments]
 
+total_weight = sum(weights)
+weights = [weight / total_weight for weight in weights]
+
 def get_multiple_values(category):
     if random.random() < 0.2:
         return random.choice(category)
@@ -106,7 +112,7 @@ def get_multiple_values(category):
         return "; ".join(values)
 
 with open('sample_data.csv', mode='w', newline='') as csv_file:
-    fieldnames = ['categories_level_1', 'categories_level_2', 'categories_associate', 'age', 'kind', 'sex', 'death_location', 'home_location', 'department', 'coordinates', 'date']
+    fieldnames = ['categories_level_1', 'categories_level_2', 'categories_associate', 'age', 'kind', 'sex', 'death_location', 'home_location', 'home_department', 'department', 'coordinates', 'date']
     writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
 
     writer.writeheader()
@@ -121,6 +127,7 @@ with open('sample_data.csv', mode='w', newline='') as csv_file:
         row['sex'] = random.choice(['homme', 'femme', 'indéterminé'])
         row['death_location'] = random.choice(death_locations)
         row['department'] = np.random.choice(departments, p=weights)  # Select department based on weights
+        row['home_department'] = np.random.choice(departments, p=weights)  # Select department based on weights
         row['home_location'] = random.choice(department_dict[row['department']])
         row['coordinates'] = f"{fake.latitude()}, {fake.longitude()}"
         row['date'] = fake.date_between(start_date=date(2021, 1, 1), end_date=date(2023, 12, 31)).isoformat()
