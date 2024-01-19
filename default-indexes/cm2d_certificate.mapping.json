@@ -10,7 +10,8 @@
         "coordinates": { "type": "keyword" },
         "date": { "type": "date", "format": "iso8601" },
         "death_location": { "type": "keyword" },
-        "department": { "type": "long" },
+        "department": { "type": "keyword" },
+        "home_department": { "type": "keyword" },
         "home_location": { "type": "keyword" },
         "kind": { "type": "keyword" },
         "sex": { "type": "keyword" }
