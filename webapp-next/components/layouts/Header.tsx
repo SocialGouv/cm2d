@@ -1,6 +1,5 @@
 import { Flex } from '@chakra-ui/react';
 import 'react-datepicker/dist/react-datepicker.css';
-import { ActionBookmarks } from '../actions/Bookmarks';
 import { ActionMenu } from '../actions/Menu';
 
 export function Header() {
@@ -14,7 +13,6 @@ export function Header() {
       w="full"
       justifyContent={'end'}
     >
-      {/* <ActionBookmarks /> */}
       <ActionMenu />
     </Flex>
   );

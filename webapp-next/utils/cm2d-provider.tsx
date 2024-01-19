@@ -10,6 +10,7 @@ import {
 export type SearchCategory = 'full' | 'category_1' | 'category_2';
 
 export type Filters = {
+  department_filter: 'department' | 'home_department';
   categories: string[];
   categories_associate: string[];
   categories_search: SearchCategory;
@@ -20,6 +21,7 @@ export type Filters = {
   }[];
   sex: string[];
   department: string[];
+  home_department: string[];
   start_date?: string;
   end_date?: string;
 };
@@ -61,13 +63,15 @@ type Cm2dProviderProps = {
 export type View = 'line' | 'histogram' | 'table' | 'doughnut' | 'map';
 
 export const baseFilters: Filters = {
+  department_filter: 'department',
   categories: [],
   categories_associate: [],
   categories_search: 'full',
   death_location: [],
   age: [],
   sex: [],
-  department: []
+  department: [],
+  home_department: []
 };
 export const baseAggregation = {
   aggregated_date: {
