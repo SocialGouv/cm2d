@@ -60,13 +60,13 @@ export const getMapProps = (
   };
 
   const getCountFromKey = (key: number): number => {
-    const hit = hits.find(h => h.key === key);
+    const hit = hits.find(h => h.key === key.toString());
     // return hit ? (isNC(hit.doc_count) ? 'NC' : hit.doc_count) : 0;
     return hit ? hit.doc_count : 0;
   };
 
   const getPercentage = (key: number): string => {
-    const hit = hits.find(h => h.key === key);
+    const hit = hits.find(h => h.key === key.toString());
     if (!hit || !total) return '0%';
     // if (isNC(hit.doc_count)) return 'NC';
     return `${Math.round((hit.doc_count / total) * 10000) / 100}%`;
@@ -76,7 +76,7 @@ export const getMapProps = (
     key: number,
     kind: 'initial' | 'hover'
   ): string => {
-    const hit = hits.find(h => h.key === key);
+    const hit = hits.find(h => h.key === key.toString());
     if (!hit || !total) return stateColors.NEUTRAL[kind];
 
     const percentage = hit.doc_count / total;
@@ -87,7 +87,7 @@ export const getMapProps = (
   };
 
   const getFullDescription = (key: number): string => {
-    const hit = hits.find(h => h.key === key);
+    const hit = hits.find(h => h.key === key.toString());
     if (!hit) return '';
 
     if (hit.children) {
