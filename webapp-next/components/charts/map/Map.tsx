@@ -14,6 +14,7 @@ type Props = {
 export default function MapIframe(props: Props) {
   const iframeRef = React.useRef(null);
   const { datasets, id } = props;
+  console.log(datasets);
   const [mapConfig, setMapConfig] = useState<MapConfig | null>(null);
   const context = useContext(Cm2dContext);
 
@@ -45,7 +46,7 @@ export default function MapIframe(props: Props) {
 					<style>
 						#${id}_access {
 							display: none !important;
-						}setMapConfig
+						}
 					</style>
         </head>
         <body style="display: flex; justify-content: center;">
