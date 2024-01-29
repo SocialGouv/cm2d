@@ -113,6 +113,20 @@ export function FiltersShortcut() {
                 />
               ));
             case 'categories':
+              return filters[key].map(value => (
+                <CustomTag
+                  key={`${key}-${value}`}
+                  field_name={key}
+                  value={getLabelFromKey(value)}
+                  onDelete={() => {
+                    setFilters({
+                      ...filters,
+                      [key]: filters[key].filter(v => v !== value),
+                      categories_associate: []
+                    });
+                  }}
+                />
+              ));
             case 'categories_associate':
             case 'death_location':
             case 'sex':
