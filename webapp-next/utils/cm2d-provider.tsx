@@ -20,7 +20,7 @@ export type Filters = {
   }[];
   sex: string[];
   department: string[];
-  region_departments: number[];
+  region_departments: string[];
   start_date?: string;
   end_date?: string;
 };
@@ -69,7 +69,7 @@ export const baseFilters: Filters = {
   age: [],
   sex: [],
   department: [],
-  region_departments: [75, 77, 78, 91, 92, 93, 94, 95]
+  region_departments: ['75', '77', '78', '91', '92', '93', '94', '95']
 };
 export const baseAggregation = {
   aggregated_date: {

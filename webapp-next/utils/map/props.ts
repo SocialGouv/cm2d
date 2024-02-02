@@ -12,7 +12,7 @@ import { MapConfig } from './type';
 export const getMapProps = (
   id: string,
   datasets: { hits: any[]; total?: number }[],
-  departments: number[],
+  departments: string[],
   saveAggregateX?: string
 ): {
   config?: MapConfig;
@@ -67,13 +67,13 @@ export const getMapProps = (
     }
   };
 
-  const getCountFromKey = (key: number): number => {
+  const getCountFromKey = (key: string): number => {
     const hit = hits.find(h => h.key === key);
     // return hit ? (isNC(hit.doc_count) ? 'NC' : hit.doc_count) : 0;
     return hit ? hit.doc_count : 0;
   };
 
-  const getPercentage = (key: number): string => {
+  const getPercentage = (key: string): string => {
     const hit = hits.find(h => h.key === key);
     if (!hit || !total) return '0%';
     // if (isNC(hit.doc_count)) return 'NC';
@@ -81,7 +81,7 @@ export const getMapProps = (
   };
 
   const getColorFromPercentage = (
-    key: number,
+    key: string,
     kind: 'initial' | 'hover'
   ): string => {
     const hit = hits.find(h => h.key === key);
@@ -94,7 +94,7 @@ export const getMapProps = (
     return stateColors.RED[kind];
   };
 
-  const getFullDescription = (key: number): string => {
+  const getFullDescription = (key: string): string => {
     const hit = hits.find(h => h.key === key);
     if (!hit) return '';
 
