@@ -76,7 +76,7 @@ export function ChartMapHeader() {
     const xAgg: any = {
       aggregated_x: {
         terms: {
-          field: 'department'
+          field: 'home_department'
         }
       }
     };

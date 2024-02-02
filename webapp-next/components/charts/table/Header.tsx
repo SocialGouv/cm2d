@@ -23,7 +23,7 @@ type Field =
   | 'sex'
   | 'age'
   | 'death_location'
-  | 'department'
+  | 'home_department'
   | 'months'
   | 'categories_level_1'
   | 'categories_level_2';
@@ -50,7 +50,7 @@ export function ChartTableHeader() {
     { label: 'Sexe', value: 'sex' },
     { label: 'Age', value: 'age' },
     { label: 'Lieu de décès', value: 'death_location' },
-    { label: 'Département', value: 'department' },
+    { label: 'Département', value: 'home_department' },
     { label: 'Mois', value: 'months' }
   ];
 

@@ -350,7 +350,7 @@ export function transformFilters(filters: Filters): any[] {
 
   transformed.push({
     terms: {
-      department:
+      home_department:
         filters.department.length > 0
           ? filters.department
           : filters.region_departments

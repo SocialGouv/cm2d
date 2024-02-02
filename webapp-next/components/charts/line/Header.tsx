@@ -18,7 +18,7 @@ type Field =
   | 'sex'
   | 'age'
   | 'death_location'
-  | 'department'
+  | 'home_department'
   | 'years'
   | 'categories_level_1'
   | 'categories_level_2';
@@ -43,7 +43,7 @@ export function ChartLineHeader() {
     { label: 'Sexe', value: 'sex' },
     { label: 'Age', value: 'age' },
     { label: 'Lieu de décès', value: 'death_location' },
-    { label: 'Département', value: 'department' },
+    { label: 'Département', value: 'home_department' },
     { label: 'Année', value: 'years' }
   ];
 
@@ -65,7 +65,9 @@ export function ChartLineHeader() {
     if (isAggregated) {
       aggregation = baseAggregation;
     } else {
-      if (['sex', 'death_location', 'department'].includes(aggregateField)) {
+      if (
+        ['sex', 'death_location', 'home_department'].includes(aggregateField)
+      ) {
         aggregation = {
           aggregated_parent: {
             terms: {
