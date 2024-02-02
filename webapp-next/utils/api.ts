@@ -88,8 +88,7 @@ export function useDepartments(departments: string[]) {
     index: 'cm2d_departments',
     filters: JSON.stringify({
       terms: {
-        department: departments,
-        size: 100
+        department: departments
       }
     })
   };
