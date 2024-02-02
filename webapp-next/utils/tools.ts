@@ -76,6 +76,21 @@ export function hasAtLeastOneFilter(filters: Filters): boolean {
 export function transformFilters(filters: Filters): any[] {
   const transformed: any[] = [];
 
+  transformed.push({
+    terms: {
+      [filters.department_filter]: [
+        '91',
+        '92',
+        '93',
+        '94',
+        '95',
+        '75',
+        '77',
+        '78'
+      ]
+    }
+  });
+
   if (filters.categories.length > 0) {
     switch (filters.categories_search) {
       case 'full':
@@ -171,6 +186,14 @@ export function transformFilters(filters: Filters): any[] {
           : ['91', '92', '93', '94', '95', '77', '78', '75']
     }
   });
+
+  if (filters.home_department.length > 0) {
+    transformed.push({
+      terms: {
+        home_department: filters.home_department
+      }
+    });
+  }
 
   if (filters.start_date && filters.end_date) {
     transformed.push({
