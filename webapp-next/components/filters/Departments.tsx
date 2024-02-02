@@ -76,9 +76,7 @@ export const FiltersDepartments = (props: Props) => {
                     departmentRefs[
                       department.label as keyof typeof departmentRefs
                     ]
-                  } (${department.label.toString().length > 1 ? '' : `0`}${
-                    department.label
-                  })`
+                  } (${department.label})`
                 : `Inconnu (${department.label})`}
             </Text>
           </Checkbox>

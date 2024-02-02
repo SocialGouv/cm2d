@@ -11,15 +11,15 @@ export const viewRefs: { label: string; value: View }[] = [
 ];
 
 export const departmentRefs: { [key: string]: string } = {
-  '1': 'Ain',
-  '2': 'Aisne',
-  '3': 'Allier',
-  '4': 'Alpes-de-Haute-Provence',
-  '5': 'Hautes-Alpes',
-  '6': 'Alpes-Maritimes',
-  '7': 'Ardèche',
-  '8': 'Ardennes',
-  '9': 'Ariège',
+  '01': 'Ain',
+  '02': 'Aisne',
+  '03': 'Allier',
+  '04': 'Alpes-de-Haute-Provence',
+  '05': 'Hautes-Alpes',
+  '06': 'Alpes-Maritimes',
+  '07': 'Ardèche',
+  '08': 'Ardennes',
+  '09': 'Ariège',
   '10': 'Aube',
   '11': 'Aude',
   '12': 'Aveyron',
@@ -108,14 +108,14 @@ export const departmentRefs: { [key: string]: string } = {
 };
 
 export const departmentsCodes: { [key: string]: string } = {
-  '1': 'FRA5262', // Ain
-  '2': 'FRA5263', // Aisne
-  '3': 'FRA5264', // Allier
-  '4': 'FRA5265', // Alpes-de-Haute-Provence
-  '6': 'FRA5266', // Alpes-Maritimes
-  '7': 'FRA5267', // Ardèche
-  '8': 'FRA5268', // Ardennes
-  '9': 'FRA5269', // Ariège
+  '01': 'FRA5262', // Ain
+  '02': 'FRA5263', // Aisne
+  '03': 'FRA5264', // Allier
+  '04': 'FRA5265', // Alpes-de-Haute-Provence
+  '06': 'FRA5266', // Alpes-Maritimes
+  '07': 'FRA5267', // Ardèche
+  '08': 'FRA5268', // Ardennes
+  '09': 'FRA5269', // Ariège
   '10': 'FRA5270', // Aube
   '11': 'FRA5271', // Aude
   '12': 'FRA5272', // Aveyron

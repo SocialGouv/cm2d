@@ -134,8 +134,8 @@ export const getMapProps = (
     };
   } = {};
   departments.forEach(d => {
-    states[departmentsCodes[d.toString()]] = {
-      name: `${departmentRefs[d.toString()]} (${getPercentage(d)})`,
+    states[departmentsCodes[d]] = {
+      name: `${departmentRefs[d]} (${getPercentage(d)})`,
       description: getFullDescription(d),
       color: getColorFromPercentage(d, 'initial'),
       hover_color: getColorFromPercentage(d, 'hover')
