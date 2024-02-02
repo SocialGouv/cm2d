@@ -20,6 +20,7 @@ export type Filters = {
   }[];
   sex: string[];
   department: string[];
+  region_departments: number[];
   start_date?: string;
   end_date?: string;
 };
@@ -67,7 +68,8 @@ export const baseFilters: Filters = {
   death_location: [],
   age: [],
   sex: [],
-  department: []
+  department: [],
+  region_departments: [75, 77, 78, 91, 92, 93, 94, 95]
 };
 export const baseAggregation = {
   aggregated_date: {
@@ -80,6 +82,7 @@ export const baseAggregation = {
 
 export function Cm2dProvider({ children }: Cm2dProviderProps) {
   const [filters, setFilters] = useState<Filters>(baseFilters);
+  console.log(filters);
   const [selectedFiltersPile, setSelectedFiltersPile] = useState<string[]>([]);
   const [aggregations, setAggregations] = useState<any>(baseAggregation);
 

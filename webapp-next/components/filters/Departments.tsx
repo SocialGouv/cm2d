@@ -21,7 +21,7 @@ export const FiltersDepartments = (props: Props) => {
 
   const { filters, setFilters, selectedFiltersPile, setSelectedFiltersPile } =
     context;
-  const { data } = useDepartments();
+  const { data } = useDepartments(filters.region_departments);
 
   if (!data) return <>...</>;
 
@@ -76,7 +76,9 @@ export const FiltersDepartments = (props: Props) => {
                     departmentRefs[
                       department.label as keyof typeof departmentRefs
                     ]
-                  } (${department.label})`
+                  } (${department.label.toString().length > 1 ? '' : `0`}${
+                    department.label
+                  })`
                 : `Inconnu (${department.label})`}
             </Text>
           </Checkbox>

@@ -11,9 +11,31 @@ export const viewRefs: { label: string; value: View }[] = [
 ];
 
 export const departmentRefs = {
+  '2': 'Aisne',
+  '14': 'Calvados',
+  '16': 'Charente',
+  '17': 'Charente-Maritime',
+  '19': 'Corrèze',
+  '23': 'Creuse',
+  '24': 'Dordogne',
+  '27': 'Eure',
+  '33': 'Gironde',
+  '40': 'Landes',
+  '47': 'Lot-et-Garonne',
+  '50': 'Manche',
+  '59': 'Nord',
+  '60': 'Oise',
+  '61': 'Orne',
+  '62': 'Pas-de-Calais',
+  '64': 'Pyrénées-Atlantiques',
   '75': 'Paris',
+  '76': 'Seine-Maritime',
   '77': 'Seine-et-Marne',
   '78': 'Yvelines',
+  '79': 'Deux-Sèvres',
+  '80': 'Somme',
+  '86': 'Vienne',
+  '87': 'Haute-Vienne',
   '91': 'Essonne',
   '92': 'Hauts-de-Seine',
   '93': 'Seine-Saint-Denis',
@@ -168,7 +190,7 @@ export function transformFilters(filters: Filters): any[] {
       department:
         filters.department.length > 0
           ? filters.department
-          : ['91', '92', '93', '94', '95', '77', '78', '75']
+          : filters.region_departments
     }
   });
 

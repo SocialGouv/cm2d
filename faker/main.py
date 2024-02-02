@@ -7,6 +7,7 @@ import numpy as np
 fake = Faker('fr_FR')
 
 department_dict = {
+    # IDF
     '75': ['Paris', 'Paris 2', 'Paris 3'],
     '77': ['Meaux', 'Chelles', 'Melun'],
     '78': ['Versailles', 'Yvelines', 'Rambouillet'],
@@ -15,9 +16,31 @@ department_dict = {
     '93': ['Saint-Denis', 'Montreuil', 'Aubervilliers'],
     '94': ['Créteil', 'Vincennes', 'Ivry-sur-Seine'],
     '95': ['Cergy', 'Argenteuil', 'Sarcelles'],
-    '86': ['Poitiers', 'Jaunay-clan', 'Chatellerault'],
-    '17': ['La Rochelle', 'Aytré', 'Ronce-les-bains'],
-    '14': ['Cabourg', 'Honfleur', 'Trouville'],
+    # NORMANDIE
+    '14': ['a'],
+    '27': ['a'],
+    '50': ['a'],
+    '61': ['a'],
+    '76': ['a'],
+    # NOUVELLE AQUITAINE
+    '16': ['B'],
+    '17': ['B'],
+    '19': ['B'],
+    '23': ['B'],
+    '24': ['B'],
+    '33': ['B'],
+    '40': ['B'],
+    '47': ['B'],
+    '64': ['B'],
+    '79': ['B'],
+    '86': ['B'],
+    '87': ['B'],
+    # HAUTS DE FRANCE
+    '02': ['c'],
+    '59': ['c'],
+    '60': ['c'],
+    '62': ['c'],
+    '80': ['c'],
 }
 
 category_1 = ['suicide', 'avc', 'cancer', 'tuberculose', 'thrombose']

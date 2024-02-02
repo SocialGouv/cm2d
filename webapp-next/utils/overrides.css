@@ -106,6 +106,10 @@
   background-color: #246cf9;
 }
 
+.react-datepicker-popper {
+  z-index: 9;
+}
+
 .react-datepicker
   .react-datepicker__month-wrapper
   .react-datepicker__month-text--keyboard-selected {

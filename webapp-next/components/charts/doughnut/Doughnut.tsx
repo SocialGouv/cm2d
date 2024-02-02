@@ -6,7 +6,6 @@ import {
   chartsAvailableColors,
   getLabelFromKey
 } from '@/utils/tools';
-import { Box, Flex } from '@chakra-ui/react';
 import { useContext, useEffect, useState } from 'react';
 import { Doughnut } from 'react-chartjs-2';
 
