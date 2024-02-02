@@ -2,14 +2,17 @@ import { useAssociateCauses } from '@/utils/api';
 import { Cm2dContext } from '@/utils/cm2d-provider';
 import { capitalizeString, removeAccents } from '@/utils/tools';
 import { CloseIcon } from '@chakra-ui/icons';
+import { InfoOutlineIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
   Checkbox,
+  Flex,
   Input,
   InputGroup,
   InputRightElement,
   Link,
+  ListItem,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -20,6 +23,7 @@ import {
   Spinner,
   Tag,
   Text,
+  UnorderedList,
   useDisclosure
 } from '@chakra-ui/react';
 import { useContext, useEffect, useState } from 'react';
@@ -38,6 +42,9 @@ export const FilterAssociateCauses = (props: Props) => {
   const [isSearching, setIsSearching] = useState(false);
   const [search, setSearch] = useState('');
   const debouncedSearchTerm = useDebounce(search, 300);
+  const maxSelection = parseInt(
+    (process.env.NEXT_PUBLIC_MAX_ASSOCIATE_CAUSE_SELECTION as string) || '2'
+  );
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
@@ -118,7 +125,9 @@ export const FilterAssociateCauses = (props: Props) => {
       <Modal isOpen={isOpen} onClose={onClose} isCentered size={'6xl'}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Gestion des causes associées</ModalHeader>
+          <ModalHeader>
+            Gestion des causes associées (maximum {maxSelection})
+          </ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Box mb={6}>
@@ -164,6 +173,10 @@ export const FilterAssociateCauses = (props: Props) => {
                     <Box key={ac.label} mb={3}>
                       <Checkbox
                         colorScheme="primary"
+                        disabled={
+                          !filters.categories_associate.includes(ac.value) &&
+                          filters.categories_associate.length === maxSelection
+                        }
                         onChange={e => {
                           if (e.target.checked) {
                             filters.categories_associate.push(ac.value);
@@ -190,7 +203,13 @@ export const FilterAssociateCauses = (props: Props) => {
             </Box>
           </ModalBody>
 
-          <ModalFooter>
+          <ModalFooter justifyContent={'space-between'} alignItems={'center'}>
+            <Text fontSize={'sm'} color="highlight.500" pr={4}>
+              <InfoOutlineIcon mr={0.5} mb={0.5} /> <b>Attention : </b> sont
+              comptabilisés tous les certificats faisant mention de la cause{' '}
+              {capitalizeString(filters.categories[0])} et d&apos;au moins une
+              des causes associées sélectionnées.
+            </Text>
             <Button colorScheme="primary" mr={3} onClick={onClose}>
               Fermer
             </Button>
