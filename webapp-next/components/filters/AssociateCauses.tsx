@@ -43,7 +43,7 @@ export const FilterAssociateCauses = (props: Props) => {
   const [search, setSearch] = useState('');
   const debouncedSearchTerm = useDebounce(search, 300);
   const maxSelection = parseInt(
-    (process.env.NEXT_PUBLIC_MAX_ASSOCIATE_CAUSE_SELECTION as string) || '2'
+    (process.env.NEXT_PUBLIC_MAX_ASSOCIATE_CAUSE_SELECTION as string) || '3'
   );
   const { isOpen, onOpen, onClose } = useDisclosure();
 
