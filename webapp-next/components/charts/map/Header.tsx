@@ -76,7 +76,8 @@ export function ChartMapHeader() {
     const xAgg: any = {
       aggregated_x: {
         terms: {
-          field: 'home_department'
+          field: 'home_department',
+          size: 100
         }
       }
     };
@@ -87,7 +88,8 @@ export function ChartMapHeader() {
     } else {
       let yAgg: any = {
         terms: {
-          field: aggregateField
+          field: aggregateField,
+          size: 100
         }
       };
 
@@ -98,7 +100,8 @@ export function ChartMapHeader() {
         yAgg = {
           terms: {
             field: aggregateField,
-            exclude: filters.categories[0]
+            exclude: filters.categories[0],
+            size: 100
           }
         };
       }

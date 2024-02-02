@@ -71,7 +71,8 @@ export function ChartLineHeader() {
         aggregation = {
           aggregated_parent: {
             terms: {
-              field: aggregateField
+              field: aggregateField,
+              size: 100
             },
             aggs: {
               ...baseAggregation
@@ -85,7 +86,8 @@ export function ChartLineHeader() {
           aggregated_parent: {
             terms: {
               field: aggregateField,
-              exclude: filters.categories[0]
+              exclude: filters.categories[0],
+              size: 100
             },
             aggs: {
               ...baseAggregation

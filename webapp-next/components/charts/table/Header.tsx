@@ -83,12 +83,14 @@ export function ChartTableHeader() {
   const updateAggregation = () => {
     let xAgg: any = {
       terms: {
-        field: aggregateX
+        field: aggregateX,
+        size: 100
       }
     };
     let yAgg: any = {
       terms: {
-        field: aggregateY
+        field: aggregateY,
+        size: 100
       }
     };
 
@@ -123,7 +125,8 @@ export function ChartTableHeader() {
       const categoriesAgg = {
         terms: {
           field: 'categories_level_1',
-          exclude: filters.categories[0]
+          exclude: filters.categories[0],
+          size: 100
         }
       };
 
@@ -138,7 +141,8 @@ export function ChartTableHeader() {
       const categoriesAgg = {
         terms: {
           field: 'categories_level_2',
-          exclude: filters.categories[0]
+          exclude: filters.categories[0],
+          size: 100
         }
       };
 

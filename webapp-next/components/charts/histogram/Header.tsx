@@ -74,7 +74,8 @@ export function ChartHistogramHeader() {
   const updateAggregation = () => {
     let xAgg: any = {
       terms: {
-        field: aggregateX
+        field: aggregateX,
+        size: 100
       }
     };
 
@@ -85,7 +86,8 @@ export function ChartHistogramHeader() {
       xAgg = {
         terms: {
           field: aggregateX,
-          exclude: filters.categories[0]
+          exclude: filters.categories[0],
+          size: 100
         }
       };
     }

@@ -269,12 +269,14 @@ export function transformFilters(filters: Filters): any[] {
             should: [
               {
                 terms: {
-                  categories_level_1: filters.categories
+                  categories_level_1: filters.categories,
+                  size: 100
                 }
               },
               {
                 terms: {
-                  categories_level_2: filters.categories
+                  categories_level_2: filters.categories,
+                  size: 100
                 }
               }
             ],
@@ -285,14 +287,16 @@ export function transformFilters(filters: Filters): any[] {
       case 'category_1':
         transformed.push({
           terms: {
-            categories_level_1: filters.categories
+            categories_level_1: filters.categories,
+            size: 100
           }
         });
         break;
       case 'category_2':
         transformed.push({
           terms: {
-            categories_level_2: filters.categories
+            categories_level_2: filters.categories,
+            size: 100
           }
         });
         break;
@@ -335,7 +339,8 @@ export function transformFilters(filters: Filters): any[] {
   if (filters.sex.length > 0) {
     transformed.push({
       terms: {
-        sex: filters.sex
+        sex: filters.sex,
+        size: 100
       }
     });
   }
@@ -343,7 +348,8 @@ export function transformFilters(filters: Filters): any[] {
   if (filters.death_location.length > 0) {
     transformed.push({
       terms: {
-        death_location: filters.death_location
+        death_location: filters.death_location,
+        size: 100
       }
     });
   }
@@ -353,7 +359,8 @@ export function transformFilters(filters: Filters): any[] {
       home_department:
         filters.department.length > 0
           ? filters.department
-          : filters.region_departments
+          : filters.region_departments,
+      size: 100
     }
   });
 

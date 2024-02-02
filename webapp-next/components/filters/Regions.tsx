@@ -44,7 +44,7 @@ export const RegionFilter = (props: Props) => {
         '87'
       ]
     },
-    { label: 'Hauts-de-France', value: ['2', '59', '60', '62', '80'] }
+    { label: 'Hauts-de-France', value: ['02', '59', '60', '62', '80'] }
   ];
 
   if (mode === 'dev') {
@@ -53,9 +53,9 @@ export const RegionFilter = (props: Props) => {
       {
         label: 'Auvergne-Rhône-Alpes',
         value: [
-          '1',
-          '3',
-          '7',
+          '01',
+          '03',
+          '07',
           '15',
           '26',
           '38',
@@ -79,12 +79,12 @@ export const RegionFilter = (props: Props) => {
       { label: 'Corse', value: ['2A', '2B'] },
       {
         label: 'Grand Est',
-        value: ['8', '10', '51', '52', '54', '55', '57', '67', '68', '88']
+        value: ['08', '10', '51', '52', '54', '55', '57', '67', '68', '88']
       },
       {
         label: 'Occitanie',
         value: [
-          '9',
+          '09',
           '11',
           '12',
           '30',
@@ -102,7 +102,7 @@ export const RegionFilter = (props: Props) => {
       { label: 'Pays de la Loire', value: ['44', '49', '53', '72', '85'] },
       {
         label: "Provence-Alpes-Côte d'Azur",
-        value: ['4', '5', '6', '13', '83', '84']
+        value: ['04', '05', '06', '13', '83', '84']
       }
     ];
   }

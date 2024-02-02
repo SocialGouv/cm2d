@@ -88,7 +88,8 @@ export function useDepartments(departments: string[]) {
     index: 'cm2d_departments',
     filters: JSON.stringify({
       terms: {
-        department: departments
+        department: departments,
+        size: 100
       }
     })
   };
@@ -126,7 +127,9 @@ export function useData(filters: Filters, aggregations: any) {
   const paramsKind = {
     index: 'cm2d_certificate',
     filters: JSON.stringify(transformFilters(filters)),
-    aggregations: JSON.stringify({ aggregated_x: { terms: { field: 'kind' } } })
+    aggregations: JSON.stringify({
+      aggregated_x: { terms: { field: 'kind', size: 100 } }
+    })
   };
   const { data: dataKind, error: errorKind } = useSWR(
     `/api/elk/data?${new URLSearchParams(paramsKind)}`,
