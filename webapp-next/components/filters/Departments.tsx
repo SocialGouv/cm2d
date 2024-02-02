@@ -27,7 +27,7 @@ export const FiltersDepartments = (props: Props) => {
 
   const departments: Departments = data.result.hits.hits.map((d: any) => ({
     id: d._id,
-    label: d._source.department.toString()
+    label: d._source.home_department.toString()
   }));
 
   return (
