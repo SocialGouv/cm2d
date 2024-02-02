@@ -214,7 +214,7 @@ const elkFields = [
   { value: 'categories_associate', label: 'Cause associée' },
   { value: 'categories_level_2', label: 'Comorbidité' },
   { value: 'death_location', label: 'Lieu de décès' },
-  { value: 'department', label: 'Département' },
+  { value: 'home_department', label: 'Département' },
   { value: 'cert_type', label: 'Format' },
   { value: 'start_date', label: 'Période' },
   { value: 'end_date', label: 'Période' },
