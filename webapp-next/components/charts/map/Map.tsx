@@ -22,14 +22,19 @@ export default function MapIframe(props: Props) {
     throw new Error('Menu must be used within a Cm2dProvider');
   }
 
-  const { saveAggregateX } = context;
+  const { filters, saveAggregateX } = context;
 
   const writeHTMLToIframe = () => {
     const iframe = iframeRef.current;
 
     if (iframe) {
       const doc = (iframe as any).contentWindow.document;
-      const mapProps = getMapProps(id, datasets, saveAggregateX);
+      const mapProps = getMapProps(
+        id,
+        datasets,
+        filters.region_departments,
+        saveAggregateX
+      );
       doc.open();
       doc.write(`
       <html>

@@ -1,10 +1,18 @@
 import { orders, sortByOrder } from '../orders';
-import { capitalizeString, getLabelFromKey, hexToRGB, isNC } from '../tools';
+import {
+  capitalizeString,
+  departmentRefs,
+  departmentsCodes,
+  getLabelFromKey,
+  hexToRGB,
+  isNC
+} from '../tools';
 import { MapConfig } from './type';
 
 export const getMapProps = (
   id: string,
   datasets: { hits: any[]; total?: number }[],
+  departments: string[],
   saveAggregateX?: string
 ): {
   config?: MapConfig;
@@ -59,24 +67,24 @@ export const getMapProps = (
     }
   };
 
-  const getCountFromKey = (key: number): number => {
-    const hit = hits.find(h => h.key === key.toString());
+  const getCountFromKey = (key: string): number => {
+    const hit = hits.find(h => h.key === key);
     // return hit ? (isNC(hit.doc_count) ? 'NC' : hit.doc_count) : 0;
     return hit ? hit.doc_count : 0;
   };
 
-  const getPercentage = (key: number): string => {
-    const hit = hits.find(h => h.key === key.toString());
+  const getPercentage = (key: string): string => {
+    const hit = hits.find(h => h.key === key);
     if (!hit || !total) return '0%';
     // if (isNC(hit.doc_count)) return 'NC';
     return `${Math.round((hit.doc_count / total) * 10000) / 100}%`;
   };
 
   const getColorFromPercentage = (
-    key: number,
+    key: string,
     kind: 'initial' | 'hover'
   ): string => {
-    const hit = hits.find(h => h.key === key.toString());
+    const hit = hits.find(h => h.key === key);
     if (!hit || !total) return stateColors.NEUTRAL[kind];
 
     const percentage = hit.doc_count / total;
@@ -86,8 +94,8 @@ export const getMapProps = (
     return stateColors.RED[kind];
   };
 
-  const getFullDescription = (key: number): string => {
-    const hit = hits.find(h => h.key === key.toString());
+  const getFullDescription = (key: string): string => {
+    const hit = hits.find(h => h.key === key);
     if (!hit) return '';
 
     if (hit.children) {
@@ -116,6 +124,23 @@ export const getMapProps = (
 
     return `Nombre de décès : ${getCountFromKey(key)}`;
   };
+
+  const states: {
+    [key: string]: {
+      name: string;
+      description: string;
+      color: string;
+      hover_color: string;
+    };
+  } = {};
+  departments.forEach(d => {
+    states[departmentsCodes[d.toString()]] = {
+      name: `${departmentRefs[d.toString()]} (${getPercentage(d)})`,
+      description: getFullDescription(d),
+      color: getColorFromPercentage(d, 'initial'),
+      hover_color: getColorFromPercentage(d, 'hover')
+    };
+  });
 
   const config: MapConfig = {
     main_settings: {
@@ -190,69 +215,11 @@ export const getMapProps = (
       state_image_position: '',
       location_image_url: ''
     },
-    state_specific: {
-      FRA5289: {
-        name: `Essonne (${getPercentage(91)})`,
-        description: getFullDescription(91),
-        color: getColorFromPercentage(91, 'initial'),
-        hover_color: getColorFromPercentage(91, 'hover')
-      },
-      FRA5306: {
-        name: `Hauts-de-Seine (${getPercentage(92)})`,
-        description: getFullDescription(92),
-        color: getColorFromPercentage(92, 'initial'),
-        hover_color: getColorFromPercentage(92, 'hover')
-      },
-      FRA5333: {
-        name: `Paris (${getPercentage(75)})`,
-        description: getFullDescription(75),
-        color: getColorFromPercentage(75, 'initial'),
-        hover_color: getColorFromPercentage(75, 'hover')
-      },
-      FRA5342: {
-        name: `Seine-et-Marne (${getPercentage(77)})`,
-        description: getFullDescription(77),
-        color: getColorFromPercentage(77, 'initial'),
-        hover_color: getColorFromPercentage(77, 'hover')
-      },
-      FRA5344: {
-        name: `Seine-Saint-Denis (${getPercentage(93)})`,
-        description: getFullDescription(93),
-        color: getColorFromPercentage(93, 'initial'),
-        hover_color: getColorFromPercentage(93, 'hover')
-      },
-      FRA5349: {
-        name: `Val-d'Oise (${getPercentage(95)})`,
-        description: getFullDescription(95),
-        color: getColorFromPercentage(95, 'initial'),
-        hover_color: getColorFromPercentage(95, 'hover')
-      },
-      FRA5350: {
-        name: `Val-de-Marne (${getPercentage(94)})`,
-        description: getFullDescription(94),
-        color: getColorFromPercentage(94, 'initial'),
-        hover_color: getColorFromPercentage(94, 'hover')
-      },
-      FRA5357: {
-        name: `Yvelines (${getPercentage(78)})`,
-        description: getFullDescription(78),
-        color: getColorFromPercentage(78, 'initial'),
-        hover_color: getColorFromPercentage(78, 'hover')
-      }
-    },
+    state_specific: states,
     regions: {
       '0': {
-        states: [
-          'FRA5333',
-          'FRA5342',
-          'FRA5357',
-          'FRA5289',
-          'FRA5306',
-          'FRA5344',
-          'FRA5350',
-          'FRA5349'
-        ],
-        name: 'Ile-de-France',
+        states: Object.keys(states),
+        name: '',
         zoomable: 'no'
       }
     }
