@@ -83,7 +83,7 @@ export function useAssociateCauses() {
   };
 }
 
-export function useDepartments(departments: number[]) {
+export function useDepartments(departments: string[]) {
   const params = {
     index: 'cm2d_departments',
     filters: JSON.stringify({
