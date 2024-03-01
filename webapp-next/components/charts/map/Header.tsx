@@ -50,13 +50,6 @@ export function ChartMapHeader() {
     { label: 'Année', value: 'years' }
   ];
 
-  if (!!filters.categories.length)
-    availableFields = concatAdditionnalFields<Field>(
-      availableFields,
-      filters.categories_search,
-      filters.categories_associate
-    );
-
   const isValidField = (field?: string): field is Field =>
     field ? availableFields.some(({ value }) => value === field) : false;
 
