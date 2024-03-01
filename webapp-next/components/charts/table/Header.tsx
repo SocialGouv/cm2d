@@ -26,7 +26,8 @@ type Field =
   | 'home_department'
   | 'months'
   | 'categories_level_1'
-  | 'categories_level_2';
+  | 'categories_level_2'
+  | 'categories_associate';
 
 export function ChartTableHeader() {
   const context = useContext(Cm2dContext);
@@ -246,16 +247,18 @@ export function ChartTableHeader() {
           Colonnes : <Text as="b">{getLabelFromElkField(aggregateY)}</Text>
         </MenuButton>
         <MenuList>
-          {availableFields.map(field => (
-            <MenuItem
-              key={field.value}
-              onClick={() => handleYAxisChange(field.value)}
-            >
-              <Text as={aggregateY === field.value ? 'b' : 'span'}>
-                {field.label}
-              </Text>
-            </MenuItem>
-          ))}
+          {availableFields
+            .filter(field => field.value !== 'categories_associate')
+            .map(field => (
+              <MenuItem
+                key={field.value}
+                onClick={() => handleYAxisChange(field.value)}
+              >
+                <Text as={aggregateY === field.value ? 'b' : 'span'}>
+                  {field.label}
+                </Text>
+              </MenuItem>
+            ))}
         </MenuList>
       </Menu>
     </Flex>

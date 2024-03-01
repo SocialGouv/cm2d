@@ -82,7 +82,6 @@ export const baseAggregation = {
 
 export function Cm2dProvider({ children }: Cm2dProviderProps) {
   const [filters, setFilters] = useState<Filters>(baseFilters);
-  console.log(filters);
   const [selectedFiltersPile, setSelectedFiltersPile] = useState<string[]>([]);
   const [aggregations, setAggregations] = useState<any>(baseAggregation);
 

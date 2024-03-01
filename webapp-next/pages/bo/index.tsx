@@ -30,10 +30,7 @@ export default function Home() {
 
   const { filters, aggregations, view, setCSVData } = context;
 
-  const { data, dataKind, isLoading } = useData(
-    filters,
-    addMissingSizes(aggregations, filters.categories_associate.length)
-  );
+  const { data, dataKind, isLoading } = useData(filters, aggregations);
 
   const fetchNewTitle = async () => {
     if (!filters.categories[0]) setTitle('Nombre de certificats de décès');
