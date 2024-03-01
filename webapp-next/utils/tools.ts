@@ -723,6 +723,7 @@ export function capitalizeString(str: string): string {
   return str.toString().charAt(0).toUpperCase() + str.toString().substring(1);
 }
 
+// NOT USED ANYMORE
 export function addMissingSizes(obj: any, size: number): any {
   if (typeof obj === 'object') {
     if (obj.terms && obj.terms.field === 'categories_associate') {

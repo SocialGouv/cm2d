@@ -7,8 +7,6 @@ export type Props = {
 };
 
 export function MapDetails({ mapConfig }: Props) {
-  console.log(mapConfig);
-
   function extractDetailsValues(
     input: string
   ): { label: string; value: number }[] {
