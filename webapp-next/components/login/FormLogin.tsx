@@ -31,7 +31,6 @@ import { useEffect, useRef, useState } from "react";
 import useSWRMutation from "swr/mutation";
 import { ELASTIC_API_KEY_NAME } from "@/utils/tools";
 import { ContentCGU } from "@/pages/legals/cgu";
-import { set } from "date-fns";
 
 export async function auth<T>(url: string, { arg }: { arg: T }) {
   return fetch(url, {
