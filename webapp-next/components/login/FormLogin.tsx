@@ -32,7 +32,7 @@ import useSWRMutation from "swr/mutation";
 import { ELASTIC_API_KEY_NAME } from "@/utils/tools";
 import { ContentCGU } from "@/pages/legals/cgu";
 
-async function auth<T>(url: string, { arg }: { arg: T }) {
+export async function auth<T>(url: string, { arg }: { arg: T }) {
   return fetch(url, {
     method: "POST",
     body: JSON.stringify(arg),
