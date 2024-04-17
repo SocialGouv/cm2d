@@ -113,7 +113,9 @@ export const FormLogin = () => {
         code: code.toString(),
       })) as any;
       const result = await res.json();
-      cookie.set(ELASTIC_API_KEY_NAME, result.apiKey.encoded);
+      cookie.set(ELASTIC_API_KEY_NAME, result.apiKey.encoded, {
+        expires: 1,
+      });
       onCloseTerms();
       router.push("/bo");
     }
@@ -134,7 +136,9 @@ export const FormLogin = () => {
         if (result.firstLogin) {
           onOpenTerms();
         } else {
-          cookie.set(ELASTIC_API_KEY_NAME, result.apiKey.encoded);
+          cookie.set(ELASTIC_API_KEY_NAME, result.apiKey.encoded, {
+            expires: 1,
+          });
           router.push("/bo");
         }
       } else {
@@ -154,7 +158,9 @@ export const FormLogin = () => {
       if (res.ok) {
         const result = await res.json();
         if (process.env.NODE_ENV === "development") {
-          cookie.set(ELASTIC_API_KEY_NAME, result.encoded);
+          cookie.set(ELASTIC_API_KEY_NAME, result.encoded, {
+            expires: 1,
+          });
           router.push("/bo");
         }
         startTimer();
