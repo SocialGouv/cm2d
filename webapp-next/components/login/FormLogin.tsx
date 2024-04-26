@@ -32,7 +32,7 @@ import useSWRMutation from "swr/mutation";
 import { ELASTIC_API_KEY_NAME } from "@/utils/tools";
 import { ContentCGU } from "@/pages/legals/cgu";
 
-async function auth<T>(url: string, { arg }: { arg: T }) {
+export async function auth<T>(url: string, { arg }: { arg: T }) {
   return fetch(url, {
     method: "POST",
     body: JSON.stringify(arg),
@@ -57,7 +57,8 @@ export const FormLogin = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showCodeForm, setShowCodeForm] = useState(false);
 
-  const [remaningRequests, setRemaningRequests] = useState(0);
+  const [remaningRequestsLogin, setRemaningRequestsLogin] = useState(0);
+  const [remaningRequestsOTP, setRemaningRequestsOTP] = useState(0);
 
   const [timer, setTimer] = useState(30);
   const intervalRef = useRef<NodeJS.Timeout | undefined>();
@@ -113,7 +114,9 @@ export const FormLogin = () => {
         code: code.toString(),
       })) as any;
       const result = await res.json();
-      cookie.set(ELASTIC_API_KEY_NAME, result.apiKey.encoded);
+      cookie.set(ELASTIC_API_KEY_NAME, result.apiKey.encoded, {
+        expires: 1,
+      });
       onCloseTerms();
       router.push("/bo");
     }
@@ -134,14 +137,21 @@ export const FormLogin = () => {
         if (result.firstLogin) {
           onOpenTerms();
         } else {
-          cookie.set(ELASTIC_API_KEY_NAME, result.apiKey.encoded);
+          cookie.set(ELASTIC_API_KEY_NAME, result.apiKey.encoded, {
+            expires: 1,
+          });
           router.push("/bo");
         }
+        setIsLoading(false);
       } else {
-        setFormError(true);
+        setTimeout(() => {
+          setRemaningRequestsOTP(
+            parseInt(res.headers.get("X-RateLimit-Remaining") as string) || 0
+          );
+          setFormError(true);
+          setIsLoading(false);
+        }, 1000);
       }
-
-      setIsLoading(false);
     }
   };
 
@@ -154,7 +164,9 @@ export const FormLogin = () => {
       if (res.ok) {
         const result = await res.json();
         if (process.env.NODE_ENV === "development") {
-          cookie.set(ELASTIC_API_KEY_NAME, result.encoded);
+          cookie.set(ELASTIC_API_KEY_NAME, result.encoded, {
+            expires: 1,
+          });
           router.push("/bo");
         }
         startTimer();
@@ -162,7 +174,7 @@ export const FormLogin = () => {
         setIsLoading(false);
       } else {
         setTimeout(() => {
-          setRemaningRequests(
+          setRemaningRequestsLogin(
             parseInt(res.headers.get("X-RateLimit-Remaining") as string) || 0
           );
           setFormError(true);
@@ -217,7 +229,24 @@ export const FormLogin = () => {
         <Box mb={8}>
           <Alert status="error" mb={4}>
             <AlertIcon />
-            <AlertTitle>Code incorrect</AlertTitle>
+            <Box>
+              <AlertTitle>
+                {remaningRequestsOTP === 0
+                  ? "Taux de limite atteint"
+                  : "Code incorrect"}
+              </AlertTitle>
+              {remaningRequestsOTP === 0 ? (
+                <AlertDescription>
+                  Vous avez atteint le nombre maximum de tentatives, veuillez
+                  réessayer dans 1 minute.
+                </AlertDescription>
+              ) : (
+                <AlertDescription>
+                  Il vous reste {remaningRequestsOTP} essai
+                  {remaningRequestsOTP > 1 && "s"} !
+                </AlertDescription>
+              )}
+            </Box>
           </Alert>
         </Box>
       )}
@@ -318,19 +347,19 @@ export const FormLogin = () => {
             <AlertIcon />
             <Box>
               <AlertTitle>
-                {remaningRequests === 0
+                {remaningRequestsLogin === 0
                   ? "Taux de limite atteint"
                   : "Erreurs dans les identifiants !"}
               </AlertTitle>
-              {remaningRequests === 0 ? (
+              {remaningRequestsLogin === 0 ? (
                 <AlertDescription>
                   Vous avez atteint le nombre maximum de tentatives, veuillez
                   réessayer dans 1 minute.
                 </AlertDescription>
               ) : (
                 <AlertDescription>
-                  Il vous reste {remaningRequests} essai
-                  {remaningRequests > 1 && "s"} !
+                  Il vous reste {remaningRequestsLogin} essai
+                  {remaningRequestsLogin > 1 && "s"} !
                 </AlertDescription>
               )}
             </Box>

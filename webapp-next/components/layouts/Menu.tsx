@@ -15,6 +15,8 @@ import cookie from 'js-cookie';
 import { hasAtLeastOneFilter, ELASTIC_API_KEY_NAME } from '@/utils/tools';
 import { FilterAssociateCauses } from '../filters/AssociateCauses';
 import { RegionFilter } from '../filters/Regions';
+import { auth } from '../login/FormLogin';
+import useSWRMutation from 'swr/mutation';
 
 export const ageRanges = [
   { from: 0, to: 0, key: 'Moins de 1 an' },
@@ -35,6 +37,11 @@ export function Menu() {
   if (!context) {
     throw new Error('Menu must be used within a Cm2dProvider');
   }
+
+  const { trigger: triggerInvalidateApiKey } = useSWRMutation(
+    "/api/auth/invalidate-api-key",
+    auth<{ username: string }>
+  );
 
   const { filters, setFilters, user } = context;
 
@@ -166,7 +173,11 @@ export function Menu() {
                 icon: '/icons/log-out.svg',
                 onClick: () => {
                   cookie.remove(ELASTIC_API_KEY_NAME);
-                  window.location.reload();
+                  triggerInvalidateApiKey({
+                    username: context.user.username as string
+                  }).then(() => {
+                    window.location.reload();
+                  });
                 },
                 link: '/'
               }
