@@ -48,6 +48,9 @@ module.exports = withSentryConfig(
     org: "numericite",
     project: "cm2d-nextjs",
     url: "https://sentry.numericite.eu/",
+    errorHandler: (err, _, compilation) => {
+      compilation.warnings.push("Sentry CLI Plugin: " + err.message);
+    },
   },
   {
     // For all available options, see:
