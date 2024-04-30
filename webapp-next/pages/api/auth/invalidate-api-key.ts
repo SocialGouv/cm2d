@@ -1,3 +1,4 @@
+import { ELASTIC_API_KEY_NAME } from "@/utils/tools";
 import { Client } from "@elastic/elasticsearch";
 import fs from "fs";
 import type { NextApiRequest, NextApiResponse } from "next";
@@ -26,6 +27,12 @@ export default async function handler(
       const invalidatedApiKey = await adminClient.security.invalidateApiKey({
         username,
       });
+
+      res.setHeader("Set-Cookie", [
+        `${ELASTIC_API_KEY_NAME}=; Path=/; HttpOnly; Max-Age=-1; ${
+          process.env.NODE_ENV !== "development" ? "Secure" : ""
+        }`,
+      ]);
 
       res.status(200).json(invalidatedApiKey);
     } catch (error: any) {

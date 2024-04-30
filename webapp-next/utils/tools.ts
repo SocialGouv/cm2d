@@ -1,6 +1,7 @@
 import { format } from 'date-fns';
 import moment from 'moment';
 import { Filters, SearchCategory, View } from './cm2d-provider';
+import { NextApiResponse } from 'next';
 
 export const viewRefs: { label: string; value: View }[] = [
   { label: 'Vue courbe', value: 'line' },
@@ -754,3 +755,16 @@ export function removeAccents(str: string) {
 
 export const ELASTIC_API_KEY_NAME =
   (process.env.NEXT_PUBLIC_ELASTIC_API_KEY_NAME as string) || 'cm2d_api_key';
+
+
+export const setCookieServerSide = (
+  res: NextApiResponse,
+  securityTokenEncoded: string
+) => {
+  res.setHeader(
+    "Set-Cookie",
+    `${ELASTIC_API_KEY_NAME}=${securityTokenEncoded}; path=/; HttpOnly; ${
+      process.env.NODE_ENV !== "development" ? "Secure;" : ""
+    }`
+  );
+};
