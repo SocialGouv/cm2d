@@ -19,7 +19,7 @@
     "@next/font": "13.4.1",
     "@sentry/nextjs": "^7.75.0",
     "@types/js-cookie": "^3.0.3",
-    "@types/node": "20.1.1",
+    "@types/node": "20.12.7",
     "@types/react": "18.2.6",
     "@types/react-dom": "18.2.4",
     "@uidotdev/usehooks": "^2.1.1",
