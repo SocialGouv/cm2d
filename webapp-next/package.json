@@ -19,11 +19,7 @@
     "@next/font": "13.4.1",
     "@sentry/nextjs": "^7.75.0",
     "@types/js-cookie": "^3.0.3",
-<<<<<<< HEAD
-    "@types/node": "20.1.1",
-=======
     "@types/node": "20.12.7",
->>>>>>> a69efecbd98b8a752fa7c2a73ac131cd3fbd4a81
     "@types/react": "18.3.1",
     "@types/react-dom": "18.3.0",
     "@uidotdev/usehooks": "^2.1.1",
