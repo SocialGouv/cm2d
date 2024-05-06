@@ -2,7 +2,7 @@ import { Cm2dContext } from '@/utils/cm2d-provider';
 import { getLastDayOfMonth } from '@/utils/tools';
 import { useContext, useEffect, useRef, useState } from 'react';
 import DatePicker, { registerLocale } from 'react-datepicker';
-import fr from 'date-fns/locale/fr';
+import { fr } from 'date-fns/locale';
 import 'react-datepicker/dist/react-datepicker.css';
 
 registerLocale('fr', fr);
