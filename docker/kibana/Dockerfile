@@ -2,7 +2,7 @@
 # Build stage 0 `builder`:
 # Extract Kibana artifact
 ################################################################################
-FROM ubuntu:20.04 AS builder
+FROM ubuntu:24.04 AS builder
 
 RUN for iter in {1..10}; do \
       apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y curl  && \
@@ -66,7 +66,7 @@ RUN chmod -R g=u /usr/share/kibana
 # Copy kibana from stage 0
 # Add entrypoint
 ################################################################################
-FROM ubuntu:20.04
+FROM ubuntu:24.04
 EXPOSE 5601
 
 # RUN mkdir /usr/share/fonts/local

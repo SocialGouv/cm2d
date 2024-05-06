@@ -3,7 +3,7 @@
 # Extract Elasticsearch artifact
 ################################################################################
 
-FROM ubuntu:20.04 AS builder
+FROM ubuntu:24.04 AS builder
 
 # Install required packages to extract the Elasticsearch distribution
 RUN for iter in {1..10}; do \
@@ -72,7 +72,7 @@ RUN sed -i -e 's/ES_DISTRIBUTION_TYPE=tar/ES_DISTRIBUTION_TYPE=docker/' bin/elas
 # Add entrypoint
 ################################################################################
 
-FROM ubuntu:20.04
+FROM ubuntu:24.04
 
 # Change default shell to bash, then install required packages with retries.
 RUN yes no | dpkg-reconfigure dash && \
