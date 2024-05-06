@@ -1,4 +1,3 @@
-import { format } from 'date-fns';
 import moment from 'moment';
 import { Filters, SearchCategory, View } from './cm2d-provider';
 
