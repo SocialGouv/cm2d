@@ -36,13 +36,13 @@
     "openai": "^4.0.0",
     "react": "18.3.1",
     "react-chartjs-2": "^5.2.0",
-    "react-datepicker": "^4.11.0",
+    "react-datepicker": "^6.0.0",
     "react-dom": "18.3.1",
     "superjson": "^1.12.3",
     "swr": "^2.1.5",
     "typescript": "5.4.5"
   },
   "devDependencies": {
-    "@types/react-datepicker": "^4.11.2"
+    "@types/react-datepicker": "^6.0.0"
   }
 }
