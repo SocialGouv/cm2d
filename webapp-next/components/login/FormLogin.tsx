@@ -5,6 +5,7 @@ import {
   AlertTitle,
   Box,
   Button,
+  Divider,
   FormControl,
   FormLabel,
   Heading,
@@ -26,6 +27,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import cookie from "js-cookie";
+import NextLink from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import useSWRMutation from "swr/mutation";
@@ -253,8 +255,7 @@ export const FormLogin = () => {
       <Button
         type="submit"
         isDisabled={isLoading}
-        bg="primary.500"
-        _hover={{}}
+        colorScheme="primary"
         loadingText="Connexion en cours..."
         color={"white"}
         w={"full"}
@@ -369,8 +370,7 @@ export const FormLogin = () => {
       <Button
         type="submit"
         isDisabled={isLoading}
-        bg="primary.500"
-        _hover={{}}
+        colorScheme="primary"
         loadingText="Connexion en cours..."
         color={"white"}
         w={"full"}
@@ -383,6 +383,12 @@ export const FormLogin = () => {
           <>Je me connecte -&gt;</>
         )}
       </Button>
+      <Divider my={4} />
+      <Text fontSize={["xs", "sm"]} color="neutral.500">
+        <Link as={NextLink} href="/login/forgot-password">
+          Mot de passe oublié ?
+        </Link>
+      </Text>
     </form>
   );
 
@@ -395,7 +401,7 @@ export const FormLogin = () => {
         mx={"auto"}
         mt={[8, 0]}
       >
-        <Box maxW="sm" mx={[10, 20]} p={[0, 2]} bgColor="white">
+        <Box mx={[10, 20]} p={[0, 2]} bgColor="white">
           <Heading
             as="h1"
             size="lg"
