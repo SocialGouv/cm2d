@@ -401,7 +401,7 @@ export const FormLogin = () => {
         mx={"auto"}
         mt={[8, 0]}
       >
-        <Box mx={[10, 20]} p={[0, 2]} bgColor="white">
+        <Box w="lg" mx={[10, 20]} p={[0, 2]} bgColor="white">
           <Heading
             as="h1"
             size="lg"

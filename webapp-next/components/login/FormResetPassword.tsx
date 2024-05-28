@@ -88,7 +88,7 @@ export const FormResetPassword = () => {
       mx={"auto"}
       mt={[8, 0]}
     >
-      <Box mx={[10, 20]} p={[0, 2]} bgColor="white">
+      <Box w="lg" mx={[10, 20]} p={[0, 2]} bgColor="white">
         <Heading
           as="h1"
           size="lg"
@@ -125,6 +125,16 @@ export const FormResetPassword = () => {
                 bg={"secondary.500"}
                 {...register("password", {
                   required: "Ce champ est obligatoire",
+                  minLength: {
+                    value: 12,
+                    message:
+                      "Le mot de passe doit contenir au moins 12 caractères",
+                  },
+                  pattern: {
+                    value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).+$/,
+                    message:
+                      "Le mot de passe doit contenir au moins une lettre minuscule, une lettre majuscule, un chiffre et un caractère spécial",
+                  },
                 })}
               />
             </InputGroup>
