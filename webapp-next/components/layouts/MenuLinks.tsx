@@ -4,7 +4,7 @@ import NextLink from 'next/link';
 interface Link {
   label: string;
   icon: string;
-  link: string;
+  link?: string;
   onClick?: () => void;
 }
 
@@ -18,7 +18,7 @@ export const MenuLinks: React.FC<Props> = ({ links }) => {
       {links.map((link, index) => (
         <Link
           as={NextLink}
-          href={link.link}
+          href={link.link ? link.link : ""}
           display="flex"
           alignItems="left"
           mt={8}

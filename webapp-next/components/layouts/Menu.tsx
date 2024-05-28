@@ -1,4 +1,4 @@
-import { Box, Flex, Image, Spacer, Stack } from '@chakra-ui/react';
+import { Box, Flex, Image, Modal, ModalOverlay, Spacer, Stack, useDisclosure } from '@chakra-ui/react';
 import { Cm2dContext, baseFilters } from '@/utils/cm2d-provider';
 import { useContext } from 'react';
 import { FiltersAges } from '../filters/Ages';
@@ -17,6 +17,7 @@ import { FilterAssociateCauses } from '../filters/AssociateCauses';
 import { RegionFilter } from '../filters/Regions';
 import { auth } from '../login/FormLogin';
 import useSWRMutation from 'swr/mutation';
+import SettingsModal from '../modals/settings';
 
 export const ageRanges = [
   { from: 0, to: 0, key: 'Moins de 1 an' },
@@ -33,6 +34,12 @@ export const ageRanges = [
 
 export function Menu() {
   const context = useContext(Cm2dContext);
+
+  const {
+    isOpen: isOpenSettings,
+    onClose: onCloseSettings,
+    onOpen: onOpenSettings
+  } = useDisclosure();
 
   if (!context) {
     throw new Error('Menu must be used within a Cm2dProvider');
@@ -164,6 +171,11 @@ export function Menu() {
                 link: '/about'
               },
               {
+                label: 'Paramètres du compte',
+                icon: '/icons/settings.svg',
+                onClick: onOpenSettings
+              },
+              {
                 label: 'Mentions légales',
                 icon: '/icons/shield-user.svg',
                 link: '/legals/mentions-legales'
@@ -186,6 +198,16 @@ export function Menu() {
         </Box>
         <UserCard user={user} />
       </Box>
+      <Modal
+        isOpen={isOpenSettings}
+        onClose={onCloseSettings}
+        size="lg"
+        isCentered
+        closeOnOverlayClick={false}
+      >
+        <ModalOverlay />
+        <SettingsModal user={user} onClose={onCloseSettings} />
+      </Modal>
     </Flex>
   );
 }
