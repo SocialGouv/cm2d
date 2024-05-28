@@ -15,6 +15,7 @@ import {
   InputLeftElement,
   Link,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
@@ -38,6 +39,8 @@ export async function auth<T>(url: string, { arg }: { arg: T }) {
 export const FormResetPassword = () => {
   const router = useRouter();
 
+  const toast = useToast();
+
   const [errorForm, setErrorForm] = useState<string | null>(null);
 
   const { trigger: triggerResetPassword } = useSWRMutation(
@@ -60,6 +63,13 @@ export const FormResetPassword = () => {
       token: router.query.token as string,
     });
     if (response && response.ok) {
+      toast({
+        title: "Mot de passe réinitialisé",
+        description: "Vous pouvez maintenant vous connecter",
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
       router.push("/login");
     } else {
       if (response?.status === 404) {
@@ -159,7 +169,7 @@ export const FormResetPassword = () => {
             </FormErrorMessage>
           </FormControl>
           {errorForm && (
-            <Alert mb={6} status="error">
+            <Alert status="error" mb={6}>
               <AlertIcon />
               <AlertTitle>{errorForm}</AlertTitle>
             </Alert>

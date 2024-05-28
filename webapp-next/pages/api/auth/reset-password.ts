@@ -61,8 +61,8 @@ export default async function handler(
 
       res.status(200).send({ response: "ok" });
     } catch (error: any) {
-      if (error.statusCode === 401) {
-        res.status(401).end();
+      if (error.statusCode) {
+        res.status(error.statusCode).end();
       } else {
         res.status(500).end();
       }

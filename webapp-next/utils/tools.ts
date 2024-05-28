@@ -738,14 +738,14 @@ export function getResetPasswordEmailHtml(link: string) {
             
             <p>
               Vous avez récemment demandé à réinitialiser votre mot de passe. Pour terminer le processus,
-              veuillez entrer le code de vérification suivant dans le formulaire de réinitialisation :
+              veuillez cliquer sur le lien ci-dessous :
             </p>
             
             <a href="${link}">Votre lien de réinitialisation</a>
             
             <p>
-              Ce code est valable pour les 10 prochaines minutes. Si vous n'avez pas demandé ce
-              code, veuillez ignorer cet e-mail.
+              Ce lien est valable pendant 1 heure. Si vous n'avez pas demandé cette réinitialisation,
+              veuillez ignorer cet e-mail.
             </p>
               
             <p>

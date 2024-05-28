@@ -125,16 +125,16 @@ const CM2DAlert: ComponentStyleConfig = {
   baseStyle: {
     container: {
       borderRadius: 'lg',
-      bg: 'highlight.50',
-      color: 'orange.500'
+      // bg: 'highlight.50',
+      // color: 'orange.500'
     },
     description: {
       fontWeight: 500
     },
-    icon: {
-      bg: 'highlight.50',
-      color: 'highlight.500'
-    }
+    // icon: {
+    //   bg: 'highlight.50',
+    //   color: 'highlight.500'
+    // }
   }
 };
 
