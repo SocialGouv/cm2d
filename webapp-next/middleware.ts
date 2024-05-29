@@ -10,9 +10,13 @@ export function middleware(request: NextRequest) {
     if (!cookie) {
       return NextResponse.redirect(new URL('/', request.url));
     }
-  } else if (request.nextUrl.pathname === '/' || request.nextUrl.pathname === '/login') {
+  } else if (request.nextUrl.pathname === '/' || request.nextUrl.pathname.startsWith('/login')) {
     if (cookie) {
       return NextResponse.redirect(new URL('/bo', request.url));
     }
   }
 }
+
+export const config = {
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+};
