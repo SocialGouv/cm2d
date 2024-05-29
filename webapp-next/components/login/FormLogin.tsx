@@ -33,6 +33,7 @@ import { useEffect, useRef, useState } from "react";
 import useSWRMutation from "swr/mutation";
 import { ELASTIC_API_KEY_NAME, swrPOSTFetch } from "@/utils/tools";
 import { ContentCGU } from "@/pages/legals/cgu";
+import { WrapperForm } from "./WrapperForm";
 
 export const FormLogin = () => {
   const router = useRouter();
@@ -186,7 +187,7 @@ export const FormLogin = () => {
       }}
     >
       <FormControl mb={[4, 6]}>
-        <FormLabel htmlFor="code" fontSize={["10px", "12px"]} fontWeight={500}>
+        <FormLabel htmlFor="code" fontSize={["2xs", "xs"]} fontWeight={500}>
           Code
         </FormLabel>
         <InputGroup mb={2}>
@@ -198,7 +199,7 @@ export const FormLogin = () => {
             id="code"
             autoFocus
             placeholder="Saisissez votre code"
-            fontSize={"12px"}
+            fontSize="xs"
             bg={"secondary.500"}
             value={code}
             onChange={handleCodeChange}
@@ -251,7 +252,7 @@ export const FormLogin = () => {
         loadingText="Connexion en cours..."
         color={"white"}
         w={"full"}
-        fontSize={["14px", "16px", "18px"]}
+        fontSize={["md", "lg", "xl"]}
         fontWeight={600}
       >
         {isLoading ? <Spinner color="primary.500" /> : <>Je valide -&gt;</>}
@@ -269,7 +270,7 @@ export const FormLogin = () => {
       <FormControl mb={[4, 6]}>
         <FormLabel
           htmlFor="username"
-          fontSize={["10px", "12px"]}
+          fontSize={["2xs", "xs"]}
           fontWeight={500}
         >
           Identifiant
@@ -283,7 +284,7 @@ export const FormLogin = () => {
             id="username"
             autoFocus
             placeholder="Saisissez votre adresse email"
-            fontSize={"12px"}
+            fontSize="xs"
             bg={"secondary.500"}
             value={username}
             onChange={handleUsernameChange}
@@ -294,7 +295,7 @@ export const FormLogin = () => {
       <FormControl mb={[4, 6]}>
         <FormLabel
           htmlFor="password"
-          fontSize={["10px", "12px"]}
+          fontSize={["2xs", "xs"]}
           fontWeight={500}
         >
           Mot de passe
@@ -307,7 +308,7 @@ export const FormLogin = () => {
             type={isOpen ? "text" : "password"}
             id="password"
             placeholder="Saisissez votre mot de passe"
-            fontSize={"12px"}
+            fontSize="xs"
             bg={"secondary.500"}
             value={password}
             onChange={handlePasswordChange}
@@ -366,7 +367,7 @@ export const FormLogin = () => {
         loadingText="Connexion en cours..."
         color={"white"}
         w={"full"}
-        fontSize={["14px", "16px", "18px"]}
+        fontSize={["md", "lg", "xl"]}
         fontWeight={600}
       >
         {isLoading ? (
@@ -386,36 +387,19 @@ export const FormLogin = () => {
 
   return (
     <>
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        mx={"auto"}
-        mt={[8, 0]}
+    <WrapperForm title="Connexion 👋">
+      <Text
+        mb={6}
+        fontSize={["md", "lg"]}
+        fontWeight={400}
+        color={"neutral.500"}
       >
-        <Box w="lg" mx={[10, 20]} p={[0, 2]} bgColor="white">
-          <Heading
-            as="h1"
-            size="lg"
-            mb={6}
-            fontSize={["32px", "48px"]}
-            fontWeight={700}
-          >
-            Connexion 👋
-          </Heading>
-          <Text
-            mb={6}
-            fontSize={["14px", "16px"]}
-            fontWeight={400}
-            color={"neutral.500"}
-          >
-            {showCodeForm
-              ? "Vous avez reçu un code par email, merci de le saisir ci-dessous."
-              : "Veuillez vous connecter pour accéder à votre compte."}
-          </Text>
-          {showCodeForm ? CodeForm : EmailPasswordForm}
-        </Box>
-      </Box>
+        {showCodeForm
+          ? "Vous avez reçu un code par email, merci de le saisir ci-dessous."
+          : "Veuillez vous connecter pour accéder à votre compte."}
+      </Text>
+      {showCodeForm ? CodeForm : EmailPasswordForm}
+    </WrapperForm>
       <Modal
         isOpen={isOpenTerms}
         onClose={onCloseTerms}

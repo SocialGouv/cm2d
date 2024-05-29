@@ -23,6 +23,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import useSWRMutation from "swr/mutation";
+import { WrapperForm } from "./WrapperForm";
 
 type FormResetPassword = {
   password: string;
@@ -74,123 +75,106 @@ export const FormResetPassword = () => {
   };
 
   return (
-    <Box
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      mx={"auto"}
-      mt={[8, 0]}
-    >
-      <Box w="lg" mx={[10, 20]} p={[0, 2]} bgColor="white">
-        <Heading
-          as="h1"
-          size="lg"
-          mb={6}
-          fontSize={["32px", "48px"]}
-          fontWeight={700}
-        >
-          Mot de passe oublié
-        </Heading>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <FormControl mb={[4, 6]} isInvalid={!!errors.password}>
-            <FormLabel
-              htmlFor="password"
-              fontSize={["10px", "12px"]}
-              fontWeight={500}
-            >
-              Nouveau mot de passe
-            </FormLabel>
-            <InputGroup>
-              <InputLeftElement pointerEvents="none">
-                <Image
-                  src={"/icons/user.svg"}
-                  alt="User Icon"
-                  boxSize={9}
-                  pt={2}
-                />
-              </InputLeftElement>
-              <Input
-                type="password"
-                id="password"
-                autoFocus
-                placeholder="Saisissez votre nouveau mot de passe"
-                fontSize={"12px"}
-                bg={"secondary.500"}
-                {...register("password", {
-                  required: "Ce champ est obligatoire",
-                  minLength: {
-                    value: 12,
-                    message:
-                      "Le mot de passe doit contenir au moins 12 caractères",
-                  },
-                  pattern: {
-                    value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).+$/,
-                    message:
-                      "Le mot de passe doit contenir au moins une lettre minuscule, une lettre majuscule, un chiffre et un caractère spécial",
-                  },
-                })}
-              />
-            </InputGroup>
-            <FormErrorMessage>
-              {errors.password && errors.password.message}
-            </FormErrorMessage>
-          </FormControl>
-          <FormControl mb={[4, 6]} isInvalid={!!errors.confirmPassword}>
-            <FormLabel
-              htmlFor="confirmPassword"
-              fontSize={["10px", "12px"]}
-              fontWeight={500}
-            >
-              Confirmer le mot de passe
-            </FormLabel>
-            <InputGroup>
-              <InputLeftElement pointerEvents="none">
-                <Image
-                  src={"/icons/user.svg"}
-                  alt="User Icon"
-                  boxSize={9}
-                  pt={2}
-                />
-              </InputLeftElement>
-              <Input
-                type="password"
-                id="confirmPassword"
-                autoFocus
-                placeholder="Saisissez à nouveau votre nouveau mot de passe"
-                fontSize={"12px"}
-                bg={"secondary.500"}
-                {...register("confirmPassword", {
-                  required: "Ce champ est obligatoire",
-                  validate: (value) =>
-                    value === watch("password") ||
-                    "Les mots de passe ne correspondent pas",
-                })}
-              />
-            </InputGroup>
-            <FormErrorMessage>
-              {errors.confirmPassword && errors.confirmPassword.message}
-            </FormErrorMessage>
-          </FormControl>
-          {errorForm && (
-            <Alert status="error" mb={6}>
-              <AlertIcon />
-              <AlertTitle>{errorForm}</AlertTitle>
-            </Alert>
-          )}
-          <Button
-            type="submit"
-            isLoading={isSubmitting}
-            colorScheme="primary"
-            loadingText="..."
-            color="white"
-            w="full"
-            fontSize={["14px", "16px", "18px"]}
-            fontWeight={600}
+    <WrapperForm title="Nouveau mot de passe">
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <FormControl mb={[4, 6]} isInvalid={!!errors.password}>
+          <FormLabel
+            htmlFor="password"
+            fontSize={["2xs", "xs"]}
+            fontWeight={500}
           >
-            Réinitialiser le mot de passe
-          </Button>
-        </form>
-      </Box>
-    </Box>
+            Mot de passe
+          </FormLabel>
+          <InputGroup>
+            <InputLeftElement pointerEvents="none">
+              <Image
+                src={"/icons/user.svg"}
+                alt="User Icon"
+                boxSize={9}
+                pt={2}
+              />
+            </InputLeftElement>
+            <Input
+              type="password"
+              id="password"
+              autoFocus
+              placeholder="Saisissez votre nouveau mot de passe"
+              fontSize="xs"
+              bg={"secondary.500"}
+              {...register("password", {
+                required: "Ce champ est obligatoire",
+                minLength: {
+                  value: 12,
+                  message:
+                    "Le mot de passe doit contenir au moins 12 caractères",
+                },
+                pattern: {
+                  value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).+$/,
+                  message:
+                    "Le mot de passe doit contenir au moins une lettre minuscule, une lettre majuscule, un chiffre et un caractère spécial",
+                },
+              })}
+            />
+          </InputGroup>
+          <FormErrorMessage>
+            {errors.password && errors.password.message}
+          </FormErrorMessage>
+        </FormControl>
+        <FormControl mb={[4, 6]} isInvalid={!!errors.confirmPassword}>
+          <FormLabel
+            htmlFor="confirmPassword"
+            fontSize={["2xs", "xs"]}
+            fontWeight={500}
+          >
+            Confirmer le mot de passe
+          </FormLabel>
+          <InputGroup>
+            <InputLeftElement pointerEvents="none">
+              <Image
+                src={"/icons/user.svg"}
+                alt="User Icon"
+                boxSize={9}
+                pt={2}
+              />
+            </InputLeftElement>
+            <Input
+              type="password"
+              id="confirmPassword"
+              autoFocus
+              placeholder="Saisissez à nouveau votre nouveau mot de passe"
+              fontSize="xs"
+              bg={"secondary.500"}
+              {...register("confirmPassword", {
+                required: "Ce champ est obligatoire",
+                validate: (value) =>
+                  value === watch("password") ||
+                  "Les mots de passe ne correspondent pas",
+              })}
+            />
+          </InputGroup>
+          <FormErrorMessage>
+            {errors.confirmPassword && errors.confirmPassword.message}
+          </FormErrorMessage>
+        </FormControl>
+        {errorForm && (
+          <Alert status="error" mb={6}>
+            <AlertIcon />
+            <AlertTitle>{errorForm}</AlertTitle>
+          </Alert>
+        )}
+        <Button
+          type="submit"
+          isLoading={isSubmitting}
+          colorScheme="primary"
+          loadingText="..."
+          color="white"
+          w="full"
+          fontSize={["md", "lg", "xl"]}
+          fontWeight={600}
+        >
+          Réinitialiser le mot de passe
+        </Button>
+      </form>
+    </WrapperForm>
   );
 };
