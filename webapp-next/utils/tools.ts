@@ -795,3 +795,11 @@ export function removeAccents(str: string) {
 
 export const ELASTIC_API_KEY_NAME =
   (process.env.NEXT_PUBLIC_ELASTIC_API_KEY_NAME as string) || "cm2d_api_key";
+
+export async function swrPOSTFetch<T>(url: string, { arg }: { arg: T }) {
+  return fetch(url, {
+    method: "POST",
+    body: JSON.stringify(arg),
+    headers: { "Content-Type": "application/json" },
+  });
+}

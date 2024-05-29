@@ -1,3 +1,4 @@
+import { swrPOSTFetch } from "@/utils/tools";
 import { CheckCircleIcon } from "@chakra-ui/icons";
 import {
   Box,
@@ -22,18 +23,10 @@ type FormForgotPassword = {
   username: string;
 };
 
-export async function auth<T>(url: string, { arg }: { arg: T }) {
-  return fetch(url, {
-    method: "POST",
-    body: JSON.stringify(arg),
-    headers: { "Content-Type": "application/json" },
-  });
-}
-
 export const FormForgotPassword = () => {
   const { trigger: triggerForgotPassword, isMutating } = useSWRMutation(
     "/api/auth/forgot-password",
-    auth<{ username: string }>
+    swrPOSTFetch<{ username: string }>
   );
 
   const {

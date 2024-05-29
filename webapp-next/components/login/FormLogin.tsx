@@ -31,16 +31,8 @@ import NextLink from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import useSWRMutation from "swr/mutation";
-import { ELASTIC_API_KEY_NAME } from "@/utils/tools";
+import { ELASTIC_API_KEY_NAME, swrPOSTFetch } from "@/utils/tools";
 import { ContentCGU } from "@/pages/legals/cgu";
-
-export async function auth<T>(url: string, { arg }: { arg: T }) {
-  return fetch(url, {
-    method: "POST",
-    body: JSON.stringify(arg),
-    headers: { "Content-Type": "application/json" },
-  });
-}
 
 export const FormLogin = () => {
   const router = useRouter();
@@ -70,15 +62,15 @@ export const FormLogin = () => {
 
   const { trigger: triggerLogin } = useSWRMutation(
     "/api/auth",
-    auth<{ username: string; password: string }>
+    swrPOSTFetch<{ username: string; password: string }>
   );
   const { trigger: triggerVerify } = useSWRMutation(
     "/api/auth/verify-code",
-    auth<{ username: string; code: string }>
+    swrPOSTFetch<{ username: string; code: string }>
   );
   const { trigger: triggerCreateUser } = useSWRMutation(
     "/api/auth/create-user",
-    auth<{ username: string; versionCGU: string }>
+    swrPOSTFetch<{ username: string; versionCGU: string }>
   );
 
   const startTimer = () => {

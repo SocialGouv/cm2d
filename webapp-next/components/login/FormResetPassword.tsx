@@ -1,3 +1,4 @@
+import { swrPOSTFetch } from "@/utils/tools";
 import {
   Alert,
   AlertIcon,
@@ -28,14 +29,6 @@ type FormResetPassword = {
   confirmPassword: string;
 };
 
-export async function auth<T>(url: string, { arg }: { arg: T }) {
-  return fetch(url, {
-    method: "POST",
-    body: JSON.stringify(arg),
-    headers: { "Content-Type": "application/json" },
-  });
-}
-
 export const FormResetPassword = () => {
   const router = useRouter();
 
@@ -45,7 +38,7 @@ export const FormResetPassword = () => {
 
   const { trigger: triggerResetPassword } = useSWRMutation(
     "/api/auth/reset-password",
-    auth<{ password: string; token: string }>
+    swrPOSTFetch<{ password: string; token: string }>
   );
 
   const {
