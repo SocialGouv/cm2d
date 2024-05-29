@@ -25,6 +25,7 @@ import type { User } from "@/utils/cm2d-provider";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import useSWRMutation from "swr/mutation";
 import { useState } from "react";
+import { swrPOSTFetch } from "@/utils/tools";
 
 type SettingsProps = {
   user: User;
@@ -36,21 +37,13 @@ type FormChangePassword = {
   confirmPassword: string;
 };
 
-export async function auth<T>(url: string, { arg }: { arg: T }) {
-  return fetch(url, {
-    method: "POST",
-    body: JSON.stringify(arg),
-    headers: { "Content-Type": "application/json" },
-  });
-}
-
 export default function SettingsModal({ user, onClose }: SettingsProps) {
   const {
     handleSubmit,
     register,
     watch,
     reset,
-    formState: { errors, isSubmitting, isSubmitSuccessful },
+    formState: { errors, isSubmitting },
   } = useForm<FormChangePassword>();
 
   const [isSuccessUpdateUser, setIsSuccessUpdateUser] = useState(false);
@@ -68,7 +61,7 @@ export default function SettingsModal({ user, onClose }: SettingsProps) {
 
   const { trigger: triggerUpdateUser } = useSWRMutation(
     "/api/auth/update-user",
-    auth<{ username: string; password: string }>
+    swrPOSTFetch<{ username: string; password: string }>
   );
 
   return (
@@ -179,7 +172,6 @@ export default function SettingsModal({ user, onClose }: SettingsProps) {
               <CloseButton
                 alignSelf="flex-start"
                 position="absolute"
-                // align center vertically
                 top="50%"
                 transform="translateY(-50%)"
                 right={2}
