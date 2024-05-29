@@ -1,5 +1,6 @@
 import { extendTheme } from '@chakra-ui/react';
 import { ComponentStyleConfig } from '@chakra-ui/react';
+import { alertTheme as CM2DAlert } from "@/components/chakra/Alert";
 
 const colors = {
   primaryOverlay: 'rgb(36, 108, 249, 0.8)',
@@ -117,23 +118,6 @@ const CM2DButton: ComponentStyleConfig = {
       borderWidth: 1,
       borderColor: 'primary.50',
       fontWeight: 500
-    }
-  }
-};
-
-const CM2DAlert: ComponentStyleConfig = {
-  baseStyle: {
-    container: {
-      borderRadius: 'lg',
-      bg: 'highlight.50',
-      color: 'orange.500'
-    },
-    description: {
-      fontWeight: 500
-    },
-    icon: {
-      bg: 'highlight.50',
-      color: 'highlight.500'
     }
   }
 };

@@ -38,6 +38,7 @@
     "react-chartjs-2": "^5.2.0",
     "react-datepicker": "^6.0.0",
     "react-dom": "18.3.1",
+    "react-hook-form": "^7.51.5",
     "superjson": "^2.0.0",
     "swr": "^2.1.5",
     "typescript": "5.4.5"

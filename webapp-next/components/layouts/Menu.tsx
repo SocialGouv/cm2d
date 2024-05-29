@@ -12,10 +12,9 @@ import { UserCard } from './UserCard';
 import { FilterDates } from '../filters/Dates';
 import { FiltersDepartments } from '../filters/Departments';
 import cookie from 'js-cookie';
-import { hasAtLeastOneFilter, ELASTIC_API_KEY_NAME } from '@/utils/tools';
+import { hasAtLeastOneFilter, ELASTIC_API_KEY_NAME, swrPOSTFetch } from '@/utils/tools';
 import { FilterAssociateCauses } from '../filters/AssociateCauses';
 import { RegionFilter } from '../filters/Regions';
-import { auth } from '../login/FormLogin';
 import useSWRMutation from 'swr/mutation';
 
 export const ageRanges = [
@@ -40,7 +39,7 @@ export function Menu() {
 
   const { trigger: triggerInvalidateApiKey } = useSWRMutation(
     "/api/auth/invalidate-api-key",
-    auth<{ username: string }>
+    swrPOSTFetch<{ username: string }>
   );
 
   const { filters, setFilters, user } = context;
