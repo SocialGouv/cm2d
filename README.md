@@ -174,6 +174,25 @@ PUT /cm2d_users
 }
 ```
 
+### Mise en place des rôles
+
+En utilisant l'interface ELK, naviguez jusqu'à Stack Management > Security > Roles, et créez les rôles suivants (sans configuration particulière) :
+
+- region-france-entiere
+- region-ile-de-france
+- region-normandie
+- region-nouvelle-aquitaine
+- region-hauts-de-france
+- region-auverge-rhone-alpes
+- region-bourgogne-franche-comte
+- region-centre-val-de-loire
+- region-corse
+- region-grand-est
+- region-occitanie
+- region-pays-de-la-loire
+- region-provence-alpes-cote-dazur
+- region-bretagne
+
 ### Mise en place des transformations
 
 En utilisant l'interface ELK, naviguez jusqu'à Stack Management > Transform, et installez les indices de transformation suivants :

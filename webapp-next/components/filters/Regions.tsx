@@ -1,6 +1,13 @@
 import { Cm2dContext } from '@/utils/cm2d-provider';
 import { ChevronDownIcon } from '@chakra-ui/icons';
-import { Flex, Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/react';
+import {
+  Flex,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Text
+} from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
 
@@ -21,14 +28,20 @@ export const RegionFilter = (props: Props) => {
     filters.region_departments
   );
 
-  let regionFilters: { label: string; value: string[] }[] = [
+  let regionFilters: { label: string; role: string; value: string[] }[] = [
     {
       label: 'Ile-de-France',
+      role: 'region-ile-de-france',
       value: ['75', '77', '78', '91', '92', '93', '94', '95']
     },
-    { label: 'Normandie', value: ['14', '27', '50', '61', '76'] },
+    {
+      label: 'Normandie',
+      role: 'region-normandie',
+      value: ['14', '27', '50', '61', '76']
+    },
     {
       label: 'Nouvelle-Aquitaine',
+      role: 'region-nouvelle-aquitaine',
       value: [
         '16',
         '17',
@@ -44,7 +57,11 @@ export const RegionFilter = (props: Props) => {
         '87'
       ]
     },
-    { label: 'Hauts-de-France', value: ['02', '59', '60', '62', '80'] }
+    {
+      label: 'Hauts-de-France',
+      role: 'region-hauts-de-france',
+      value: ['02', '59', '60', '62', '80']
+    }
   ];
 
   if (mode === 'dev') {
@@ -52,6 +69,7 @@ export const RegionFilter = (props: Props) => {
       ...regionFilters,
       {
         label: 'Auvergne-Rhône-Alpes',
+        role: 'region-auverge-rhone-alpes',
         value: [
           '01',
           '03',
@@ -69,20 +87,29 @@ export const RegionFilter = (props: Props) => {
       },
       {
         label: 'Bourgogne-Franche-Comté',
+        role: 'region-bourgogne-franche-comté',
         value: ['21', '25', '39', '58', '70', '71', '89', '90']
       },
-      { label: 'Bretagne', value: ['22', '29', '35', '56'] },
+      {
+        label: 'Bretagne',
+        role: 'region-bretagne',
+        value: ['22', '29', '35', '56']
+      },
       {
         label: 'Centre-Val de Loire',
+        role: 'region-centre-val-de-loire',
         value: ['18', '28', '36', '37', '41', '45']
       },
-      { label: 'Corse', value: ['2A', '2B'] },
+      { label: 'Corse', role: 'region-corse', value: ['2A', '2B'] },
       {
         label: 'Grand Est',
+
+        role: 'region-grand-est',
         value: ['08', '10', '51', '52', '54', '55', '57', '67', '68', '88']
       },
       {
         label: 'Occitanie',
+        role: 'region-occitanie',
         value: [
           '09',
           '11',
@@ -99,9 +126,15 @@ export const RegionFilter = (props: Props) => {
           '82'
         ]
       },
-      { label: 'Pays de la Loire', value: ['44', '49', '53', '72', '85'] },
+      {
+        label: 'Pays de la Loire',
+        role: 'region-pays-de-la-loire',
+        value: ['44', '49', '53', '72', '85']
+      },
       {
         label: "Provence-Alpes-Côte d'Azur",
+
+        role: 'region-provence-alpes-cote-dazur',
         value: ['04', '05', '06', '13', '83', '84']
       }
     ];
@@ -115,10 +148,34 @@ export const RegionFilter = (props: Props) => {
     );
   };
 
+  const getUserRegions = () => {
+    if (
+      context.user &&
+      context.user.roles &&
+      context.user.roles.includes('region-france-entiere')
+    )
+      return regionFilters;
+
+    return regionFilters.filter(region => {
+      return (
+        region.role &&
+        context.user &&
+        context.user.roles &&
+        context.user.roles.includes(region.role)
+      );
+    });
+  };
+
   useEffect(() => {
     if (selectedFilter)
       setFilters({ ...filters, region_departments: selectedFilter });
   }, [selectedFilter]);
+
+  const userRegions = getUserRegions();
+
+  if (userRegions.length === 1) {
+    return <Text as="b">{userRegions[0].label}</Text>;
+  }
 
   return (
     <Menu>
@@ -137,7 +194,7 @@ export const RegionFilter = (props: Props) => {
         </Flex>
       </MenuButton>
       <MenuList zIndex={999}>
-        {regionFilters.map(filter => (
+        {getUserRegions().map(filter => (
           <MenuItem
             key={`option-${filter.value}`}
             defaultChecked={

@@ -29,6 +29,7 @@ export type User = {
   username?: string;
   email?: string;
   fullName?: string;
+  roles: string[];
 };
 
 type Cm2dContextType = {
@@ -108,7 +109,8 @@ export function Cm2dProvider({ children }: Cm2dProviderProps) {
           setUser({
             username: user.username,
             fullName: user.full_name,
-            email: user.email
+            email: user.email,
+            roles: user.roles.filter((r: string) => r !== 'viewer')
           });
         }
       })
