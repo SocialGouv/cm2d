@@ -1,11 +1,37 @@
+const cspHeader = `
+    default-src 'self' sentry.numericite.eu;
+    script-src 'self' 'unsafe-eval' 'unsafe-inline';
+    style-src 'self' 'unsafe-inline';
+    img-src 'self' blob: data:;
+    font-src 'self';
+    object-src 'none';
+    base-uri 'self';
+    form-action 'self';
+    frame-ancestors 'none';
+    worker-src 'self' blob:;
+    upgrade-insecure-requests;
+`;
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  output: "standalone"
-}
+  output: "standalone",
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: [
+          {
+            key: "Content-Security-Policy",
+            value: cspHeader.replace(/\n/g, ""),
+          },
+        ],
+      },
+    ];
+  },
+};
 
-module.exports = nextConfig
-
+module.exports = nextConfig;
 
 // Injected content via Sentry wizard below
 
@@ -21,7 +47,10 @@ module.exports = withSentryConfig(
     silent: true,
     org: "numericite",
     project: "cm2d-nextjs",
-    url: "https://sentry.numericite.eu/"
+    url: "https://sentry.numericite.eu/",
+    errorHandler: (err, _, compilation) => {
+      compilation.warnings.push("Sentry CLI Plugin: " + err.message);
+    },
   },
   {
     // For all available options, see:

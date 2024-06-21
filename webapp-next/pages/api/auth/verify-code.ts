@@ -3,6 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import fs from "fs";
 import path from "path";
 import rateLimit from "@/utils/rate-limit";
+import { setCookieServerSide } from "@/utils/tools";
 const tmpCodes = require("../../../utils/codes");
 
 const limiter = rateLimit({
@@ -52,6 +53,10 @@ export default async function handler(
         });
       } catch (e) {
         firstLogin = true;
+      }
+
+      if (!firstLogin) {
+        setCookieServerSide(res, codeObj.apiKey.encoded)
       }
 
       res.status(200).json({

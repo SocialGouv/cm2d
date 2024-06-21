@@ -2,7 +2,8 @@ import { sendMail } from '@/utils/mailter';
 import {
   generateCode,
   getCodeEmailHtml,
-  ELASTIC_API_KEY_NAME
+  ELASTIC_API_KEY_NAME,
+  setCookieServerSide
 } from '@/utils/tools';
 import { Client } from '@elastic/elasticsearch';
 import fs from 'fs';
@@ -74,6 +75,7 @@ export default async function handler(
       });
 
       if (process.env.NODE_ENV === 'development') {
+        setCookieServerSide(res, securityToken.encoded);
         res.status(200).json(securityToken);
       } else {
         tmpCodes[username] = { code: generateCode(), apiKey: securityToken };

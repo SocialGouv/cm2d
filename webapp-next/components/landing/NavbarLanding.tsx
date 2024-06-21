@@ -4,25 +4,25 @@ import {
   Flex,
   Image,
   Box,
-  useBreakpointValue,
   Text,
   useDisclosure,
   Wrap,
   WrapItem,
   CloseButton,
-  Link,
 } from "@chakra-ui/react";
-
 import NextLink from "next/link";
 import { useRouter } from "next/router";
-import cookie from "js-cookie";
-import { ELASTIC_API_KEY_NAME } from "@/utils/tools";
+import useSWR from "swr";
 
 export default function NavbarLanding() {
   const { isOpen, onOpen, onClose } = useDisclosure();
+
   const router = useRouter();
 
-  const hasApiKey = !!cookie.get(ELASTIC_API_KEY_NAME);
+  const { data: user, isLoading: isLoadingUser } = useSWR(
+    "/api/auth/user",
+    (...args) => fetch(...args).then((res) => res.json())
+  );
 
   const links = [
     { label: "Accueil", path: "/" },
@@ -72,7 +72,7 @@ export default function NavbarLanding() {
           <HamburgerIcon onClick={onOpen} display={["inline", "none"]} />
         )}
       </Flex>
-      {hasApiKey ? (
+      {!isLoadingUser && !!user ? (
         <Flex as="nav" bg="white">
           <Button
             as={NextLink}

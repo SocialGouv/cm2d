@@ -183,7 +183,6 @@ export function Menu() {
                 label: 'Déconnexion',
                 icon: '/icons/log-out.svg',
                 onClick: () => {
-                  cookie.remove(ELASTIC_API_KEY_NAME);
                   triggerInvalidateApiKey({
                     username: context.user.username as string
                   }).then(() => {

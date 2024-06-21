@@ -104,14 +104,10 @@ export const FormLogin = () => {
   const handleModalTermsAccept = async () => {
     if (code) {
       await triggerCreateUser({ username, versionCGU: "1" });
-      const res = (await triggerVerify({
+      (await triggerVerify({
         username: username,
         code: code.toString(),
       })) as any;
-      const result = await res.json();
-      cookie.set(ELASTIC_API_KEY_NAME, result.apiKey.encoded, {
-        expires: 1,
-      });
       onCloseTerms();
       router.push("/bo");
     }
@@ -132,9 +128,6 @@ export const FormLogin = () => {
         if (result.firstLogin) {
           onOpenTerms();
         } else {
-          cookie.set(ELASTIC_API_KEY_NAME, result.apiKey.encoded, {
-            expires: 1,
-          });
           router.push("/bo");
         }
         setIsLoading(false);
@@ -157,13 +150,7 @@ export const FormLogin = () => {
       setIsLoading(true);
       const res = (await triggerLogin({ username, password })) as any;
       if (res.ok) {
-        const result = await res.json();
-        if (process.env.NODE_ENV === "development") {
-          cookie.set(ELASTIC_API_KEY_NAME, result.encoded, {
-            expires: 1,
-          });
-          router.push("/bo");
-        }
+        if (process.env.NODE_ENV === "development") router.push("/bo");
         startTimer();
         setShowCodeForm(true);
         setIsLoading(false);
