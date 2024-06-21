@@ -152,7 +152,8 @@ export const RegionFilter = (props: Props) => {
     if (
       context.user &&
       context.user.roles &&
-      context.user.roles.includes('region-france-entiere')
+      (context.user.roles.includes('region-france-entiere') ||
+        !context.user.roles.length)
     )
       return regionFilters;
 
