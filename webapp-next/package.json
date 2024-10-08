@@ -41,7 +41,7 @@
     "react-hook-form": "^7.51.5",
     "superjson": "^2.0.0",
     "swr": "^2.1.5",
-    "typescript": "5.4.5"
+    "typescript": "5.6.3"
   },
   "devDependencies": {
     "@types/react-datepicker": "^6.0.0"
