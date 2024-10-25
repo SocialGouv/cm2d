@@ -22,8 +22,8 @@ export default function MentionsLegales() {
           Directeur de la publication
         </Heading>
         <Text>
-          Le directeur de la publication est Amélie Verdier – Directrice
-          Générale
+          Le directeur de la publication est Denis Robin – Directeur
+          Général
         </Text>
         <Heading size="md" as="h3" mt={4} mb={2.5}>
           Hébergement de la plateforme

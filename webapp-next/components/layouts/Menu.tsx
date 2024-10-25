@@ -74,7 +74,7 @@ export function Menu() {
       </Box>
       <Box mt={5} h="3px" w="full" bg="gray.50" />
       <Box mt={10} px={6}>
-        <MenuTitle title="Cause de décès" />
+        <MenuTitle title="Mention recherchée" />
         <FilterCauses />
       </Box>
       <Box mt={10} px={6}>
