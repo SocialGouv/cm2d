@@ -44,6 +44,6 @@
     "typescript": "5.4.5"
   },
   "devDependencies": {
-    "@types/react-datepicker": "^6.0.0"
+    "@types/react-datepicker": "^7.0.0"
   }
 }
