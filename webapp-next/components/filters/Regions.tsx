@@ -9,15 +9,12 @@ import {
   MenuList,
   Text
 } from '@chakra-ui/react';
-import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
 
 type Props = {};
 
 export const RegionFilter = (props: Props) => {
   const context = useContext(Cm2dContext);
-  const router = useRouter();
-  const { mode } = router.query;
 
   if (!context) {
     throw new Error('Menu must be used within a Cm2dProvider');
@@ -30,7 +27,7 @@ export const RegionFilter = (props: Props) => {
   );
   const [didInitDefault, setDidInitDefault] = useState<boolean>(false);
 
-  let regionFilters: { label: string; role: string; value: string[] }[] = [
+  const regionFilters: { label: string; role: string; value: string[] }[] = [
     {
       label: 'France entière',
       role: 'region-france-entiere',
@@ -68,84 +65,76 @@ export const RegionFilter = (props: Props) => {
       label: 'Hauts-de-France',
       role: 'region-hauts-de-france',
       value: ['02', '59', '60', '62', '80']
+    },
+    {
+      label: 'Auvergne-Rhône-Alpes',
+      role: 'region-auverge-rhone-alpes',
+      value: [
+        '01',
+        '03',
+        '07',
+        '15',
+        '26',
+        '38',
+        '42',
+        '43',
+        '63',
+        '69',
+        '73',
+        '74'
+      ]
+    },
+    {
+      label: 'Bourgogne-Franche-Comté',
+      role: 'region-bourgogne-franche-comté',
+      value: ['21', '25', '39', '58', '70', '71', '89', '90']
+    },
+    {
+      label: 'Bretagne',
+      role: 'region-bretagne',
+      value: ['22', '29', '35', '56']
+    },
+    {
+      label: 'Centre-Val de Loire',
+      role: 'region-centre-val-de-loire',
+      value: ['18', '28', '36', '37', '41', '45']
+    },
+    { label: 'Corse', role: 'region-corse', value: ['2A', '2B'] },
+    {
+      label: 'Grand Est',
+      role: 'region-grand-est',
+      value: ['08', '10', '51', '52', '54', '55', '57', '67', '68', '88']
+    },
+    {
+      label: 'Occitanie',
+      role: 'region-occitanie',
+      value: [
+        '09',
+        '11',
+        '12',
+        '30',
+        '31',
+        '32',
+        '34',
+        '46',
+        '48',
+        '65',
+        '66',
+        '81',
+        '82'
+      ]
+    },
+    {
+      label: 'Pays de la Loire',
+      role: 'region-pays-de-la-loire',
+      value: ['44', '49', '53', '72', '85']
+    },
+    {
+      label: "Provence-Alpes-Côte d'Azur",
+      role: 'region-provence-alpes-cote-dazur',
+      value: ['04', '05', '06', '13', '83', '84']
     }
   ];
-
-  if (mode === 'dev') {
-    regionFilters = [
-      ...regionFilters,
-      {
-        label: 'Auvergne-Rhône-Alpes',
-        role: 'region-auverge-rhone-alpes',
-        value: [
-          '01',
-          '03',
-          '07',
-          '15',
-          '26',
-          '38',
-          '42',
-          '43',
-          '63',
-          '69',
-          '73',
-          '74'
-        ]
-      },
-      {
-        label: 'Bourgogne-Franche-Comté',
-        role: 'region-bourgogne-franche-comté',
-        value: ['21', '25', '39', '58', '70', '71', '89', '90']
-      },
-      {
-        label: 'Bretagne',
-        role: 'region-bretagne',
-        value: ['22', '29', '35', '56']
-      },
-      {
-        label: 'Centre-Val de Loire',
-        role: 'region-centre-val-de-loire',
-        value: ['18', '28', '36', '37', '41', '45']
-      },
-      { label: 'Corse', role: 'region-corse', value: ['2A', '2B'] },
-      {
-        label: 'Grand Est',
-
-        role: 'region-grand-est',
-        value: ['08', '10', '51', '52', '54', '55', '57', '67', '68', '88']
-      },
-      {
-        label: 'Occitanie',
-        role: 'region-occitanie',
-        value: [
-          '09',
-          '11',
-          '12',
-          '30',
-          '31',
-          '32',
-          '34',
-          '46',
-          '48',
-          '65',
-          '66',
-          '81',
-          '82'
-        ]
-      },
-      {
-        label: 'Pays de la Loire',
-        role: 'region-pays-de-la-loire',
-        value: ['44', '49', '53', '72', '85']
-      },
-      {
-        label: "Provence-Alpes-Côte d'Azur",
-
-        role: 'region-provence-alpes-cote-dazur',
-        value: ['04', '05', '06', '13', '83', '84']
-      }
-    ];
-  }
 
   const getLabelFromValue = (value: string[]) => {
     return (
