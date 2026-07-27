@@ -1,4 +1,5 @@
 import { Cm2dContext } from '@/utils/cm2d-provider';
+import { ALL_DEPARTMENTS } from '@/utils/tools';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import {
   Flex,
@@ -27,8 +28,14 @@ export const RegionFilter = (props: Props) => {
   const [selectedFilter, setSelectedFilter] = useState<string[]>(
     filters.region_departments
   );
+  const [didInitDefault, setDidInitDefault] = useState<boolean>(false);
 
   let regionFilters: { label: string; role: string; value: string[] }[] = [
+    {
+      label: 'France entière',
+      role: 'region-france-entiere',
+      value: ALL_DEPARTMENTS
+    },
     {
       label: 'Ile-de-France',
       role: 'region-ile-de-france',
@@ -166,6 +173,17 @@ export const RegionFilter = (props: Props) => {
       );
     });
   };
+
+  // Sélection par défaut selon le rôle, une fois les rôles chargés :
+  // un utilisateur "region-france-entiere" démarre sur la vue nationale.
+  useEffect(() => {
+    if (didInitDefault) return;
+    if (!context.user || !context.user.roles) return;
+    setDidInitDefault(true);
+    if (context.user.roles.includes('region-france-entiere')) {
+      setSelectedFilter(ALL_DEPARTMENTS);
+    }
+  }, [context.user?.roles, didInitDefault]);
 
   useEffect(() => {
     if (selectedFilter)

@@ -31,6 +31,8 @@ export const departmentRefs: { [key: string]: string } = {
   "17": "Charente-Maritime",
   "18": "Cher",
   "19": "Corrèze",
+  "2A": "Corse-du-Sud",
+  "2B": "Haute-Corse",
   "21": "Côte-d'Or",
   "22": "Côtes-d'Armor",
   "23": "Creuse",
@@ -206,6 +208,10 @@ export const departmentsCodes: { [key: string]: string } = {
   "89": "FRA5356", // Yonne
   "78": "FRA5357", // Yvelines
 };
+
+// Tous les départements métropolitains — utilisé par l'option "France entière"
+// (rôle region-france-entiere) pour lever le filtrage par région.
+export const ALL_DEPARTMENTS: string[] = Object.keys(departmentsCodes);
 
 const elkFields = [
   { value: "sex", label: "Sexe" },

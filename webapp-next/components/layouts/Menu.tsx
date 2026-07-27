@@ -92,6 +92,7 @@ export function Menu() {
                     setFilters({
                       ...baseFilters,
                       categories: filters.categories,
+                      region_departments: filters.region_departments,
                       start_date: filters.start_date,
                       end_date: filters.end_date
                     });
