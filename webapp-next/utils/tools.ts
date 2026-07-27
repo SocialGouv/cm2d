@@ -1,6 +1,6 @@
 import { format } from 'date-fns';
 import moment from 'moment';
-import { Filters, SearchCategory, View } from './cm2d-provider';
+import { DateInterval, Filters, SearchCategory, View } from './cm2d-provider';
 import { NextApiResponse } from 'next';
 
 export const viewRefs: { label: string; value: View }[] = [
@@ -239,7 +239,7 @@ export function getLabelFromElkField(key: string): string {
 
 export const getLabelFromKey = (
   key: string,
-  dateFormat: "year" | "month" | "week" = "year"
+  dateFormat: "year" | "month" | "week" | "day" = "year"
 ): string => {
   if (key in departmentRefs)
     return `${departmentRefs[key as keyof typeof departmentRefs]} (${key})`;
@@ -251,6 +251,8 @@ export const getLabelFromKey = (
       return capitalizeString(dateToWeekYear(new Date(key)));
     if (dateFormat === "month")
       return capitalizeString(dateToMonthYear(new Date(key)));
+    if (dateFormat === "day")
+      return formatDateByInterval(new Date(key), "day", true);
   }
 
   return capitalizeString(key);
@@ -387,7 +389,8 @@ export type Datasets = { hits: any[]; label?: string; total?: number };
 
 export function getCSVDataFromDatasets(
   datasets: Datasets[],
-  view: View
+  view: View,
+  dateInterval: DateInterval = "week"
 ): string[][] {
   let csvData: string[][] = [];
   if (!datasets.length) return csvData;
@@ -397,7 +400,7 @@ export function getCSVDataFromDatasets(
       datasets[0].hits.map((hit) => {
         return getLabelFromKey(
           hit.key,
-          view === "line" ? "week" : view === "table" ? "month" : "year"
+          view === "line" ? dateInterval : view === "table" ? "month" : "year"
         );
       })
     );
@@ -412,7 +415,7 @@ export function getCSVDataFromDatasets(
       ...datasets[0].hits.map((h) =>
         getLabelFromKey(
           h.key,
-          view === "line" ? "week" : view === "table" ? "month" : "year"
+          view === "line" ? dateInterval : view === "table" ? "month" : "year"
         )
       ),
     ]);
@@ -567,6 +570,31 @@ export function dateToWeekYear(inputDate: Date): string {
   const formattedString = `S${weekNumber.toString().padStart(2, "0")} ${year}`;
 
   return formattedString;
+}
+
+// Formate une date selon le pas de la vue courbe (semaine/jour/mois).
+// `withYear` : afficher l'année. Sur l'axe on ne l'affiche que si la période
+// couvre plusieurs années ; dans le CSV on la met toujours (fichier lisible seul).
+export function formatDateByInterval(
+  date: Date,
+  interval: DateInterval,
+  withYear: boolean
+): string {
+  if (interval === "week") return dateToWeekYear(date);
+
+  if (interval === "day") {
+    const dd = date.getDate().toString().padStart(2, "0");
+    const mm = (date.getMonth() + 1).toString().padStart(2, "0");
+    return withYear ? `${dd}/${mm}/${date.getFullYear()}` : `${dd}/${mm}`;
+  }
+
+  // month
+  const monthLong = new Intl.DateTimeFormat("fr-FR", { month: "long" }).format(
+    date
+  );
+  return capitalizeString(
+    withYear ? `${monthLong} ${date.getFullYear()}` : monthLong
+  );
 }
 
 export function getLastDayOfMonth(date: Date): Date {

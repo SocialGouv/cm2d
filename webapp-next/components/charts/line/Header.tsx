@@ -1,5 +1,5 @@
 import { ageRanges } from '@/components/layouts/Menu';
-import { Cm2dContext, View, baseAggregation } from '@/utils/cm2d-provider';
+import { Cm2dContext, DateInterval, View } from '@/utils/cm2d-provider';
 import { getDefaultField, getLabelFromElkField, viewRefs } from '@/utils/tools';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import {
@@ -36,8 +36,19 @@ export function ChartLineHeader() {
     saveAggregateX,
     setSaveAggregateX,
     selectedFiltersPile,
-    filters
+    filters,
+    dateInterval,
+    setDateInterval
   } = context;
+
+  const dateIntervals: { label: string; value: DateInterval }[] = [
+    { label: 'Semaine', value: 'week' },
+    { label: 'Jour', value: 'day' },
+    { label: 'Mois', value: 'month' }
+  ];
+
+  const getIntervalLabel = (value: DateInterval) =>
+    dateIntervals.find(di => di.value === value)?.label ?? '';
 
   let availableFields: { label: string; value: Field }[] = [
     { label: 'Sexe', value: 'sex' },
@@ -62,8 +73,18 @@ export function ChartLineHeader() {
   const updateAggregation = () => {
     let aggregation: any = {};
 
+    // Pas de la vue courbe piloté par le dropdown "Granularité".
+    const dateAgg = {
+      aggregated_date: {
+        date_histogram: {
+          field: 'date',
+          calendar_interval: dateInterval
+        }
+      }
+    };
+
     if (isAggregated) {
-      aggregation = baseAggregation;
+      aggregation = dateAgg;
     } else {
       if (
         ['sex', 'death_location', 'home_department'].includes(aggregateField)
@@ -75,7 +96,7 @@ export function ChartLineHeader() {
               size: 100
             },
             aggs: {
-              ...baseAggregation
+              ...dateAgg
             }
           }
         };
@@ -90,7 +111,7 @@ export function ChartLineHeader() {
               size: 100
             },
             aggs: {
-              ...baseAggregation
+              ...dateAgg
             }
           }
         };
@@ -102,7 +123,7 @@ export function ChartLineHeader() {
               ranges: ageRanges
             },
             aggs: {
-              ...baseAggregation
+              ...dateAgg
             }
           }
         };
@@ -114,7 +135,7 @@ export function ChartLineHeader() {
               calendar_interval: 'year'
             },
             aggs: {
-              ...baseAggregation
+              ...dateAgg
             }
           }
         };
@@ -126,7 +147,7 @@ export function ChartLineHeader() {
 
   useEffect(() => {
     updateAggregation();
-  }, [isAggregated, aggregateField]);
+  }, [isAggregated, aggregateField, dateInterval]);
 
   useEffect(() => {
     if (!isAggregated) {
@@ -174,6 +195,25 @@ export function ChartLineHeader() {
           {viewRefs.map((vr, index) => (
             <MenuItem key={index} onClick={() => handleViewChange(vr.value)}>
               <Text as={vr.value === 'line' ? 'b' : 'span'}>{vr.label}</Text>
+            </MenuItem>
+          ))}
+        </MenuList>
+      </Menu>
+      <Menu>
+        <MenuButton
+          ml={4}
+          as={Button}
+          variant="light"
+          rightIcon={<ChevronDownIcon color="primary.200" w={5} h={5} />}
+        >
+          Granularité : <Text as="b">{getIntervalLabel(dateInterval)}</Text>
+        </MenuButton>
+        <MenuList>
+          {dateIntervals.map(di => (
+            <MenuItem key={di.value} onClick={() => setDateInterval(di.value)}>
+              <Text as={dateInterval === di.value ? 'b' : 'span'}>
+                {di.label}
+              </Text>
             </MenuItem>
           ))}
         </MenuList>

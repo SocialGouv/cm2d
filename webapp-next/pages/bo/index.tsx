@@ -28,7 +28,7 @@ export default function Home() {
     throw new Error('Menu must be used within a Cm2dProvider');
   }
 
-  const { filters, aggregations, view, setCSVData } = context;
+  const { filters, aggregations, view, setCSVData, dateInterval } = context;
 
   const { data, dataKind, isLoading } = useData(filters, aggregations);
 
@@ -82,9 +82,11 @@ export default function Home() {
 
   useEffect(() => {
     if (data && view) {
-      setCSVData(getCSVDataFromDatasets(getViewDatasets(data, view), view));
+      setCSVData(
+        getCSVDataFromDatasets(getViewDatasets(data, view), view, dateInterval)
+      );
     }
-  }, [data, view]);
+  }, [data, view, dateInterval]);
 
   if (isLoading || !dataKind || !data)
     return (

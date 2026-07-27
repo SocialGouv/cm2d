@@ -9,6 +9,8 @@ import {
 
 export type SearchCategory = 'full' | 'category_1' | 'category_2';
 
+export type DateInterval = 'week' | 'day' | 'month';
+
 export type Filters = {
   categories: string[];
   categories_associate: string[];
@@ -40,6 +42,8 @@ type Cm2dContextType = {
   setSelectedFiltersPile: Dispatch<SetStateAction<string[]>>;
   aggregations: any;
   setAggregations: Dispatch<SetStateAction<any>>;
+  dateInterval: DateInterval;
+  setDateInterval: Dispatch<SetStateAction<DateInterval>>;
   view: View;
   setView: Dispatch<SetStateAction<View>>;
   saveAggregateX: string | undefined;
@@ -85,6 +89,7 @@ export function Cm2dProvider({ children }: Cm2dProviderProps) {
   const [filters, setFilters] = useState<Filters>(baseFilters);
   const [selectedFiltersPile, setSelectedFiltersPile] = useState<string[]>([]);
   const [aggregations, setAggregations] = useState<any>(baseAggregation);
+  const [dateInterval, setDateInterval] = useState<DateInterval>('week');
 
   const [view, setView] = useState<View>('line');
   const [saveAggregateX, setSaveAggregateX] = useState<string | undefined>();
@@ -132,6 +137,8 @@ export function Cm2dProvider({ children }: Cm2dProviderProps) {
         setSelectedFiltersPile,
         aggregations,
         setAggregations,
+        dateInterval,
+        setDateInterval,
         view,
         setView,
         saveAggregateX,

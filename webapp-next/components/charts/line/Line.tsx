@@ -3,7 +3,7 @@ import { Cm2dContext } from '@/utils/cm2d-provider';
 import { orders, sortByOrder } from '@/utils/orders';
 import {
   capitalizeString,
-  dateToWeekYear,
+  formatDateByInterval,
   getLabelFromKey,
   getRandomColor
 } from '@/utils/tools';
@@ -24,7 +24,7 @@ export const ChartLine = (props: Props) => {
     throw new Error('Menu must be used within a Cm2dProvider');
   }
 
-  const { filters, saveAggregateX } = context;
+  const { filters, saveAggregateX, dateInterval } = context;
 
   const [displayDatasets, setDisplayDatasets] = useState<any[]>([]);
 
@@ -89,6 +89,9 @@ export const ChartLine = (props: Props) => {
   const min = new Date(filters.start_date);
   const max = new Date(filters.end_date);
 
+  // L'année n'est affichée sur l'axe que si la période couvre plusieurs années.
+  const multiYear = min.getFullYear() !== max.getFullYear();
+
   const datasetWithMostHits = datasets.reduce((prev, current) => {
     return prev.hits.length > current.hits.length ? prev : current;
   }, datasets[0]);
@@ -96,10 +99,16 @@ export const ChartLine = (props: Props) => {
   const xValues = datasetWithMostHits.hits.map((item: any) => {
     const currentDate = new Date(item.key_as_string);
 
-    if (currentDate.getTime() < min.getTime()) return dateToWeekYear(min);
-    if (currentDate.getTime() > max.getTime()) return dateToWeekYear(max);
+    if (currentDate.getTime() < min.getTime())
+      return formatDateByInterval(min, dateInterval, multiYear);
+    if (currentDate.getTime() > max.getTime())
+      return formatDateByInterval(max, dateInterval, multiYear);
 
-    return dateToWeekYear(new Date(item.key_as_string));
+    return formatDateByInterval(
+      new Date(item.key_as_string),
+      dateInterval,
+      multiYear
+    );
   });
 
   return (
