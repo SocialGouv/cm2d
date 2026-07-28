@@ -294,14 +294,17 @@ export const REGIONS: { label: string; role: string; value: string[] }[] = [
 ];
 
 // Agrégation ES "par région" : un bucket nommé par région, chacun filtrant sur
-// les home_department de la région. keyed:false → buckets renvoyés en tableau
-// avec `key` = label de région (même forme que les aggs terms existantes).
+// les home_department de la région. On NE passe PAS `keyed` : le paramètre n'est
+// supporté par l'agg `filters` qu'à partir d'Elasticsearch 7.11 et l'instance
+// de prod le rejette ("Unknown key for a VALUE_BOOLEAN in [...]: [keyed]").
+// Sans `keyed`, les buckets sont renvoyés sous forme d'objet { label: bucket } ;
+// `normalizeBuckets` les remet en tableau côté lecture.
 export function buildRegionFiltersAgg() {
   const filters: { [label: string]: any } = {};
   REGIONS.forEach((r) => {
     filters[r.label] = { terms: { home_department: r.value } };
   });
-  return { filters: { keyed: false, filters } };
+  return { filters: { filters } };
 }
 
 const elkFields = [
@@ -519,12 +522,25 @@ export function getCSVDataFromDatasets(
   return csvData;
 }
 
+// Une agg `filters` (stratification par région) renvoie ses buckets sous forme
+// d'objet { label: bucket } et non de tableau (on n'utilise pas `keyed`, cf.
+// buildRegionFiltersAgg). Les aggs terms/range/date_histogram renvoient déjà un
+// tableau. On normalise vers un tableau dont chaque bucket porte `key` = label.
+function normalizeBuckets(agg: any): any[] {
+  if (!agg || !agg.buckets) return [];
+  if (Array.isArray(agg.buckets)) return agg.buckets;
+  return Object.entries(agg.buckets).map(([key, value]: [string, any]) => ({
+    key,
+    ...value,
+  }));
+}
+
 export function getViewDatasets(data: any, view: View): Datasets[] {
   if (view === "line") {
     if (data.result.aggregations.aggregated_date) {
       return [{ hits: data.result.aggregations.aggregated_date.buckets }];
     } else if (data.result.aggregations.aggregated_parent) {
-      return data.result.aggregations.aggregated_parent.buckets
+      return normalizeBuckets(data.result.aggregations.aggregated_parent)
         .map((apb: any) => ({
           hits: apb.aggregated_date.buckets,
           label: getLabelFromKey(apb.key),
@@ -534,14 +550,13 @@ export function getViewDatasets(data: any, view: View): Datasets[] {
   }
 
   if (view === "table") {
-    if (
-      data.result.aggregations.aggregated_x &&
-      !!data.result.aggregations.aggregated_x.buckets.length &&
-      data.result.aggregations.aggregated_x.buckets[0].aggregated_y
-    ) {
-      return data.result.aggregations.aggregated_x.buckets
+    const xBuckets = normalizeBuckets(data.result.aggregations.aggregated_x);
+    if (xBuckets.length && xBuckets[0].aggregated_y) {
+      return xBuckets
         .map((apb: any) => ({
-          hits: apb.aggregated_y.buckets.filter((b: any) => !!b.doc_count),
+          hits: normalizeBuckets(apb.aggregated_y).filter(
+            (b: any) => !!b.doc_count
+          ),
           label: getLabelFromKey(apb.key, "month"),
         }))
         .filter((apb: any) => !!apb.hits.length);
@@ -552,7 +567,7 @@ export function getViewDatasets(data: any, view: View): Datasets[] {
     if (data.result.aggregations.aggregated_x) {
       return [
         {
-          hits: data.result.aggregations.aggregated_x.buckets.filter(
+          hits: normalizeBuckets(data.result.aggregations.aggregated_x).filter(
             (b: any) => !!b.doc_count
           ),
         },
