@@ -1,6 +1,12 @@
 import { ageRanges } from '@/components/layouts/Menu';
 import { Cm2dContext, DateInterval, View } from '@/utils/cm2d-provider';
-import { getDefaultField, getLabelFromElkField, viewRefs } from '@/utils/tools';
+import {
+  ALL_DEPARTMENTS,
+  buildRegionFiltersAgg,
+  getDefaultField,
+  getLabelFromElkField,
+  viewRefs
+} from '@/utils/tools';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import {
   Button,
@@ -19,6 +25,7 @@ type Field =
   | 'age'
   | 'death_location'
   | 'home_department'
+  | 'region'
   | 'years'
   | 'categories_level_1'
   | 'categories_level_2';
@@ -50,11 +57,18 @@ export function ChartLineHeader() {
   const getIntervalLabel = (value: DateInterval) =>
     dateIntervals.find(di => di.value === value)?.label ?? '';
 
+  // La stratification "par région" n'est proposée qu'en France entière.
+  const isFranceEntiere =
+    filters.region_departments.length === ALL_DEPARTMENTS.length;
+
   let availableFields: { label: string; value: Field }[] = [
     { label: 'Sexe', value: 'sex' },
     { label: 'Age', value: 'age' },
     { label: 'Lieu de décès', value: 'death_location' },
     { label: 'Département', value: 'home_department' },
+    ...(isFranceEntiere
+      ? [{ label: 'Région', value: 'region' as Field }]
+      : []),
     { label: 'Année', value: 'years' }
   ];
 
@@ -69,6 +83,13 @@ export function ChartLineHeader() {
       ? saveAggregateX
       : getDefaultField<Field>(selectedFiltersPile, isValidField, 'sex')
   );
+
+  // Si le critère courant n'est plus disponible (ex: région après sortie de
+  // France entière), on retombe sur "sexe".
+  if (!isAggregated && !isValidField(aggregateField)) {
+    setAggregateField('sex');
+    setSaveAggregateX('sex');
+  }
 
   const updateAggregation = () => {
     let aggregation: any = {};
@@ -86,7 +107,16 @@ export function ChartLineHeader() {
     if (isAggregated) {
       aggregation = dateAgg;
     } else {
-      if (
+      if (aggregateField === 'region') {
+        aggregation = {
+          aggregated_parent: {
+            ...buildRegionFiltersAgg(),
+            aggs: {
+              ...dateAgg
+            }
+          }
+        };
+      } else if (
         ['sex', 'death_location', 'home_department'].includes(aggregateField)
       ) {
         aggregation = {

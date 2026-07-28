@@ -1,6 +1,8 @@
 import { ageRanges } from '@/components/layouts/Menu';
 import { Cm2dContext, View, baseAggregation } from '@/utils/cm2d-provider';
 import {
+  ALL_DEPARTMENTS,
+  buildRegionFiltersAgg,
   concatAdditionnalFields,
   getDefaultField,
   getLabelFromElkField,
@@ -24,6 +26,7 @@ type Field =
   | 'age'
   | 'death_location'
   | 'home_department'
+  | 'region'
   | 'years'
   | 'categories_level_1'
   | 'categories_level_2';
@@ -44,11 +47,17 @@ export function ChartHistogramHeader() {
     filters
   } = context;
 
+  const isFranceEntiere =
+    filters.region_departments.length === ALL_DEPARTMENTS.length;
+
   let availableFields: { label: string; value: Field }[] = [
     { label: 'Sexe', value: 'sex' },
     { label: 'Age', value: 'age' },
     { label: 'Lieu de décès', value: 'death_location' },
     { label: 'Département', value: 'home_department' },
+    ...(isFranceEntiere
+      ? [{ label: 'Région', value: 'region' as Field }]
+      : []),
     { label: 'Année', value: 'years' }
   ];
 
@@ -108,6 +117,10 @@ export function ChartHistogramHeader() {
           calendar_interval: 'year'
         }
       };
+    }
+
+    if (aggregateX === 'region') {
+      xAgg = buildRegionFiltersAgg();
     }
 
     setAggregations({

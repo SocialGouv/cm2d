@@ -1,6 +1,8 @@
 import { ageRanges } from '@/components/layouts/Menu';
 import { Cm2dContext, View, baseAggregation } from '@/utils/cm2d-provider';
 import {
+  ALL_DEPARTMENTS,
+  buildRegionFiltersAgg,
   concatAdditionnalFields,
   getDefaultField,
   getLabelFromElkField,
@@ -24,6 +26,7 @@ type Field =
   | 'age'
   | 'death_location'
   | 'home_department'
+  | 'region'
   | 'months'
   | 'categories_level_1'
   | 'categories_level_2'
@@ -47,11 +50,17 @@ export function ChartTableHeader() {
     filters
   } = context;
 
+  const isFranceEntiere =
+    filters.region_departments.length === ALL_DEPARTMENTS.length;
+
   let availableFields: { label: string; value: Field }[] = [
     { label: 'Sexe', value: 'sex' },
     { label: 'Age', value: 'age' },
     { label: 'Lieu de décès', value: 'death_location' },
     { label: 'Département', value: 'home_department' },
+    ...(isFranceEntiere
+      ? [{ label: 'Région', value: 'region' as Field }]
+      : []),
     { label: 'Mois', value: 'months' }
   ];
 
@@ -149,6 +158,13 @@ export function ChartTableHeader() {
 
       xAgg = aggregateX === 'categories_level_2' ? categoriesAgg : xAgg;
       yAgg = aggregateY === 'categories_level_2' ? categoriesAgg : yAgg;
+    }
+
+    if (aggregateX === 'region' || aggregateY === 'region') {
+      const regionAgg = buildRegionFiltersAgg();
+
+      xAgg = aggregateX === 'region' ? regionAgg : xAgg;
+      yAgg = aggregateY === 'region' ? regionAgg : yAgg;
     }
 
     setAggregations({
