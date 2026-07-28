@@ -127,7 +127,7 @@ export default function MapIframe(props: Props) {
       <Flex justifyContent="end">
         <MapLegends />
       </Flex>
-      <Flex alignItems="flex-start">
+      <Flex alignItems="center">
         <ComposableMap
           projection={metroProjection as any}
           width={METRO_SIZE}
