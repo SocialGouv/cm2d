@@ -17,7 +17,7 @@ export const getMapProps = (
 } => {
   if (!datasets[0]) return {};
 
-  const { hits, total } = datasets[0];
+  const { hits } = datasets[0];
 
   let availableKeys: string[] = [];
   if (hits[0].children) {
@@ -64,30 +64,48 @@ export const getMapProps = (
     }
   };
 
-  const getCountFromKey = (key: string): number => {
+  // Total de décès d'un département (somme des enfants en mode stratifié, sinon
+  // doc_count). Sert à la fois à la colorimétrie et au calcul de la médiane.
+  const getDeptTotal = (key: string): number => {
     const hit = hits.find(h => h.key === key);
-    // return hit ? (isNC(hit.doc_count) ? 'NC' : hit.doc_count) : 0;
-    return hit ? hit.doc_count : 0;
+    if (!hit) return 0;
+    if (hit.children) {
+      return hit.children.reduce(
+        (acc: number, child: any) => acc + child.doc_count,
+        0
+      );
+    }
+    return hit.doc_count;
   };
 
-  const getPercentage = (key: string): string => {
-    const hit = hits.find(h => h.key === key);
-    if (!hit || !total) return '0%';
-    // if (isNC(hit.doc_count)) return 'NC';
-    return `${Math.round((hit.doc_count / total) * 10000) / 100}%`;
-  };
+  const getCountFromKey = (key: string): number => getDeptTotal(key);
 
-  const getColorFromPercentage = (
+  // Médiane des décès sur les départements affichés AYANT des données (>0).
+  // Robuste aux outliers (ex. Paris) et non tirée vers le bas par les zéros.
+  const sortedCounts = departments
+    .map(getDeptTotal)
+    .filter(c => c > 0)
+    .sort((a, b) => a - b);
+  const n = sortedCounts.length;
+  const median = n
+    ? n % 2
+      ? sortedCounts[(n - 1) / 2]
+      : (sortedCounts[n / 2 - 1] + sortedCounts[n / 2]) / 2
+    : 0;
+
+  // Colorimétrie ancrée sur la médiane : vert bien en dessous, bleu autour,
+  // orange au dessus, rouge très au dessus. Sans données / médiane nulle → gris.
+  const getColorFromCount = (
     key: string,
     kind: 'initial' | 'hover'
   ): string => {
-    const hit = hits.find(h => h.key === key);
-    if (!hit || !total) return stateColors.NEUTRAL[kind];
+    const count = getDeptTotal(key);
+    if (!count || !median) return stateColors.NEUTRAL[kind];
 
-    const percentage = hit.doc_count / total;
-    if (percentage < 0.1) return stateColors.GREEN[kind];
-    if (percentage < 0.2) return stateColors.BLUE[kind];
-    if (percentage < 0.3) return stateColors.ORANGE[kind];
+    const ratio = count / median;
+    if (ratio < 0.5) return stateColors.GREEN[kind];
+    if (ratio < 1.5) return stateColors.BLUE[kind];
+    if (ratio < 3) return stateColors.ORANGE[kind];
     return stateColors.RED[kind];
   };
 
@@ -124,14 +142,14 @@ export const getMapProps = (
 
   // state_specific est désormais indexé par CODE DÉPARTEMENT (ex "75", "971"),
   // ce qui correspond à la propriété `code` des features GeoJSON rendues par
-  // react-simple-maps (métropole + DROM), et alimente aussi MapDetails.
+  // react-simple-maps (métropole + DROM), et alimente aussi l'infobulle (MapTooltip).
   const states: MapConfig['state_specific'] = {};
   departments.forEach(d => {
     states[d] = {
-      name: `${departmentRefs[d] ?? d} (${getPercentage(d)})`,
+      name: departmentRefs[d] ?? d,
       description: getFullDescription(d),
-      color: getColorFromPercentage(d, 'initial'),
-      hover_color: getColorFromPercentage(d, 'hover')
+      color: getColorFromCount(d, 'initial'),
+      hover_color: getColorFromCount(d, 'hover')
     };
   });
 

@@ -51,7 +51,56 @@ const client = new Client({
 
 // Tous les codes département (métropole + Corse + DROM), dédupliqués depuis la
 // source unique des régions. Couvre l'intégralité de la carte.
-const DEPARTMENTS: string[] = [...new Set(REGIONS.flatMap((r) => r.value))];
+const DEPARTMENTS: string[] = Array.from(
+  new Set(REGIONS.flatMap((r) => r.value))
+);
+
+// Populations approximatives (milliers d'habitants) par département. Sert de
+// poids au tirage : les volumes de décès simulés varient donc de façon
+// réaliste (Paris/Nord/Rhône élevés, Lozère/Creuse faibles), ce qui donne une
+// carte contrastée avec la colorimétrie ancrée sur la médiane. Valeurs
+// approximatives (données de test), non des chiffres officiels.
+const DEPARTMENT_POPULATION: { [code: string]: number } = {
+  '01': 657, '02': 526, '03': 335, '04': 165, '05': 141, '06': 1094,
+  '07': 328, '08': 268, '09': 153, '10': 310, '11': 375, '12': 279,
+  '13': 2043, '14': 694, '15': 145, '16': 352, '17': 651, '18': 302,
+  '19': 240, '2A': 158, '2B': 186, '21': 534, '22': 599, '23': 116,
+  '24': 413, '25': 543, '26': 516, '27': 601, '28': 431, '29': 915,
+  '30': 748, '31': 1400, '32': 191, '33': 1623, '34': 1175, '35': 1073,
+  '36': 217, '37': 610, '38': 1263, '39': 259, '40': 413, '41': 329,
+  '42': 762, '43': 227, '44': 1429, '45': 680, '46': 174, '47': 332,
+  '48': 76, '49': 813, '50': 496, '51': 568, '52': 172, '53': 307,
+  '54': 733, '55': 184, '56': 755, '57': 1043, '58': 204, '59': 2605,
+  '60': 829, '61': 279, '62': 1465, '63': 660, '64': 683, '65': 229,
+  '66': 480, '67': 1140, '68': 764, '69': 1876, '70': 235, '71': 551,
+  '72': 566, '73': 436, '74': 826, '75': 2140, '76': 1256, '77': 1421,
+  '78': 1441, '79': 374, '80': 570, '81': 388, '82': 260, '83': 1076,
+  '84': 561, '85': 685, '86': 438, '87': 372, '88': 364, '89': 337,
+  '90': 141, '91': 1305, '92': 1624, '93': 1655, '94': 1408, '95': 1249,
+  '971': 384, '972': 361, '973': 282, '974': 861, '976': 279,
+};
+
+// Tirage pondéré par population : table cumulée + recherche binaire.
+const DEPT_WEIGHTS = DEPARTMENTS.map((d) => DEPARTMENT_POPULATION[d] ?? 1);
+const DEPT_CUMULATIVE: number[] = [];
+let cumulativeWeight = 0;
+for (const w of DEPT_WEIGHTS) {
+  cumulativeWeight += w;
+  DEPT_CUMULATIVE.push(cumulativeWeight);
+}
+const DEPT_WEIGHT_TOTAL = cumulativeWeight;
+
+function pickDepartment(): string {
+  const r = Math.random() * DEPT_WEIGHT_TOTAL;
+  let lo = 0;
+  let hi = DEPT_CUMULATIVE.length - 1;
+  while (lo < hi) {
+    const mid = (lo + hi) >> 1;
+    if (DEPT_CUMULATIVE[mid] <= r) lo = mid + 1;
+    else hi = mid;
+  }
+  return DEPARTMENTS[lo];
+}
 
 const CATEGORY_1 = ['suicide', 'avc', 'cancer', 'tuberculose', 'thrombose'];
 const CATEGORY_2 = ['vih', 'tuberculose', 'diabete', 'avc', 'cancer'];
@@ -169,8 +218,8 @@ function makeDoc() {
     sex: pick(SEXES),
     kind: pick(KINDS),
     death_location: pick(DEATH_LOCATIONS),
-    department: pick(DEPARTMENTS),
-    home_department: pick(DEPARTMENTS),
+    department: pickDepartment(),
+    home_department: pickDepartment(),
     categories_level_1: multiValues(CATEGORY_1),
     categories_level_2: multiValues(CATEGORY_2),
     categories_associate: multiValues(CATEGORY_ASSOCIATE),

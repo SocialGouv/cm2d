@@ -4,8 +4,8 @@ import { Flex, Text } from '@chakra-ui/react';
 import { geoConicConformal, geoMercator } from 'd3-geo';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { ComposableMap, Geographies, Geography } from 'react-simple-maps';
-import { MapDetails } from './MapDetails';
 import { MapLegends } from './MapLegends';
+import { MapTooltip } from './MapTooltip';
 
 type Props = {
   id: string;
@@ -40,6 +40,14 @@ export default function MapIframe(props: Props) {
     null
   );
 
+  // Département survolé + position souris (viewport) pour l'infobulle.
+  const [hovered, setHovered] = useState<{
+    code: string;
+    nom: string;
+    x: number;
+    y: number;
+  } | null>(null);
+
   useEffect(() => {
     let active = true;
     fetch(GEO_URL)
@@ -55,10 +63,11 @@ export default function MapIframe(props: Props) {
     };
   }, []);
 
-  const { config } = getMapProps(
-    datasets,
-    filters.region_departments,
-    saveAggregateX
+  // Mémoïsé : évite de reconstruire toute la carte des départements à chaque
+  // mouvement de souris (l'infobulle déclenche des re-renders fréquents).
+  const { config } = useMemo(
+    () => getMapProps(datasets, filters.region_departments, saveAggregateX),
+    [datasets, filters.region_departments, saveAggregateX]
   );
   const statesByCode = config?.state_specific ?? {};
 
@@ -72,6 +81,11 @@ export default function MapIframe(props: Props) {
     statesByCode[code] ? statesByCode[code].color : NEUTRAL_FILL;
   const hoverFor = (code: string) =>
     statesByCode[code] ? statesByCode[code].hover_color : NEUTRAL_STROKE;
+
+  const onGeoMove =
+    (code: string, nom: string) => (e: React.MouseEvent) =>
+      setHovered({ code, nom, x: e.clientX, y: e.clientY });
+  const onGeoLeave = () => setHovered(null);
 
   const features: GeoFeature[] = geojson?.features ?? [];
 
@@ -133,6 +147,8 @@ export default function MapIframe(props: Props) {
                     fill={fillFor(code)}
                     stroke="#ffffff"
                     strokeWidth={0.5}
+                    onMouseMove={onGeoMove(code, geo.properties.nom)}
+                    onMouseLeave={onGeoLeave}
                     style={{
                       default: { outline: 'none' },
                       hover: { fill: hoverFor(code), outline: 'none' },
@@ -182,6 +198,11 @@ export default function MapIframe(props: Props) {
                               fill={fillFor(code)}
                               stroke="#ffffff"
                               strokeWidth={0.5}
+                              onMouseMove={onGeoMove(
+                                code,
+                                geo.properties.nom
+                              )}
+                              onMouseLeave={onGeoLeave}
                               style={{
                                 default: { outline: 'none' },
                                 hover: {
@@ -203,10 +224,17 @@ export default function MapIframe(props: Props) {
               })}
             </Flex>
           )}
-
-          <MapDetails mapConfig={{ state_specific: statesByCode }} />
         </Flex>
       </Flex>
+
+      {hovered && (
+        <MapTooltip
+          fallbackName={hovered.nom}
+          state={statesByCode[hovered.code]}
+          x={hovered.x}
+          y={hovered.y}
+        />
+      )}
     </Flex>
   );
 }
