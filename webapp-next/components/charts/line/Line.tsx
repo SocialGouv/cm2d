@@ -3,6 +3,7 @@ import { Cm2dContext } from '@/utils/cm2d-provider';
 import { orders, sortByOrder } from '@/utils/orders';
 import {
   capitalizeString,
+  dateToWeekYear,
   formatDateByInterval,
   getLabelFromKey,
   getRandomColor
@@ -43,6 +44,8 @@ export const ChartLine = (props: Props) => {
             return {
               label: capitalizeString(label),
               data: yValues,
+              // Conservé pour le remappage mois-de-l'année (comparaison années).
+              hits: ds.hits,
               fill: true,
               borderWidth: 2,
               tension: 0.5
@@ -111,12 +114,73 @@ export const ChartLine = (props: Props) => {
     );
   });
 
+  // Comparaison année-sur-année : les séries (2022, 2023…) ont des buckets de
+  // dates ABSOLUES distinctes. On les remappe sur un axe commun « mois de
+  // l'année » (année de référence neutre) pour qu'elles se superposent, au lieu
+  // d'un alignement par index qui décalait les courbes.
+  const isYearComparison = saveAggregateX === 'years';
+  let labels = xValues;
+  let renderDatasets = displayDatasets.map(({ hits, ...rest }: any) => rest);
+
+  if (isYearComparison) {
+    const REF_YEAR = 2000;
+    // Position sur l'axe + libellé d'un bucket, INDÉPENDAMMENT de l'année, selon
+    // la granularité :
+    //  - semaine : numéro de semaine ISO (une même semaine tombe sur des dates
+    //    calendaires différentes selon l'année → normaliser par date serait faux),
+    //  - jour    : jour/mois,
+    //  - mois    : index de mois.
+    const bucketKeyLabel = (
+      keyAsString: string
+    ): { key: number; label: string } => {
+      const d = new Date(keyAsString);
+      if (dateInterval === 'week') {
+        const label = dateToWeekYear(d).split(' ')[0]; // "S28 2024" -> "S28"
+        return { key: parseInt(label.replace(/\D/g, ''), 10), label };
+      }
+      if (dateInterval === 'day') {
+        const dd = d.getDate();
+        const mm = d.getMonth() + 1;
+        return {
+          key: mm * 100 + dd,
+          label: `${String(dd).padStart(2, '0')}/${String(mm).padStart(2, '0')}`
+        };
+      }
+      return {
+        key: d.getMonth(),
+        label: formatDateByInterval(new Date(REF_YEAR, d.getMonth(), 1), 'month', false)
+      };
+    };
+
+    const labelByKey = new Map<number, string>();
+    displayDatasets.forEach((ds: any) =>
+      (ds.hits ?? []).forEach((h: any) => {
+        const { key, label } = bucketKeyLabel(h.key_as_string);
+        labelByKey.set(key, label);
+      })
+    );
+    const axisKeys = Array.from(labelByKey.keys()).sort((a, b) => a - b);
+    labels = axisKeys.map(k => labelByKey.get(k) as string);
+
+    renderDatasets = displayDatasets.map(({ hits, ...rest }: any) => {
+      const byKey = new Map<number, number>();
+      (hits ?? []).forEach((h: any) =>
+        byKey.set(bucketKeyLabel(h.key_as_string).key, h.doc_count)
+      );
+      return {
+        ...rest,
+        data: axisKeys.map(k => (byKey.has(k) ? byKey.get(k) : null)),
+        spanGaps: false
+      };
+    });
+  }
+
   return (
     <Line
       id={id}
       data={{
-        labels: xValues,
-        datasets: displayDatasets
+        labels,
+        datasets: renderDatasets
       }}
       {...lineProps}
     />
