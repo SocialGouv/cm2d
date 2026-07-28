@@ -404,14 +404,38 @@ export function transformFilters(filters: Filters): any[] {
   });
 
   if (filters.start_date && filters.end_date) {
-    transformed.push({
-      range: {
-        date: {
-          gte: filters.start_date,
-          lte: filters.end_date,
+    const baseRange = {
+      range: { date: { gte: filters.start_date, lte: filters.end_date } },
+    };
+
+    if (filters.compare_year) {
+      // Comparaison : on OR la période courante avec la même période décalée sur
+      // l'année choisie (mêmes mois/jours). La stratification par année (agg)
+      // sépare ensuite les deux années en deux courbes superposables.
+      const shiftedStart = new Date(filters.start_date);
+      const shiftedEnd = new Date(filters.end_date);
+      shiftedStart.setFullYear(filters.compare_year);
+      shiftedEnd.setFullYear(filters.compare_year);
+
+      transformed.push({
+        bool: {
+          should: [
+            baseRange,
+            {
+              range: {
+                date: {
+                  gte: shiftedStart.toISOString(),
+                  lte: shiftedEnd.toISOString(),
+                },
+              },
+            },
+          ],
+          minimum_should_match: 1,
         },
-      },
-    });
+      });
+    } else {
+      transformed.push(baseRange);
+    }
   }
 
   return transformed;

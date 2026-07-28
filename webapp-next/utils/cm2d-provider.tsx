@@ -25,6 +25,9 @@ export type Filters = {
   region_departments: string[];
   start_date?: string;
   end_date?: string;
+  // Comparaison courbe : année avec laquelle comparer la même période (mode
+  // exclusif de la stratification). undefined = désactivé.
+  compare_year?: number;
 };
 
 export type User = {

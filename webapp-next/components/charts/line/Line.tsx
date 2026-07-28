@@ -118,7 +118,9 @@ export const ChartLine = (props: Props) => {
   // dates ABSOLUES distinctes. On les remappe sur un axe commun « mois de
   // l'année » (année de référence neutre) pour qu'elles se superposent, au lieu
   // d'un alignement par index qui décalait les courbes.
-  const isYearComparison = saveAggregateX === 'years';
+  // Axe normalisé (superposition par mois/semaine/jour) : stratification par
+  // année OU mode comparaison « même période, autre année ».
+  const isYearComparison = saveAggregateX === 'years' || !!filters.compare_year;
   let labels = xValues;
   let renderDatasets = displayDatasets.map(({ hits, ...rest }: any) => rest);
 
