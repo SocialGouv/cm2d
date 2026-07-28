@@ -3,16 +3,13 @@
 FROM node:18-alpine3.18 AS deps
 RUN apk add --no-cache libc6-compat openssl1.1-compat
 WORKDIR /app
+ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+RUN corepack enable
 
-# Install dependencies based on the preferred package manager
+# Yarn Berry (v4) project: version pinned via package.json "packageManager"
+COPY package.json yarn.lock .yarnrc.yml ./
 
-COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml\* ./
-
-RUN \
- if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
- elif [ -f package-lock.json ]; then npm install; \
- else echo "Lockfile not found." && exit 1; \
- fi
+RUN yarn install --immutable
 
 ##### BUILDER
 
@@ -30,14 +27,12 @@ ARG NODEMAILER_FROM
 ARG NODEMAILER_BASEURL
 
 WORKDIR /app
+ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+RUN corepack enable
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-RUN \
- if [ -f yarn.lock ]; then yarn build; \
- elif [ -f package-lock.json ]; then npm run build; \
- else echo "Lockfile not found." && exit 1; \
- fi
+RUN yarn build
 
 ##### RUNNER
 
@@ -62,4 +57,4 @@ USER 1001
 
 EXPOSE 3000
 ENV PORT 3000
-CMD ["yarn", "start"]
+CMD ["node_modules/.bin/next", "start"]
