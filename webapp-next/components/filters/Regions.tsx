@@ -1,5 +1,5 @@
 import { Cm2dContext } from '@/utils/cm2d-provider';
-import { ALL_DEPARTMENTS, REGIONS } from '@/utils/tools';
+import { ALL_DEPARTMENTS, HEXAGON_DEPARTMENTS, REGIONS } from '@/utils/tools';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import {
   Flex,
@@ -32,6 +32,11 @@ export const RegionFilter = (props: Props) => {
       label: 'France entière',
       role: 'region-france-entiere',
       value: ALL_DEPARTMENTS
+    },
+    {
+      label: 'France hexagonale',
+      role: 'region-france-entiere',
+      value: HEXAGON_DEPARTMENTS
     },
     ...REGIONS
   ];

@@ -220,6 +220,15 @@ export const departmentsCodes: { [key: string]: string } = {
 // métropolitaine) afin d'inclure les DROM dans les données et les filtres.
 export const ALL_DEPARTMENTS: string[] = Object.keys(departmentRefs);
 
+// DROM (départements et régions d'outre-mer).
+export const DROM_DEPARTMENTS: string[] = ["971", "972", "973", "974", "976"];
+
+// France hexagonale : métropole (Corse incluse) sans les DROM — utilisé par
+// l'option "France hexagonale", réservée au rôle region-france-entiere.
+export const HEXAGON_DEPARTMENTS: string[] = ALL_DEPARTMENTS.filter(
+  (d) => !DROM_DEPARTMENTS.includes(d)
+);
+
 // Régions métropolitaines : label, rôle ES associé, et liste des départements.
 // Source unique partagée par le sélecteur de région (Regions.tsx) et la
 // stratification "par région" des graphes.
