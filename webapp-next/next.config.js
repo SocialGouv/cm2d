@@ -16,6 +16,7 @@ const cspHeader = `
 const nextConfig = {
   reactStrictMode: true,
   output: "standalone",
+  transpilePackages: ["react-simple-maps", "d3-geo", "d3-array"],
   async headers() {
     return [
       {

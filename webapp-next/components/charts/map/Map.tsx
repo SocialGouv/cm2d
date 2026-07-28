@@ -1,8 +1,9 @@
 import { Cm2dContext } from '@/utils/cm2d-provider';
 import { getMapProps } from '@/utils/map/props';
-import { MapConfig } from '@/utils/map/type';
-import { Flex } from '@chakra-ui/react';
-import React, { useContext, useState } from 'react';
+import { Flex, Text } from '@chakra-ui/react';
+import { geoConicConformal, geoMercator } from 'd3-geo';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
+import { ComposableMap, Geographies, Geography } from 'react-simple-maps';
 import { MapDetails } from './MapDetails';
 import { MapLegends } from './MapLegends';
 
@@ -11,10 +12,22 @@ type Props = {
   datasets: { hits: any[]; total?: number }[];
 };
 
+type GeoFeature = {
+  type: 'Feature';
+  properties: { code: string; nom: string };
+  geometry: any;
+};
+
+const GEO_URL = '/geo/departements.geojson';
+const DROM_CODES = ['971', '972', '973', '974', '976'];
+const NEUTRAL_FILL = '#e0e0e0';
+const NEUTRAL_STROKE = '#c8c8c8';
+
+const METRO_SIZE = 600;
+const DROM_SIZE = 130;
+
 export default function MapIframe(props: Props) {
-  const iframeRef = React.useRef(null);
-  const { datasets, id } = props;
-  const [mapConfig, setMapConfig] = useState<MapConfig | null>(null);
+  const { datasets } = props;
   const context = useContext(Cm2dContext);
 
   if (!context) {
@@ -23,78 +36,176 @@ export default function MapIframe(props: Props) {
 
   const { filters, saveAggregateX } = context;
 
-  const writeHTMLToIframe = () => {
-    const iframe = iframeRef.current;
+  const [geojson, setGeojson] = useState<{ features: GeoFeature[] } | null>(
+    null
+  );
 
-    if (iframe) {
-      const doc = (iframe as any).contentWindow.document;
-      const mapProps = getMapProps(
-        id,
-        datasets,
-        filters.region_departments,
-        saveAggregateX
-      );
-      doc.open();
-      doc.write(`
-      <html>
-        <head>
-					<script type="text/javascript">
-						document.addEventListener('click', function(event) {
-							event.stopPropagation();
-						}, true);
-					</script>
-					<script type="text/javascript">
-						${mapProps.injectJs}
-					</script>
-					<script type="text/javascript" src="libs/countrymap/countrymap.js"></script>
-					<style>
-						#${id}_access {
-							display: none !important;
-						}
-					</style>
-        </head>
-        <body style="display: flex; justify-content: center;">
-          <div id="${id}"></div>
-        </body>
-      </html>
-    `);
-      doc.close();
-
-      if (mapProps.config) setMapConfig(mapProps.config);
-    }
-  };
-
-  React.useEffect(() => {
-    const iframe = iframeRef.current;
-    if ((iframe as any).contentWindow.document.readyState === 'complete') {
-      writeHTMLToIframe();
-    } else {
-      (iframe as any).onload = writeHTMLToIframe;
-    }
+  useEffect(() => {
+    let active = true;
+    fetch(GEO_URL)
+      .then(res => res.json())
+      .then(json => {
+        if (active) setGeojson(json);
+      })
+      .catch(() => {
+        if (active) setGeojson({ features: [] });
+      });
+    return () => {
+      active = false;
+    };
   }, []);
+
+  const { config } = getMapProps(
+    datasets,
+    filters.region_departments,
+    saveAggregateX
+  );
+  const statesByCode = config?.state_specific ?? {};
+
+  // Départements dans le périmètre courant (région sélectionnée / France entière).
+  const scoped = useMemo(
+    () => new Set(filters.region_departments),
+    [filters.region_departments]
+  );
+
+  const fillFor = (code: string) =>
+    statesByCode[code] ? statesByCode[code].color : NEUTRAL_FILL;
+  const hoverFor = (code: string) =>
+    statesByCode[code] ? statesByCode[code].hover_color : NEUTRAL_STROKE;
+
+  const features: GeoFeature[] = geojson?.features ?? [];
+
+  const metroFeatures = useMemo(
+    () => features.filter(f => !DROM_CODES.includes(f.properties.code)),
+    [features]
+  );
+
+  // Encarts DROM : seulement ceux présents dans le périmètre (France entière
+  // ou région d'outre-mer). La carte principale reste métropolitaine.
+  const dromFeatures = useMemo(
+    () =>
+      features.filter(
+        f => DROM_CODES.includes(f.properties.code) && scoped.has(f.properties.code)
+      ),
+    [features, scoped]
+  );
+
+  const metroProjection = useMemo(() => {
+    if (!metroFeatures.length) return null;
+    return geoConicConformal()
+      .rotate([-3, 0])
+      .fitSize([METRO_SIZE, METRO_SIZE], {
+        type: 'FeatureCollection',
+        features: metroFeatures
+      } as any);
+  }, [metroFeatures]);
+
+  if (!geojson) {
+    return <Text>Chargement de la carte…</Text>;
+  }
+
+  if (!metroProjection) {
+    return <Text>Carte indisponible.</Text>;
+  }
 
   return (
     <Flex flexDir="column">
       <Flex justifyContent="end">
         <MapLegends />
       </Flex>
-      <Flex alignItems="center">
-        <iframe
-          title="Map"
-          ref={iframeRef}
-          width={'65%'}
-          height="700px"
-          loading="lazy"
-          onClick={e => {
-            e.preventDefault();
-            e.stopPropagation();
-          }}
-        />
-        {mapConfig && (
-          <Flex w="30%" maxH="400px" overflowY="auto" mb={20}>
-            <MapDetails mapConfig={mapConfig} />
-          </Flex>
-        )}
+      <Flex alignItems="flex-start">
+        <ComposableMap
+          projection={metroProjection as any}
+          width={METRO_SIZE}
+          height={METRO_SIZE}
+          style={{ width: '65%', height: 'auto' }}
+        >
+          <Geographies
+            geography={{ type: 'FeatureCollection', features: metroFeatures }}
+          >
+            {({ geographies }: { geographies: any[] }) =>
+              geographies.map(geo => {
+                const code = geo.properties.code;
+                return (
+                  <Geography
+                    key={geo.rsmKey}
+                    geography={geo}
+                    fill={fillFor(code)}
+                    stroke="#ffffff"
+                    strokeWidth={0.5}
+                    style={{
+                      default: { outline: 'none' },
+                      hover: { fill: hoverFor(code), outline: 'none' },
+                      pressed: { outline: 'none' }
+                    }}
+                  />
+                );
+              })
+            }
+          </Geographies>
+        </ComposableMap>
+
+        <Flex
+          w="35%"
+          maxH="600px"
+          overflowY="auto"
+          ml={4}
+          direction="column"
+        >
+          {dromFeatures.length > 0 && (
+            <Flex wrap="wrap" mb={4} gap={3}>
+              {dromFeatures.map(feature => {
+                const code = feature.properties.code;
+                const projection = geoMercator().fitSize(
+                  [DROM_SIZE, DROM_SIZE],
+                  feature as any
+                );
+                return (
+                  <Flex key={code} direction="column" align="center">
+                    <ComposableMap
+                      projection={projection as any}
+                      width={DROM_SIZE}
+                      height={DROM_SIZE}
+                      style={{ width: DROM_SIZE, height: DROM_SIZE }}
+                    >
+                      <Geographies
+                        geography={{
+                          type: 'FeatureCollection',
+                          features: [feature]
+                        }}
+                      >
+                        {({ geographies }: { geographies: any[] }) =>
+                          geographies.map(geo => (
+                            <Geography
+                              key={geo.rsmKey}
+                              geography={geo}
+                              fill={fillFor(code)}
+                              stroke="#ffffff"
+                              strokeWidth={0.5}
+                              style={{
+                                default: { outline: 'none' },
+                                hover: {
+                                  fill: hoverFor(code),
+                                  outline: 'none'
+                                },
+                                pressed: { outline: 'none' }
+                              }}
+                            />
+                          ))
+                        }
+                      </Geographies>
+                    </ComposableMap>
+                    <Text fontSize="xs" textAlign="center">
+                      {feature.properties.nom}
+                    </Text>
+                  </Flex>
+                );
+              })}
+            </Flex>
+          )}
+
+          <MapDetails mapConfig={{ state_specific: statesByCode }} />
+        </Flex>
       </Flex>
     </Flex>
   );

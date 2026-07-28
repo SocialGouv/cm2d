@@ -24,6 +24,7 @@
     "@uidotdev/usehooks": "^2.1.1",
     "chart.js": "^4.3.0",
     "chartjs-adapter-moment": "^1.0.1",
+    "d3-geo": "^3.1.1",
     "date-fns": "^3.0.0",
     "eslint": "9.2.0",
     "eslint-config-next": "14.2.3",
@@ -39,11 +40,14 @@
     "react-datepicker": "^6.0.0",
     "react-dom": "18.3.1",
     "react-hook-form": "^7.51.5",
+    "react-simple-maps": "^3.0.0",
     "superjson": "^2.0.0",
     "swr": "^2.1.5",
     "typescript": "5.4.5"
   },
   "devDependencies": {
-    "@types/react-datepicker": "^6.0.0"
+    "@types/d3-geo": "^3.1.0",
+    "@types/react-datepicker": "^6.0.0",
+    "@types/react-simple-maps": "^3.0.6"
   }
 }
