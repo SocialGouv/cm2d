@@ -89,9 +89,17 @@ export default function MapIframe(props: Props) {
 
   const features: GeoFeature[] = geojson?.features ?? [];
 
+  // Départements métropolitains DANS le périmètre courant : France entière =
+  // tous, région sélectionnée = uniquement ceux de la région (la projection
+  // ci-dessous se recadre donc automatiquement sur la région).
   const metroFeatures = useMemo(
-    () => features.filter(f => !DROM_CODES.includes(f.properties.code)),
-    [features]
+    () =>
+      features.filter(
+        f =>
+          !DROM_CODES.includes(f.properties.code) &&
+          scoped.has(f.properties.code)
+      ),
+    [features, scoped]
   );
 
   // Encarts DROM : seulement ceux présents dans le périmètre (France entière
@@ -118,49 +126,59 @@ export default function MapIframe(props: Props) {
     return <Text>Chargement de la carte…</Text>;
   }
 
-  if (!metroProjection) {
+  // Aucune donnée cartographiable (ni métropole ni DROM dans le périmètre).
+  if (!metroProjection && dromFeatures.length === 0) {
     return <Text>Carte indisponible.</Text>;
   }
+
+  const hasMetro = !!metroProjection;
+  const hasDrom = dromFeatures.length > 0;
+  // Une seule zone affichée (région métropolitaine seule, ou région DROM
+  // seule) → on la centre horizontalement dans le container.
+  const single = hasMetro !== hasDrom;
 
   return (
     <Flex flexDir="column">
       <Flex justifyContent="end">
         <MapLegends />
       </Flex>
-      <Flex alignItems="center">
-        <ComposableMap
-          projection={metroProjection as any}
-          width={METRO_SIZE}
-          height={METRO_SIZE}
-          style={{ width: '65%', height: 'auto' }}
-        >
-          <Geographies
-            geography={{ type: 'FeatureCollection', features: metroFeatures }}
+      <Flex alignItems="center" justifyContent={single ? 'center' : 'flex-start'}>
+        {metroProjection && (
+          <ComposableMap
+            projection={metroProjection as any}
+            width={METRO_SIZE}
+            height={METRO_SIZE}
+            style={{ width: '65%', height: 'auto' }}
           >
-            {({ geographies }: { geographies: any[] }) =>
-              geographies.map(geo => {
-                const code = geo.properties.code;
-                return (
-                  <Geography
-                    key={geo.rsmKey}
-                    geography={geo}
-                    fill={fillFor(code)}
-                    stroke="#ffffff"
-                    strokeWidth={0.5}
-                    onMouseMove={onGeoMove(code, geo.properties.nom)}
-                    onMouseLeave={onGeoLeave}
-                    style={{
-                      default: { outline: 'none' },
-                      hover: { fill: hoverFor(code), outline: 'none' },
-                      pressed: { outline: 'none' }
-                    }}
-                  />
-                );
-              })
-            }
-          </Geographies>
-        </ComposableMap>
+            <Geographies
+              geography={{ type: 'FeatureCollection', features: metroFeatures }}
+            >
+              {({ geographies }: { geographies: any[] }) =>
+                geographies.map(geo => {
+                  const code = geo.properties.code;
+                  return (
+                    <Geography
+                      key={geo.rsmKey}
+                      geography={geo}
+                      fill={fillFor(code)}
+                      stroke="#ffffff"
+                      strokeWidth={0.5}
+                      onMouseMove={onGeoMove(code, geo.properties.nom)}
+                      onMouseLeave={onGeoLeave}
+                      style={{
+                        default: { outline: 'none' },
+                        hover: { fill: hoverFor(code), outline: 'none' },
+                        pressed: { outline: 'none' }
+                      }}
+                    />
+                  );
+                })
+              }
+            </Geographies>
+          </ComposableMap>
+        )}
 
+        {hasDrom && (
         <Flex
           w="35%"
           maxH="600px"
@@ -225,6 +243,7 @@ export default function MapIframe(props: Props) {
             </Flex>
           )}
         </Flex>
+        )}
       </Flex>
 
       {hovered && (
