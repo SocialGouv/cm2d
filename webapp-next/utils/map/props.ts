@@ -134,7 +134,12 @@ export const getMapProps = (
     };
   } = {};
   departments.forEach(d => {
-    states[departmentsCodes[d]] = {
+    // Les DROM n'ont pas de correspondance sur la carte métropolitaine :
+    // on les ignore ici (les données restent comptées dans les autres vues).
+    const stateCode = departmentsCodes[d];
+    if (!stateCode) return;
+
+    states[stateCode] = {
       name: `${departmentRefs[d]} (${getPercentage(d)})`,
       description: getFullDescription(d),
       color: getColorFromPercentage(d, 'initial'),

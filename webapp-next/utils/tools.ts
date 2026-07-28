@@ -108,6 +108,11 @@ export const departmentRefs: { [key: string]: string } = {
   "93": "Seine-Saint-Denis",
   "94": "Val-de-Marne",
   "95": "Val-d'Oise",
+  "971": "Guadeloupe",
+  "972": "Martinique",
+  "973": "Guyane",
+  "974": "La Réunion",
+  "976": "Mayotte",
 };
 
 export const departmentsCodes: { [key: string]: string } = {
@@ -209,9 +214,11 @@ export const departmentsCodes: { [key: string]: string } = {
   "78": "FRA5357", // Yvelines
 };
 
-// Tous les départements métropolitains — utilisé par l'option "France entière"
-// (rôle region-france-entiere) pour lever le filtrage par région.
-export const ALL_DEPARTMENTS: string[] = Object.keys(departmentsCodes);
+// Tous les départements (métropole + DROM) — utilisé par l'option "France
+// entière" (rôle region-france-entiere) pour lever le filtrage par région.
+// Basé sur departmentRefs (et non departmentsCodes, limité à la carte
+// métropolitaine) afin d'inclure les DROM dans les données et les filtres.
+export const ALL_DEPARTMENTS: string[] = Object.keys(departmentRefs);
 
 // Régions métropolitaines : label, rôle ES associé, et liste des départements.
 // Source unique partagée par le sélecteur de région (Regions.tsx) et la
@@ -278,6 +285,12 @@ export const REGIONS: { label: string; role: string; value: string[] }[] = [
     role: "region-provence-alpes-cote-dazur",
     value: ["04", "05", "06", "13", "83", "84"],
   },
+  // Régions d'outre-mer (ROM) : chacune monodépartementale.
+  { label: "Guadeloupe", role: "region-guadeloupe", value: ["971"] },
+  { label: "Martinique", role: "region-martinique", value: ["972"] },
+  { label: "Guyane", role: "region-guyane", value: ["973"] },
+  { label: "La Réunion", role: "region-la-reunion", value: ["974"] },
+  { label: "Mayotte", role: "region-mayotte", value: ["976"] },
 ];
 
 // Agrégation ES "par région" : un bucket nommé par région, chacun filtrant sur
