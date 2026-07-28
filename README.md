@@ -4,73 +4,74 @@
 
 L'application qui permet aux agents des ARS d’évaluer et d’orienter leurs actions en facilitant l’accès et l’interprétation des données de mortalité.
 
-## Démarrage de l'application
+## Prérequis
 
-Pour initialiser les variables d'environnement ELK
+- Docker et Docker Compose
+- Node.js et Yarn
+
+## Démarrage (local)
+
+### 1. Variables d'environnement
 
 ```
-cp .env.example .env
+cp .env.example .env                            # racine (suite ELK)
+cp webapp-next/.env.example webapp-next/.env    # frontend + scripts
 ```
 
-Pour démarrer la suite ELK localement :
+### 2. Démarrer la suite ELK
 
 ```
 docker compose up -d
 ```
 
-Au premier run ELK, lancez cette suite de commande
-
-```
-cd webapp-next
-mkdir -p certs/ca
-docker cp elasticsearch:/usr/share/elasticsearch/config/certs/ca/ca.crt ./certs/ca/ca.crt
-```
-
-Pour initialiser les variables d'environnement NextJS
-
-```
-cd webapp-next
-cp .env.example .env
-```
-
-Au premier run ELK, lancez cette commande pour initialiser le mot de passe du user "kibana_system" (remplacer {ELASTIC_PASSWORD} et {KIBANA_PASSWORD} par les mots de passe de votre environnement) :
-
-```
-docker exec elasticsearch curl -s -X POST --cacert config/certs/ca/ca.crt -u "elastic:{ELASTIC_PASSWORD}" -H "Content-Type: application/json" https://elasticsearch:9200/_security/user/kibana_system/_password -d "{\"password\":\"{KIBANA_PASSWORD}\"}"
-```
-
-Pour démarrer le frontend NextJS localement :
+### 3. Dépendances + initialisation d'Elasticsearch
 
 ```
 cd webapp-next
 yarn
+yarn setup:elastic
+```
+
+`yarn setup:elastic` provisionne **de façon idempotente** tout l'environnement
+Elasticsearch : index, rôles, transforms, mot de passe `kibana_system`, utilisateur
+de test et certificat `ca.crt` (détails plus bas). Ajoutez `--reset` pour tout
+supprimer et recréer (⚠️ **données incluses**).
+
+> **`ca.crt`** — si la copie automatique échoue (droits docker), la commande affiche
+> la ligne `docker cp …` à relancer manuellement (préfixez avec `sudo` si votre
+> utilisateur n'est pas dans le groupe `docker`). Ce certificat est requis pour se
+> connecter à l'application.
+
+### 4. Données de test (optionnel)
+
+```
+yarn seed:elastic              # 1 000 000 certificats (métropole + DROM)
+yarn seed:elastic --count 50000    # volume personnalisé
+yarn seed:elastic --reset      # vide cm2d_certificate puis réinjecte
+```
+
+Les transforms se mettent à jour à leur checkpoint suivant (~60 s).
+
+### 5. Lancer le frontend
+
+```
 yarn dev
 ```
 
-Vous pouvez accéder à la suite ELK via l'URL http://localhost:5601/. Les identifiants de connexion par défaut sont les suivants, à moins qu'ils n'aient été modifiés dans le fichier .env :
+## Se connecter
 
-```
-Identifiant: elastic
-Mot de passe: elastic_password
-```
+| Cible                          | Identifiant     | Mot de passe       |
+| ------------------------------ | --------------- | ------------------ |
+| Kibana / ELK (localhost:5601)  | `elastic`       | `elastic_password` |
+| Application (dev/local)        | `user@test.loc` | `user123`          |
 
-Ces mêmes identifiants sont valables pour se connecter à l'application. Si vous souhaitez créer un nouvel utilisateur, veuillez suivre la procédure décrite ci-après.
+L'utilisateur `user@test.loc` (rôles `viewer` + `region-france-entiere`, accès
+national) est créé automatiquement par `yarn setup:elastic`. Identifiants par défaut,
+modifiables dans les fichiers `.env`. Pour créer un autre utilisateur, voir plus bas.
 
-## Création d'un utilisateur CM2D
+## Variables d'environnement
 
-Dans le menu principal d'Elastic, sélectionnez "Management" en bas. Dans le sous-menu de "Management", choisissez "Users" qui se trouve sous la section "Security". Astuce : vous pouvez accéder directement à cette section en saisissant "users" dans la barre de recherche.
-
-Pour filtrer et voir uniquement les utilisateurs de l'application, il suffit de décocher l'option "Show reserved users".
-
-Pour créer un nouvel utilisateur, cliquez sur "Create user".
-
-Dans le formulaire de création, utilisez l'adresse email à la fois pour le champ "username" et pour le champ "email". Dans "Full name", indiquez le nom et le prénom de l'utilisateur.
-
-Définissez un mot de passe approprié dans le champ correspondant. Pour le champ "roles", attribuez le rôle "viewer". Si vous souhaitez créer un administrateur elastic, sélectionnez le rôle "superuser".
-
-Il est maintenant possible de se connecter en utilisant l'adresse email et le mot de passe que vous avez définis précédemment.
-
-## Les variables d'environnement ELK
+### ELK (racine)
 
 | Nom de la variable | Description                                                   |
 | ------------------ | ------------------------------------------------------------- |
@@ -78,7 +79,7 @@ Il est maintenant possible de se connecter en utilisant l'adresse email et le mo
 | KIBANA_PASSWORD    | Le mot de passe à utiliser pour se connecter à Kibana.        |
 | CLUSTER_NAME       | Le nom du cluster ELK                                         |
 
-## Les variables d'environnement NextJS
+### NextJS (`webapp-next`)
 
 | Nom de la variable  | Description                                                                  |
 | ------------------- | ---------------------------------------------------------------------------- |
@@ -91,196 +92,48 @@ Il est maintenant possible de se connecter en utilisant l'adresse email et le mo
 | NODEMAILER_FROM     | L'adresse e-mail utilisée pour envoyer les e-mails.                          |
 | NODEMAILER_BASEURL  | L'URL courante de l'application pour construire les liens envoyés par email. |
 
-## Initialisation de l'environnement ELK
+## Détails
 
-### Indexation des certificats et des utilisateurs (auto avec docker)
+<details>
+<summary><b>Ce que provisionne <code>yarn setup:elastic</code></b> (source : <code>webapp-next/scripts/setup-elastic.ts</code>)</summary>
 
-```
-docker run --net=host --rm -ti -e NODE_TLS_REJECT_UNAUTHORIZED=0 -v ./default-indexes:/tmp --entrypoint multielasticdump elasticdump/elasticsearch-dump \
-  --direction=load \
-  --input=./tmp \
-  --output="https://elastic:${ELASTIC_PASSWORD}@localhost:9200" \
-  --tlsAuth
-```
+- **Index** `cm2d_certificate` (certificats de décès) et `cm2d_users` (attributs
+  applicatifs). `department` / `home_department` sont des `keyword` (codes non
+  numériques : DROM `971`, Corse `2A`/`2B`).
+- **19 rôles de région** (`region-france-entiere` + un par région, DROM inclus),
+  issus de la source unique `webapp-next/utils/regions.ts` (aucune dérive avec le
+  front). Les noms sont en ASCII (ex. `region-bourgogne-franche-comte`, sans accent).
+- **5 transforms continus**, créés et démarrés, alimentés par `cm2d_certificate` :
 
-### Indexation des certificats (manuelle)
+  | Transform ID                | Type   | Clé / groupe           |
+  | --------------------------- | ------ | ---------------------- |
+  | `cm2d_level_1_categories`   | Pivot  | `categories_level_1`   |
+  | `cm2d_associate_categories` | Pivot  | `categories_associate` |
+  | `cm2d_death_locations`      | Latest | `death_location`       |
+  | `cm2d_sexes`                | Latest | `sex`                  |
+  | `cm2d_departments`          | Latest | `department`           |
 
-Création de l'index principal destiné à rassembler les informations relatives aux certificats.
+  Leurs index de destination alimentent les listes de valeurs de l'application
+  (causes, lieux, sexes, départements).
+- **Mot de passe `kibana_system`** (depuis `KIBANA_PASSWORD`).
+- **Utilisateur de test** `user@test.loc` / `user123` (dev/local uniquement).
+- **Certificat `ca.crt`** copié vers `webapp-next/certs/ca/`.
 
-Rendez-vous dans "Management" > "Dev Tools" et lancez la requête suivante :
+</details>
 
-```
-PUT /cm2d_certificate
-{
-  "mappings": {
-    "_meta": {
-      "created_by": "cm2d-admin"
-    },
-    "properties": {
-      "@timestamp": {
-        "type": "date"
-      },
-      "age": {
-        "type": "long"
-      },
-      "categories_level_1": {
-        "type": "keyword"
-      },
-      "categories_associate": {
-        "type": "keyword"
-      },
-      "nnc": {
-        "type": "keyword"
-      },
-      "date": {
-        "type": "date",
-        "format": "iso8601"
-      },
-      "death_location": {
-        "type": "keyword"
-      },
-      "department": {
-        "type": "long"
-      },
-      "home_location": {
-        "type": "keyword"
-      },
-      "kind": {
-        "type": "keyword"
-      },
-      "sex": {
-        "type": "keyword"
-      }
-    }
-  }
-}'
-```
+<details>
+<summary><b>Créer un utilisateur manuellement (via Kibana)</b></summary>
 
-### Index pour les attributs supplémentaires des utilisateurs (manuelle)
+Dans Kibana, allez dans **Management → Users** (section Security ; tapez « users »
+dans la barre de recherche pour y accéder directement). Décochez « Show reserved
+users » pour ne voir que les utilisateurs de l'application, puis **Create user**.
 
-Pour stocker des informations supplémentaires concernant les utilisateurs CM2D, nous devons créer un index dédié.
+Utilisez l'adresse email **à la fois** comme `username` et comme `email` (convention
+requise par l'application, qui indexe les rôles par email). Attribuez le rôle
+`viewer` (utilisateur standard) ou `superuser` (administrateur), plus un rôle de
+région pour l'accès aux données.
 
-Rendez-vous dans "Management" > "Dev Tools" et lancez la requête suivante :
-
-```
-PUT /cm2d_users
-{
-  "mappings": {
-    "properties": {
-      "username": { "type": "text" },
-      "versionCGU": { "type": "text" }
-    }
-  }
-}
-```
-
-### Mise en place des rôles
-
-En utilisant l'interface ELK, naviguez jusqu'à Stack Management > Security > Roles, et créez les rôles suivants (sans configuration particulière) :
-
-- region-france-entiere
-- region-ile-de-france
-- region-normandie
-- region-nouvelle-aquitaine
-- region-hauts-de-france
-- region-auverge-rhone-alpes
-- region-bourgogne-franche-comte
-- region-centre-val-de-loire
-- region-corse
-- region-grand-est
-- region-occitanie
-- region-pays-de-la-loire
-- region-provence-alpes-cote-dazur
-- region-bretagne
-
-### Mise en place des transformations
-
-En utilisant l'interface ELK, naviguez jusqu'à Stack Management > Transform, et installez les indices de transformation suivants :
-
-##### 1. Compilation des causes
-
-Transform à partir de l'index : `cm2d_certificate`
-
-Type de transform : `Pivot`
-
-Group by : `categories_level_1`
-Aggregation : `@timestamp.value_count`
-
-Transform ID : `cm2d_level_1_categories`
-Transform description : `Available causes`
-Destination Index : `cm2d_level_1_categories`
-
-Continous mode
-Date field for continous mode : `@timestamp`
-Delay : `60s`
-
-##### 2. Compilation des causes associées
-
-Transform à partir de l'index : `cm2d_certificate`
-
-Type de transform : `Pivot`
-
-Group by : `categories_associate`
-Aggregation : `@timestamp.value_count`
-
-Transform ID : `cm2d_associate_categories`
-Transform description : `Available associate causes`
-Destination Index : `cm2d_associate_categories`
-
-Continous mode
-Date field for continous mode : `@timestamp`
-Delay : `60s`
-
-##### 3. Compilation des lieux institutionnels de décès
-
-Transform à partir de l'index : `cm2d_certificate`
-
-Type de transform : `Latest`
-
-Unique keys : `death_location`
-Sort field : `date`
-
-Transform ID : `cm2d_death_locations`
-Transform description : `Available death locations`
-Destination Index : `cm2d_death_locations`
-
-Continous mode
-Date field for continous mode : `@timestamp`
-Delay : `60s`
-
-##### 4. Compilation des sexes
-
-Transform à partir de l'index : `cm2d_certificate`
-
-Type de transform : `Latest`
-
-Unique keys : `sex`
-Sort field : `date`
-
-Transform ID : `cm2d_sexes`
-Transform description : `Available sexes`
-Destination Index : `cm2d_sexes`
-
-Continous mode
-Date field for continous mode : `@timestamp`
-Delay : `60s`
-
-##### 5. Compilation des départements
-
-Transform à partir de l'index : `cm2d_certificate`
-
-Type de transform : `Latest`
-
-Unique keys : `department`
-Sort field : `date`
-
-Transform ID : `cm2d_departments`
-Transform description : `Available departments`
-Destination Index : `cm2d_departments`
-
-Continous mode
-Date field for continous mode : `@timestamp`
-Delay : `60s`
+</details>
 
 ## Docker production
 

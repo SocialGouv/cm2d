@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "setup:elastic": "tsx scripts/setup-elastic.ts",
+    "seed:elastic": "tsx scripts/seed-elastic.ts"
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.0.19",
@@ -48,6 +50,8 @@
   "devDependencies": {
     "@types/d3-geo": "^3.1.0",
     "@types/react-datepicker": "^6.0.0",
-    "@types/react-simple-maps": "^3.0.6"
+    "@types/react-simple-maps": "^3.0.6",
+    "dotenv": "^17.4.2",
+    "tsx": "^4.23.1"
   }
 }

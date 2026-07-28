@@ -4,6 +4,15 @@
 /node_modules
 /.pnp
 .pnp.js
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+# certificat local (fourni par `yarn setup:elastic`, spécifique à l'environnement)
+/certs
 
 # testing
 /coverage
