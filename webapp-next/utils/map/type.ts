@@ -1,6 +1,5 @@
 export type MapConfig = {
-  // Détail par département (clé = code département), consommé par la carte
-  // (react-simple-maps) et l'infobulle de survol (MapTooltip).
+  // Clé = code département (doit matcher la propriété `code` du GeoJSON).
   state_specific: {
     [key: string]: {
       name: string;

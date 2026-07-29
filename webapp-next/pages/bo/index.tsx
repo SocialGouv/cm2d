@@ -92,10 +92,8 @@ export default function Home() {
     }
   }, [data, view, dateInterval]);
 
-  // Erreur AVANT le chargement : sur échec, `data` reste undefined donc le test
-  // de chargement `|| !data` serait vrai à l'infini (spinner sans issue). On
-  // bascule sur un panneau d'erreur (session expirée le plus souvent : API key
-  // périmée pendant la nuit) offrant une reconnexion.
+  // Doit passer AVANT le test de chargement : sur erreur `data` reste undefined,
+  // donc `|| !data` resterait vrai indéfiniment (spinner sans issue).
   if (isError || isErrorKind)
     return (
       <SessionExpiredCard

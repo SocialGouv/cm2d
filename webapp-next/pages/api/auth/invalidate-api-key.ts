@@ -18,16 +18,12 @@ export default async function handler(
 
   const ca = fs.readFileSync(path.resolve(process.cwd(), "./certs/ca/ca.crt"));
 
-  // On efface le cookie DANS TOUS LES CAS, avant même de tenter l'invalidation
-  // ES. La déconnexion ne doit jamais dépendre du succès d'un appel ES : dans
-  // l'état "session expirée" l'ancien code (invalidation → 500 → cookie non
-  // effacé → reload → /bo → chargement infini) piégeait l'utilisateur.
+  // Effacé inconditionnellement : la déconnexion ne doit pas dépendre du succès
+  // de l'invalidation ES, sinon une session déjà expirée reste piégée.
   clearCookieServerSide(res);
 
-  // Récupère le username depuis la key du cookie plutôt que depuis le corps de
-  // requête : quand la session est expirée, le client ne connaît plus le
-  // username (l'appel /api/auth/user a lui aussi échoué). On garde le body en
-  // repli pour compat.
+  // username déduit de la key : en session expirée le client ne le connaît plus
+  // (/api/auth/user a échoué). Body en repli.
   const apiKey = req.cookies[ELASTIC_API_KEY_NAME];
   let username: string | undefined = req.body?.username;
 
@@ -40,10 +36,7 @@ export default async function handler(
       });
       const authenticated = await userClient.security.authenticate();
       username = authenticated.username;
-    } catch (e) {
-      // Key déjà expirée/invalide : rien à invalider côté ES, le cookie est
-      // effacé, la déconnexion est effective côté client.
-    }
+    } catch (e) {}
   }
 
   if (username) {
@@ -57,11 +50,8 @@ export default async function handler(
         tls: { ca, rejectUnauthorized: false }
       });
       await adminClient.security.invalidateApiKey({ username });
-    } catch (error) {
-      // Invalidation best-effort : l'échec ne doit pas bloquer la déconnexion.
-    }
+    } catch (error) {}
   }
 
-  // Toujours 200 : le cookie est effacé, le client peut retourner au login.
   res.status(200).json({ loggedOut: true });
 }

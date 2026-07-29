@@ -107,9 +107,8 @@ export default async function handler(
       .status(200)
       .json({ result: transformResult(result, aggregations, filters).body });
   } catch (error: any) {
-    // API key expirée / invalide → ES renvoie 401. On propage ce 401 tel quel
-    // pour que le client distingue "session expirée" d'une erreur serveur, au
-    // lieu d'un 500 non géré qui laissait la page en chargement infini.
+    // Propager le 401 ES (key expirée) tel quel : le client doit distinguer
+    // session expirée d'une vraie erreur serveur.
     const statusCode = error?.meta?.statusCode ?? error?.statusCode ?? 500;
     res
       .status(statusCode === 401 || statusCode === 403 ? 401 : 500)

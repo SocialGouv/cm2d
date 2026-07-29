@@ -1,16 +1,9 @@
-// Source unique des régions et de leurs rôles ES associés.
-//
-// Importé à la fois par l'application (via tools.ts) et par le script
-// d'initialisation Elasticsearch (scripts/setup-elastic.ts). Ce module ne doit
-// AUCUNE dépendance React/Next/date-fns afin de rester importable depuis un
-// script Node autonome, et pour que la liste des rôles provisionnés dans
-// Elasticsearch ne dérive jamais de celle utilisée par l'app.
+// Source unique des régions/rôles, importée aussi par scripts/setup-elastic.ts.
+// Ne doit AUCUNE dépendance React/Next : doit rester importable depuis un script
+// Node autonome.
 
 export type Region = { label: string; role: string; value: string[] };
 
-// Régions métropolitaines et d'outre-mer : label, rôle ES associé, et liste des
-// départements. Source unique partagée par le sélecteur de région
-// (Regions.tsx) et la stratification "par région" des graphes.
 export const REGIONS: Region[] = [
   {
     label: "Ile-de-France",
@@ -75,7 +68,6 @@ export const REGIONS: Region[] = [
     role: "region-provence-alpes-cote-dazur",
     value: ["04", "05", "06", "13", "83", "84"],
   },
-  // Régions d'outre-mer (ROM) : chacune monodépartementale.
   { label: "Guadeloupe", role: "region-guadeloupe", value: ["971"] },
   { label: "Martinique", role: "region-martinique", value: ["972"] },
   { label: "Guyane", role: "region-guyane", value: ["973"] },
@@ -83,11 +75,8 @@ export const REGIONS: Region[] = [
   { label: "Mayotte", role: "region-mayotte", value: ["976"] },
 ];
 
-// Rôle spécial "France entière" (utilisé côté UI dans Regions.tsx) : accès
-// national, sans filtrage par région. Aucun département associé.
 export const FRANCE_ENTIERE_ROLE = "region-france-entiere";
 
-// Ensemble des rôles ES à provisionner : "France entière" + un rôle par région.
 export const ALL_REGION_ROLES: string[] = [
   FRANCE_ENTIERE_ROLE,
   ...REGIONS.map((r) => r.role),

@@ -1,10 +1,5 @@
 /**
- * Injection de données de test dans l'index `cm2d_certificate` via l'API _bulk.
- *
- * Génère des certificats de décès synthétiques (mêmes listes de valeurs que
- * faker/main.py) couvrant TOUS les départements — métropole, Corse (2A/2B) et
- * DROM (971…976) — afin que la carte et la stratification par région soient
- * peuplées partout.
+ * Insère en masse des certificats de décès synthétiques dans `cm2d_certificate`.
  *
  * Usage :
  *   yarn seed:elastic                 # 1 000 000 documents (défaut)
@@ -13,12 +8,8 @@
  *
  * Prérequis : `yarn setup:elastic` (l'index et son mapping doivent exister).
  *
- * Différences volontaires avec faker/main.py :
- *  - Les catégories sont indexées en TABLEAUX (un token par cause) et non en
- *    chaîne "a; b; c". L'app filtre via `terms`/`match` exacts sur ces keyword ;
- *    seuls des tableaux font correspondre chaque cause individuellement.
- *  - Ajout de `@timestamp` (dérivé de `date`), requis par les transforms continus.
- *  - Départements tirés de REGIONS (source unique), DROM inclus.
+ * Les catégories sont indexées en TABLEAUX (un token par cause), non en chaîne
+ * "a; b; c" — l'app filtre via `terms`/`match` exacts sur ces keyword.
  */
 import { Client } from '@elastic/elasticsearch';
 import dotenv from 'dotenv';
@@ -47,19 +38,11 @@ const client = new Client({
   tls: { rejectUnauthorized: false },
 });
 
-// --- Listes de valeurs (portées depuis faker/main.py) ----------------------
-
-// Tous les codes département (métropole + Corse + DROM), dédupliqués depuis la
-// source unique des régions. Couvre l'intégralité de la carte.
 const DEPARTMENTS: string[] = Array.from(
   new Set(REGIONS.flatMap((r) => r.value))
 );
 
-// Populations approximatives (milliers d'habitants) par département. Sert de
-// poids au tirage : les volumes de décès simulés varient donc de façon
-// réaliste (Paris/Nord/Rhône élevés, Lozère/Creuse faibles), ce qui donne une
-// carte contrastée avec la colorimétrie ancrée sur la médiane. Valeurs
-// approximatives (données de test), non des chiffres officiels.
+// Poids du tirage : populations approximatives (données de test, non officielles).
 const DEPARTMENT_POPULATION: { [code: string]: number } = {
   '01': 657, '02': 526, '03': 335, '04': 165, '05': 141, '06': 1094,
   '07': 328, '08': 268, '09': 153, '10': 310, '11': 375, '12': 279,
@@ -80,7 +63,6 @@ const DEPARTMENT_POPULATION: { [code: string]: number } = {
   '971': 384, '972': 361, '973': 282, '974': 861, '976': 279,
 };
 
-// Tirage pondéré par population : table cumulée + recherche binaire.
 const DEPT_WEIGHTS = DEPARTMENTS.map((d) => DEPARTMENT_POPULATION[d] ?? 1);
 const DEPT_CUMULATIVE: number[] = [];
 let cumulativeWeight = 0;
@@ -177,14 +159,11 @@ const DEATH_LOCATIONS = [
 const SEXES = ['homme', 'femme', 'indéterminé'];
 const KINDS = ['Electronique', 'Papier'];
 
-// --- Générateurs -----------------------------------------------------------
-
 const pick = <T>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)];
 const randInt = (min: number, max: number): number =>
   Math.floor(Math.random() * (max - min + 1)) + min;
 
-// Reprend get_multiple_values : 20 % une seule valeur, sinon 2 à 5 valeurs
-// distinctes. Renvoie un TABLEAU (indexé tel quel dans un champ keyword).
+// Renvoie un TABLEAU (indexé tel quel dans un champ keyword).
 function multiValues(arr: string[]): string[] {
   if (Math.random() < 0.2) return [pick(arr)];
   const n = Math.min(randInt(2, 5), arr.length);
@@ -197,8 +176,7 @@ function multiValues(arr: string[]): string[] {
 }
 
 const START = new Date('2021-01-01').getTime();
-// Borne haute EXCLUSIVE : Math.random() ne l'atteint jamais, donc 2026-01-01
-// permet de couvrir jusqu'au 2025-12-31 inclus.
+// Borne haute EXCLUSIVE : 2026-01-01 couvre jusqu'au 2025-12-31 inclus.
 const END = new Date('2026-01-01').getTime();
 
 function makeDoc() {
@@ -206,12 +184,8 @@ function makeDoc() {
   const day = new Date(t);
   const date = day.toISOString().slice(0, 10); // YYYY-MM-DD (format iso8601)
   return {
-    // @timestamp = instant d'indexation (et NON la date de décès). Les
-    // transforms continus sont démarrés par setup:elastic sur un index vide :
-    // leur filigrane temporel est déjà ~maintenant. Un @timestamp dans le passé
-    // passerait sous ce filigrane et ne serait jamais traité ; l'instant présent
-    // (postérieur au démarrage) est détecté au checkpoint suivant. L'app ne lit
-    // jamais @timestamp, seul son rôle de champ de synchro compte.
+    // @timestamp doit être ~maintenant (pas la date de décès) : un timestamp
+    // passé tombe sous le filigrane des transforms continus et n'est jamais traité.
     '@timestamp': new Date().toISOString(),
     date,
     age: randInt(0, 100),
@@ -227,8 +201,6 @@ function makeDoc() {
     coordinates: `${(Math.random() * 180 - 90).toFixed(6)}, ${(Math.random() * 360 - 180).toFixed(6)}`,
   };
 }
-
-// --- Main ------------------------------------------------------------------
 
 async function main() {
   console.log(`CM2D — seed de ${COUNT} certificats dans ${INDEX}`);

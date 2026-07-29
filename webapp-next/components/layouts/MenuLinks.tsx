@@ -25,9 +25,8 @@ export const MenuLinks: React.FC<Props> = ({ links }) => {
           key={index}
           onClick={(e) => {
             if (link.onClick) {
-              // Élément d'action (pas de vraie destination) : on empêche la
-              // navigation vers href="" qui rechargerait la page courante et
-              // court-circuiterait l'action (ex. déconnexion, ouverture modale).
+              // Sans destination réelle, href="" rechargerait la page et
+              // court-circuiterait l'action.
               if (!link.link) e.preventDefault();
               link.onClick();
             }

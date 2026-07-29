@@ -2,14 +2,9 @@ import { Button, Flex, Text } from '@chakra-ui/react';
 import { useState } from 'react';
 
 type Props = {
-  // true = session expirée (401/403) ; false = autre erreur serveur.
   expired: boolean;
 };
 
-// Affiché à la place du dashboard quand les requêtes ES échouent. Auparavant un
-// échec (typiquement une API key expirée pendant la nuit) laissait la page en
-// spinner infini, sans aucune porte de sortie. Ce panneau donne une action
-// claire : effacer le cookie et revenir à l'écran de connexion.
 export function SessionExpiredCard({ expired }: Props) {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 

@@ -3,8 +3,6 @@ import useSWR from 'swr';
 import { Filters } from './cm2d-provider';
 import { transformFilters } from './tools';
 
-// Erreur portant le code HTTP, pour que les composants distinguent une session
-// expirée (401) d'une autre erreur.
 export class FetchError extends Error {
   status: number;
   constructor(status: number, message?: string) {
@@ -18,12 +16,10 @@ export function isSessionExpired(error: unknown): boolean {
   return error instanceof FetchError && (error.status === 401 || error.status === 403);
 }
 
-// Fetcher partagé : vérifie res.ok AVANT de parser. Auparavant chaque hook
-// faisait `res.json()` sans contrôle → sur un 401/500 le parse échouait (ou
-// renvoyait un corps d'erreur pris pour de la donnée) et SWR ne remontait pas
-// d'erreur exploitable → chargement infini.
 async function elkFetcher(input: RequestInfo, init?: RequestInit) {
   const res = await fetch(input, init);
+  // Sans ce garde, un 401/500 finissait parsé comme donnée et SWR ne remontait
+  // aucune erreur → chargement infini côté /bo.
   if (!res.ok) {
     throw new FetchError(res.status);
   }

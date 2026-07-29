@@ -1,22 +1,13 @@
 /**
- * Initialisation automatique de l'environnement Elasticsearch CM2D.
- *
- * Provisionne, de façon idempotente, tout ce que le README décrivait
- * manuellement (Dev Tools + interface Kibana) :
- *   1. Index `cm2d_certificate` (mapping de référence, department = keyword)
- *   2. Index `cm2d_users`
- *   3. Les 19 rôles de région (source : utils/regions.ts)
- *   4. Les 5 transforms continus (créés puis démarrés)
- *   5. Le mot de passe de l'utilisateur `kibana_system`
- *   6. La copie du certificat ca.crt vers webapp-next/certs/ca (best-effort)
+ * Provisionne, de façon idempotente, l'environnement Elasticsearch CM2D :
+ * index (cm2d_certificate, cm2d_users), rôles de région, transforms continus,
+ * mot de passe kibana_system, copie de ca.crt.
  *
  * Usage :
  *   yarn setup:elastic            # crée ce qui manque, laisse l'existant
  *   yarn setup:elastic --reset    # SUPPRIME puis recrée tout (données incluses)
  *
- * Connexion : ELASTIC_HOST / ELASTIC_USERNAME / ELASTIC_PASSWORD (+ KIBANA_PASSWORD)
- * lus depuis webapp-next/.env puis ../.env. TLS auto-signé accepté
- * (rejectUnauthorized: false), aucun certificat requis pour ce script.
+ * Connexion via ELASTIC_HOST / ELASTIC_USERNAME / ELASTIC_PASSWORD (+ KIBANA_PASSWORD).
  */
 import { Client } from '@elastic/elasticsearch';
 import { execSync } from 'child_process';
@@ -25,11 +16,7 @@ import fs from 'fs';
 import path from 'path';
 import { ALL_REGION_ROLES } from '../utils/regions';
 
-// --- Configuration ---------------------------------------------------------
-
-// Charge d'abord le .env de la webapp (source des ELASTIC_*), puis celui de la
-// racine (source de KIBANA_PASSWORD). dotenv n'écrase pas les variables déjà
-// définies : le premier fichier chargé a donc la priorité.
+// dotenv n'écrase pas les vars déjà définies : le premier .env chargé gagne.
 dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 dotenv.config({ path: path.resolve(process.cwd(), '../.env') });
 
@@ -44,10 +31,7 @@ const RESET = process.argv.includes('--reset');
 const CERTIFICATE_INDEX = 'cm2d_certificate';
 const USERS_INDEX = 'cm2d_users';
 
-// Utilisateur de test (DEV/LOCAL uniquement) pour se connecter à l'application.
-// username == email : requis par pages/api/auth/user.ts qui indexe les rôles
-// par email. Rôles : `viewer` (lecture des index cm2d_*) + `region-france-entiere`
-// (accès national/toutes régions dans l'UI).
+// DEV/LOCAL uniquement. username == email : requis par pages/api/auth/user.ts.
 const TEST_USER = 'user@test.loc';
 const TEST_PASSWORD = 'user123';
 const TEST_USER_ROLES = ['viewer', 'region-france-entiere'];
@@ -58,11 +42,8 @@ const client = new Client({
   tls: { rejectUnauthorized: false },
 });
 
-// --- Définitions -----------------------------------------------------------
-
-// Mapping de référence pour cm2d_certificate. `department` / `home_department`
-// sont des `keyword` (codes non numériques : DROM "971", Corse "2A"/"2B",
-// zéro initial "02"). `@timestamp` est requis par les transforms continus.
+// `department` / `home_department` en `keyword` : codes non numériques (971,
+// 2A, 02). `@timestamp` requis par les transforms continus.
 const CERTIFICATE_MAPPING = {
   _meta: { created_by: 'cm2d-setup-script' },
   properties: {
@@ -89,8 +70,6 @@ const USERS_MAPPING = {
   },
 } as const;
 
-// Les 5 transforms continus décrits dans le README.
-// `pivot` : agrégation par catégorie. `latest` : dernière valeur par clé.
 const SYNC = { time: { field: '@timestamp', delay: '60s' } };
 
 type TransformDef = {
@@ -137,8 +116,6 @@ const TRANSFORMS: TransformDef[] = [
   latestBy('cm2d_departments', 'Available departments', 'department'),
 ];
 
-// --- Utilitaires -----------------------------------------------------------
-
 const log = (msg: string) => console.log(msg);
 const ok = (msg: string) => console.log(`  ✓ ${msg}`);
 const skip = (msg: string) => console.log(`  – ${msg} (existe déjà)`);
@@ -182,13 +159,9 @@ async function transformExists(id: string): Promise<boolean> {
   }
 }
 
-// --- Étapes ----------------------------------------------------------------
-
 async function reset() {
   log('\n[--reset] Suppression des ressources existantes…');
 
-  // Transforms : arrêter (force) puis supprimer. Leurs index de destination
-  // aussi, pour repartir d'un état propre.
   for (const t of TRANSFORMS) {
     try {
       await client.transform.stopTransform({
@@ -271,8 +244,6 @@ async function setupRoles() {
 async function setupTestUser() {
   log('\nUtilisateur de test (dev/local)…');
   const existed = await userExists(TEST_USER);
-  // putUser fait un upsert : on garantit ainsi que les identifiants documentés
-  // restent valides à chaque exécution.
   await client.security.putUser({
     username: TEST_USER,
     password: TEST_PASSWORD,
@@ -295,7 +266,7 @@ async function setupTransforms() {
       await client.transform.putTransform({ transform_id: t.id, ...(t.body as any) });
       ok(`transform créé : ${t.id}`);
     }
-    // Démarrage (idempotent : on ignore l'erreur "déjà démarré").
+    // idempotent : on ignore l'erreur "déjà démarré".
     try {
       await client.transform.startTransform({ transform_id: t.id });
       ok(`transform démarré : ${t.id}`);
@@ -340,8 +311,6 @@ function copyCaCert() {
     console.warn(`      sudo ${cmd}`);
   }
 }
-
-// --- Main ------------------------------------------------------------------
 
 async function main() {
   log(`CM2D — initialisation Elasticsearch\n  hôte : ${ELASTIC_HOST}  (user: ${ELASTIC_USERNAME})`);

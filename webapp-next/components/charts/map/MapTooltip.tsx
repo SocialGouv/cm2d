@@ -6,18 +6,13 @@ import { Box, ListItem, Text, UnorderedList } from '@chakra-ui/react';
 type StateEntry = MapConfig['state_specific'][string];
 
 type Props = {
-  // Nom de repli (propriété GeoJSON) quand le département n'a pas de données
-  // dans le périmètre courant.
   fallbackName: string;
   state?: StateEntry;
-  // Position à l'écran (coordonnées viewport de la souris).
   x: number;
   y: number;
 };
 
 export function MapTooltip({ fallbackName, state, x, y }: Props) {
-  // La même description HTML alimente le mode global (total seul) et le mode
-  // stratifié (ventilation par valeur) — cf. getMapProps.
   const details = state ? extractDetailsValues(state.description) : [];
 
   return (

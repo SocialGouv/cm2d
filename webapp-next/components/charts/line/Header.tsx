@@ -59,7 +59,6 @@ export function ChartLineHeader() {
   const getIntervalLabel = (value: DateInterval) =>
     dateIntervals.find(di => di.value === value)?.label ?? '';
 
-  // La stratification "par région" n'est proposée qu'en France entière.
   const isFranceEntiere =
     filters.region_departments.length === ALL_DEPARTMENTS.length;
 
@@ -86,8 +85,6 @@ export function ChartLineHeader() {
       : getDefaultField<Field>(selectedFiltersPile, isValidField, 'sex')
   );
 
-  // Si le critère courant n'est plus disponible (ex: région après sortie de
-  // France entière), on retombe sur "sexe".
   if (!isAggregated && !isValidField(aggregateField)) {
     setAggregateField('sex');
     setSaveAggregateX('sex');
@@ -96,7 +93,6 @@ export function ChartLineHeader() {
   const updateAggregation = () => {
     let aggregation: any = {};
 
-    // Pas de la vue courbe piloté par le dropdown "Granularité".
     const dateAgg = {
       aggregated_date: {
         date_histogram: {
@@ -106,9 +102,8 @@ export function ChartLineHeader() {
       }
     };
 
-    // Mode comparaison (exclusif de la stratification) : on stratifie par année
-    // afin de séparer la période courante et la même période de l'année comparée
-    // en deux courbes superposables (cf. Line.tsx, axe normalisé).
+    // Comparaison : stratifier par année pour superposer les deux périodes
+    // (cf. axe normalisé dans Line.tsx).
     if (filters.compare_year) {
       setAggregations({
         aggregated_parent: {
@@ -212,7 +207,6 @@ export function ChartLineHeader() {
 
   const isCompareActive = !!filters.compare_year;
 
-  // La comparaison n'est proposée que si la période tient sur une seule année.
   const periodStartYear = filters.start_date
     ? new Date(filters.start_date).getFullYear()
     : undefined;
@@ -222,8 +216,6 @@ export function ChartLineHeader() {
   const periodSingleYear =
     periodStartYear !== undefined && periodStartYear === periodEndYear;
 
-  // Années comparables : de l'année précédant la période jusqu'à la première
-  // date disponible.
   const compareYearOptions: number[] = [];
   if (periodSingleYear && periodStartYear !== undefined) {
     for (let y = periodStartYear - 1; y >= firstDate.getFullYear(); y--) {
@@ -254,7 +246,6 @@ export function ChartLineHeader() {
 
   const handleCompareChange = (year?: number) => {
     if (year) {
-      // On repasse en distribution globale (exclusif de la stratification).
       setIsAggregated(true);
       setSaveAggregateX(undefined);
     }

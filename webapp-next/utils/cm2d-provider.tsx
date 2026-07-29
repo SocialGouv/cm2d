@@ -25,8 +25,8 @@ export type Filters = {
   region_departments: string[];
   start_date?: string;
   end_date?: string;
-  // Comparaison courbe : année avec laquelle comparer la même période (mode
-  // exclusif de la stratification). undefined = désactivé.
+  // Année de comparaison (même période, autre année). Exclusif de la
+  // stratification. undefined = désactivé.
   compare_year?: number;
 };
 
@@ -101,9 +101,6 @@ export function Cm2dProvider({ children }: Cm2dProviderProps) {
   const [CSVData, setCSVData] = useState<string[][]>([]);
   const [user, setUser] = useState<User>({} as User);
 
-  // On teste res.ok avant de parser : un 401 (session expirée) renvoie du texte,
-  // et l'ancien `res.json()` inconditionnel levait une exception non gérée
-  // (rejet de promesse remonté à Sentry) au lieu d'un simple échec silencieux.
   const fetchFirstData = () => {
     fetch('/api/elk/first', { method: 'GET' })
       .then(res => (res.ok ? res.json() : null))

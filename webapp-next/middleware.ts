@@ -4,12 +4,9 @@ import { ELASTIC_API_KEY_NAME } from '@/utils/tools';
  
 export function middleware(request: NextRequest) {
 
-  // Ce middleware ne teste que la PRÉSENCE du cookie, pas la validité de l'API
-  // key ES (impossible sur le runtime edge : le client ES et le certificat CA
-  // ne sont pas disponibles ici). Ce test n'est fiable que parce que le cookie
-  // expire désormais en même temps que la key (Max-Age aligné sur `expiration:
-  // '1d'`, cf. setCookieServerSide). La validation réelle se fait côté API
-  // (401 → panneau "session expirée" + reconnexion), pas ici.
+  // Simple test de présence : le runtime edge ne peut pas valider la key ES.
+  // Fiable uniquement parce que le cookie expire avec la key (cf.
+  // setCookieServerSide) ; la vraie validation se fait côté API.
   const cookie = request.cookies.get(ELASTIC_API_KEY_NAME)?.value;
 
   if (request.nextUrl.pathname.startsWith('/bo')) {

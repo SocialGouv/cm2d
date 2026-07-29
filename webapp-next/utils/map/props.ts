@@ -64,8 +64,6 @@ export const getMapProps = (
     }
   };
 
-  // Total de décès d'un département (somme des enfants en mode stratifié, sinon
-  // doc_count). Sert à la fois à la colorimétrie et au calcul de la médiane.
   const getDeptTotal = (key: string): number => {
     const hit = hits.find(h => h.key === key);
     if (!hit) return 0;
@@ -80,8 +78,8 @@ export const getMapProps = (
 
   const getCountFromKey = (key: string): number => getDeptTotal(key);
 
-  // Médiane des décès sur les départements affichés AYANT des données (>0).
-  // Robuste aux outliers (ex. Paris) et non tirée vers le bas par les zéros.
+  // Médiane sur les départements >0 : robuste aux outliers (Paris), pas tirée
+  // vers le bas par les zéros.
   const sortedCounts = departments
     .map(getDeptTotal)
     .filter(c => c > 0)
@@ -93,8 +91,7 @@ export const getMapProps = (
       : (sortedCounts[n / 2 - 1] + sortedCounts[n / 2]) / 2
     : 0;
 
-  // Colorimétrie ancrée sur la médiane : vert bien en dessous, bleu autour,
-  // orange au dessus, rouge très au dessus. Sans données / médiane nulle → gris.
+  // Seuils relatifs à la médiane ; gris si pas de données.
   const getColorFromCount = (
     key: string,
     kind: 'initial' | 'hover'
@@ -140,9 +137,7 @@ export const getMapProps = (
     return `Nombre de décès : ${getCountFromKey(key)}`;
   };
 
-  // state_specific est désormais indexé par CODE DÉPARTEMENT (ex "75", "971"),
-  // ce qui correspond à la propriété `code` des features GeoJSON rendues par
-  // react-simple-maps (métropole + DROM), et alimente aussi l'infobulle (MapTooltip).
+  // Indexé par code département (cf. contrat sur MapConfig.state_specific).
   const states: MapConfig['state_specific'] = {};
   departments.forEach(d => {
     states[d] = {

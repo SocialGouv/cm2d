@@ -44,7 +44,7 @@ export const ChartLine = (props: Props) => {
             return {
               label: capitalizeString(label),
               data: yValues,
-              // Conservé pour le remappage mois-de-l'année (comparaison années).
+              // Conservé pour le remappage sur l'axe normalisé (plus bas).
               hits: ds.hits,
               fill: true,
               borderWidth: 2,
@@ -92,7 +92,6 @@ export const ChartLine = (props: Props) => {
   const min = new Date(filters.start_date);
   const max = new Date(filters.end_date);
 
-  // L'année n'est affichée sur l'axe que si la période couvre plusieurs années.
   const multiYear = min.getFullYear() !== max.getFullYear();
 
   const datasetWithMostHits = datasets.reduce((prev, current) => {
@@ -114,24 +113,17 @@ export const ChartLine = (props: Props) => {
     );
   });
 
-  // Comparaison année-sur-année : les séries (2022, 2023…) ont des buckets de
-  // dates ABSOLUES distinctes. On les remappe sur un axe commun « mois de
-  // l'année » (année de référence neutre) pour qu'elles se superposent, au lieu
-  // d'un alignement par index qui décalait les courbes.
-  // Axe normalisé (superposition par mois/semaine/jour) : stratification par
-  // année OU mode comparaison « même période, autre année ».
+  // Séries d'années différentes = dates absolues distinctes ; on les remappe sur
+  // un axe commun (mois/semaine/jour, année neutre) pour qu'elles se superposent,
+  // au lieu d'un alignement par index qui décalait les courbes.
   const isYearComparison = saveAggregateX === 'years' || !!filters.compare_year;
   let labels = xValues;
   let renderDatasets = displayDatasets.map(({ hits, ...rest }: any) => rest);
 
   if (isYearComparison) {
     const REF_YEAR = 2000;
-    // Position sur l'axe + libellé d'un bucket, INDÉPENDAMMENT de l'année, selon
-    // la granularité :
-    //  - semaine : numéro de semaine ISO (une même semaine tombe sur des dates
-    //    calendaires différentes selon l'année → normaliser par date serait faux),
-    //  - jour    : jour/mois,
-    //  - mois    : index de mois.
+    // Clé indépendante de l'année. Semaine = n° ISO : normaliser par date serait
+    // faux, une même semaine tombe sur des dates différentes selon l'année.
     const bucketKeyLabel = (
       keyAsString: string
     ): { key: number; label: string } => {
