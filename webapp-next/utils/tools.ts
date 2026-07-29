@@ -906,13 +906,34 @@ export const ELASTIC_API_KEY_NAME =
   (process.env.NEXT_PUBLIC_ELASTIC_API_KEY_NAME as string) || 'cm2d_api_key';
 
 
+// Durée de vie du cookie alignée sur l'expiration de l'API key ES (grantApiKey
+// `expiration: '1d'`, cf. api/auth/index.ts). Sans Max-Age le cookie était un
+// cookie de session : il survivait à la key (expirée en 24h) — le lendemain
+// matin le cookie restait présent alors que la key était morte, ce qui piégeait
+// l'utilisateur (middleware = "connecté", mais toutes les requêtes ES en 401).
+// Cookie et key expirent désormais ensemble → le middleware, qui ne teste que la
+// présence du cookie, redevient fiable.
+const COOKIE_MAX_AGE_SECONDS = 24 * 60 * 60; // 1 jour, = expiration de la key
+
 export const setCookieServerSide = (
   res: NextApiResponse,
   securityTokenEncoded: string
 ) => {
   res.setHeader(
     "Set-Cookie",
-    `${ELASTIC_API_KEY_NAME}=${securityTokenEncoded}; path=/; HttpOnly; ${
+    `${ELASTIC_API_KEY_NAME}=${securityTokenEncoded}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${COOKIE_MAX_AGE_SECONDS}; ${
+      process.env.NODE_ENV !== "development" ? "Secure;" : ""
+    }`
+  );
+};
+
+// Efface le cookie d'API key côté client (déconnexion / session expirée).
+// Indépendant de toute invalidation ES : appelé systématiquement pour garantir
+// une sortie propre même si l'invalidation de la key échoue.
+export const clearCookieServerSide = (res: NextApiResponse) => {
+  res.setHeader(
+    "Set-Cookie",
+    `${ELASTIC_API_KEY_NAME}=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0; ${
       process.env.NODE_ENV !== "development" ? "Secure;" : ""
     }`
   );

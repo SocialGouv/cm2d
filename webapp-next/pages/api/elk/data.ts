@@ -9,9 +9,11 @@ import fs from 'fs';
 import { NextApiRequest, NextApiResponse } from 'next';
 import path from 'path';
 
-type Data = {
-  result: SearchResponseBody<unknown, Record<string, AggregationsAggregate>>;
-};
+type Data =
+  | {
+      result: SearchResponseBody<unknown, Record<string, AggregationsAggregate>>;
+    }
+  | { error: string };
 
 // HANDLE ASSOCIATE CAUSES FILTER RESULT
 const transformResult = (
@@ -83,24 +85,34 @@ export default async function handler(
     : {};
   const index = (req.query.index as string) || 'cm2d_certificate'; // default to 'cm2d_certificate' if no index is provided
 
-  const result = await client.search(
-    {
-      index: index,
-      size: 100,
-      track_total_hits: true,
-      body: {
-        query: {
-          bool: {
-            filter: filters
-          }
-        },
-        aggs: aggregations
-      }
-    },
-    { meta: true }
-  );
+  try {
+    const result = await client.search(
+      {
+        index: index,
+        size: 100,
+        track_total_hits: true,
+        body: {
+          query: {
+            bool: {
+              filter: filters
+            }
+          },
+          aggs: aggregations
+        }
+      },
+      { meta: true }
+    );
 
-  res
-    .status(200)
-    .json({ result: transformResult(result, aggregations, filters).body });
+    res
+      .status(200)
+      .json({ result: transformResult(result, aggregations, filters).body });
+  } catch (error: any) {
+    // API key expirée / invalide → ES renvoie 401. On propage ce 401 tel quel
+    // pour que le client distingue "session expirée" d'une erreur serveur, au
+    // lieu d'un 500 non géré qui laissait la page en chargement infini.
+    const statusCode = error?.meta?.statusCode ?? error?.statusCode ?? 500;
+    res
+      .status(statusCode === 401 || statusCode === 403 ? 401 : 500)
+      .json({ error: statusCode === 401 || statusCode === 403 ? 'Unauthorized' : 'Internal Server Error' });
+  }
 }

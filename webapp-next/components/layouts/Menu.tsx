@@ -184,13 +184,19 @@ export function Menu() {
                 label: 'Déconnexion',
                 icon: '/icons/log-out.svg',
                 onClick: () => {
+                  // L'endpoint efface le cookie dans tous les cas et déduit le
+                  // username depuis la key ; on ne dépend plus de
+                  // context.user.username (indisponible si la session a expiré).
+                  // `finally` : on retourne au login même si l'appel échoue, et
+                  // href='/' (pas reload) pour ne pas retomber sur /bo.
                   triggerInvalidateApiKey({
                     username: context.user.username as string
-                  }).then(() => {
-                    window.location.reload();
-                  });
-                },
-                link: '/'
+                  })
+                    .catch(() => {})
+                    .finally(() => {
+                      window.location.href = '/';
+                    });
+                }
               }
             ]}
           />

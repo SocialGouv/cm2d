@@ -3,6 +3,33 @@ import useSWR from 'swr';
 import { Filters } from './cm2d-provider';
 import { transformFilters } from './tools';
 
+// Erreur portant le code HTTP, pour que les composants distinguent une session
+// expirée (401) d'une autre erreur.
+export class FetchError extends Error {
+  status: number;
+  constructor(status: number, message?: string) {
+    super(message || `Request failed with status ${status}`);
+    this.name = 'FetchError';
+    this.status = status;
+  }
+}
+
+export function isSessionExpired(error: unknown): boolean {
+  return error instanceof FetchError && (error.status === 401 || error.status === 403);
+}
+
+// Fetcher partagé : vérifie res.ok AVANT de parser. Auparavant chaque hook
+// faisait `res.json()` sans contrôle → sur un 401/500 le parse échouait (ou
+// renvoyait un corps d'erreur pris pour de la donnée) et SWR ne remontait pas
+// d'erreur exploitable → chargement infini.
+async function elkFetcher(input: RequestInfo, init?: RequestInit) {
+  const res = await fetch(input, init);
+  if (!res.ok) {
+    throw new FetchError(res.status);
+  }
+  return superJSONParse<any>(stringify(await res.json()));
+}
+
 export function useSexes() {
   const params = {
     index: 'cm2d_sexes'
@@ -10,10 +37,7 @@ export function useSexes() {
 
   const { data, error } = useSWR(
     `/api/elk/data?${new URLSearchParams(params)}`,
-    async function (input: RequestInfo, init?: RequestInit) {
-      const res = await fetch(input, init);
-      return superJSONParse<any>(stringify(await res.json()));
-    }
+    elkFetcher
   );
 
   return {
@@ -30,10 +54,7 @@ export function useDeathLocations() {
 
   const { data, error } = useSWR(
     `/api/elk/data?${new URLSearchParams(params)}`,
-    async function (input: RequestInfo, init?: RequestInit) {
-      const res = await fetch(input, init);
-      return superJSONParse<any>(stringify(await res.json()));
-    }
+    elkFetcher
   );
 
   return {
@@ -50,10 +71,7 @@ export function useCauses() {
 
   const { data, error } = useSWR(
     `/api/elk/data?${new URLSearchParams(params)}`,
-    async function (input: RequestInfo, init?: RequestInit) {
-      const res = await fetch(input, init);
-      return superJSONParse<any>(stringify(await res.json()));
-    }
+    elkFetcher
   );
 
   return {
@@ -70,10 +88,7 @@ export function useAssociateCauses() {
 
   const { data, error } = useSWR(
     `/api/elk/data?${new URLSearchParams(params)}`,
-    async function (input: RequestInfo, init?: RequestInit) {
-      const res = await fetch(input, init);
-      return superJSONParse<any>(stringify(await res.json()));
-    }
+    elkFetcher
   );
 
   return {
@@ -95,10 +110,7 @@ export function useDepartments(departments: string[]) {
 
   const { data, error } = useSWR(
     `/api/elk/data?${new URLSearchParams(params)}`,
-    async function (input: RequestInfo, init?: RequestInit) {
-      const res = await fetch(input, init);
-      return superJSONParse<any>(stringify(await res.json()));
-    }
+    elkFetcher
   );
 
   return {
@@ -117,10 +129,7 @@ export function useData(filters: Filters, aggregations: any) {
 
   const { data, error } = useSWR(
     `/api/elk/data?${new URLSearchParams(params)}`,
-    async function (input: RequestInfo, init?: RequestInit) {
-      const res = await fetch(input, init);
-      return superJSONParse<any>(stringify(await res.json()));
-    }
+    elkFetcher
   );
 
   const paramsKind = {
@@ -132,10 +141,7 @@ export function useData(filters: Filters, aggregations: any) {
   };
   const { data: dataKind, error: errorKind } = useSWR(
     `/api/elk/data?${new URLSearchParams(paramsKind)}`,
-    async function (input: RequestInfo, init?: RequestInit) {
-      const res = await fetch(input, init);
-      return superJSONParse<any>(stringify(await res.json()));
-    }
+    elkFetcher
   );
 
   return {

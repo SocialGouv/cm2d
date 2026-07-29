@@ -23,7 +23,15 @@ export const MenuLinks: React.FC<Props> = ({ links }) => {
           alignItems="left"
           mt={8}
           key={index}
-          onClick={link.onClick ? link.onClick : () => {}}
+          onClick={(e) => {
+            if (link.onClick) {
+              // Élément d'action (pas de vraie destination) : on empêche la
+              // navigation vers href="" qui rechargerait la page courante et
+              // court-circuiterait l'action (ex. déconnexion, ouverture modale).
+              if (!link.link) e.preventDefault();
+              link.onClick();
+            }
+          }}
         >
           {link.icon && (
             <Image src={link.icon} width={24} height={24} alt="icon" />
