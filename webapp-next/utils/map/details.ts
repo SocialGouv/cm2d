@@ -1,7 +1,4 @@
-// Extrait les couples { label, value } de la description HTML d'un département
-// (ex. `<div>Homme : 12</div>`), présents uniquement en mode stratifié.
-// Utilisé par l'infobulle de la carte (MapTooltip) pour afficher la ventilation
-// par valeur en mode stratifié.
+// Re-parse la description HTML produite par getMapProps (couplage à surveiller).
 export function extractDetailsValues(
   input: string
 ): { label: string; value: number }[] {

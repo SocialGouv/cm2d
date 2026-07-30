@@ -44,6 +44,8 @@ export function ChartLineHeader() {
     setSaveAggregateX,
     selectedFiltersPile,
     filters,
+    setFilters,
+    firstDate,
     dateInterval,
     setDateInterval
   } = context;
@@ -57,7 +59,6 @@ export function ChartLineHeader() {
   const getIntervalLabel = (value: DateInterval) =>
     dateIntervals.find(di => di.value === value)?.label ?? '';
 
-  // La stratification "par région" n'est proposée qu'en France entière.
   const isFranceEntiere =
     filters.region_departments.length === ALL_DEPARTMENTS.length;
 
@@ -84,8 +85,6 @@ export function ChartLineHeader() {
       : getDefaultField<Field>(selectedFiltersPile, isValidField, 'sex')
   );
 
-  // Si le critère courant n'est plus disponible (ex: région après sortie de
-  // France entière), on retombe sur "sexe".
   if (!isAggregated && !isValidField(aggregateField)) {
     setAggregateField('sex');
     setSaveAggregateX('sex');
@@ -94,7 +93,6 @@ export function ChartLineHeader() {
   const updateAggregation = () => {
     let aggregation: any = {};
 
-    // Pas de la vue courbe piloté par le dropdown "Granularité".
     const dateAgg = {
       aggregated_date: {
         date_histogram: {
@@ -103,6 +101,23 @@ export function ChartLineHeader() {
         }
       }
     };
+
+    // Comparaison : stratifier par année pour superposer les deux périodes
+    // (cf. axe normalisé dans Line.tsx).
+    if (filters.compare_year) {
+      setAggregations({
+        aggregated_parent: {
+          date_histogram: {
+            field: 'date',
+            calendar_interval: 'year'
+          },
+          aggs: {
+            ...dateAgg
+          }
+        }
+      });
+      return;
+    }
 
     if (isAggregated) {
       aggregation = dateAgg;
@@ -177,7 +192,7 @@ export function ChartLineHeader() {
 
   useEffect(() => {
     updateAggregation();
-  }, [isAggregated, aggregateField, dateInterval]);
+  }, [isAggregated, aggregateField, dateInterval, filters.compare_year]);
 
   useEffect(() => {
     if (!isAggregated) {
@@ -190,17 +205,51 @@ export function ChartLineHeader() {
     setSaveAggregateX(isAggregated ? undefined : aggregateField);
   }, [isAggregated]);
 
+  const isCompareActive = !!filters.compare_year;
+
+  const periodStartYear = filters.start_date
+    ? new Date(filters.start_date).getFullYear()
+    : undefined;
+  const periodEndYear = filters.end_date
+    ? new Date(filters.end_date).getFullYear()
+    : undefined;
+  const periodSingleYear =
+    periodStartYear !== undefined && periodStartYear === periodEndYear;
+
+  const compareYearOptions: number[] = [];
+  if (periodSingleYear && periodStartYear !== undefined) {
+    for (let y = periodStartYear - 1; y >= firstDate.getFullYear(); y--) {
+      compareYearOptions.push(y);
+    }
+  }
+
   const handleViewChange = (view: View) => {
     setView(view);
   };
 
+  const clearCompare = () => {
+    if (filters.compare_year)
+      setFilters({ ...filters, compare_year: undefined });
+  };
+
+  // Comparaison et stratification sont mutuellement exclusives.
   const handleAggregationChange = (aggregated: boolean) => {
+    clearCompare();
     setIsAggregated(aggregated);
   };
 
   const handleLegendChange = (field: Field) => {
+    clearCompare();
     setAggregateField(field);
     setSaveAggregateX(field);
+  };
+
+  const handleCompareChange = (year?: number) => {
+    if (year) {
+      setIsAggregated(true);
+      setSaveAggregateX(undefined);
+    }
+    setFilters({ ...filters, compare_year: year });
   };
 
   return (
@@ -248,30 +297,34 @@ export function ChartLineHeader() {
           ))}
         </MenuList>
       </Menu>
-      <Menu>
-        <MenuButton
-          ml={4}
-          as={Button}
-          variant="light"
-          rightIcon={<ChevronDownIcon color="primary.200" w={5} h={5} />}
-        >
-          Courbe :{' '}
-          <Text as="b">
-            {isAggregated ? 'Distribution globale' : 'Distribution stratifiée'}
-          </Text>
-        </MenuButton>
-        <MenuList>
-          <MenuItem onClick={() => handleAggregationChange(true)}>
-            <Text as={isAggregated ? 'b' : 'span'}>Distribution globale</Text>
-          </MenuItem>
-          <MenuItem onClick={() => handleAggregationChange(false)}>
-            <Text as={!isAggregated ? 'b' : 'span'}>
-              Distribution stratifiée
+      {!isCompareActive && (
+        <Menu>
+          <MenuButton
+            ml={4}
+            as={Button}
+            variant="light"
+            rightIcon={<ChevronDownIcon color="primary.200" w={5} h={5} />}
+          >
+            Courbe :{' '}
+            <Text as="b">
+              {isAggregated
+                ? 'Distribution globale'
+                : 'Distribution stratifiée'}
             </Text>
-          </MenuItem>
-        </MenuList>
-      </Menu>
-      {!isAggregated && (
+          </MenuButton>
+          <MenuList>
+            <MenuItem onClick={() => handleAggregationChange(true)}>
+              <Text as={isAggregated ? 'b' : 'span'}>Distribution globale</Text>
+            </MenuItem>
+            <MenuItem onClick={() => handleAggregationChange(false)}>
+              <Text as={!isAggregated ? 'b' : 'span'}>
+                Distribution stratifiée
+              </Text>
+            </MenuItem>
+          </MenuList>
+        </Menu>
+      )}
+      {!isAggregated && !isCompareActive && (
         <Menu>
           <MenuButton
             ml={4}
@@ -295,6 +348,36 @@ export function ChartLineHeader() {
           </MenuList>
         </Menu>
       )}
+      {periodSingleYear &&
+        (compareYearOptions.length > 0 || isCompareActive) && (
+          <Menu>
+            <MenuButton
+              ml={4}
+              as={Button}
+              variant="light"
+              rightIcon={<ChevronDownIcon color="primary.200" w={5} h={5} />}
+            >
+              Comparaison :{' '}
+              <Text as="b">
+                {filters.compare_year
+                  ? `${periodStartYear} vs ${filters.compare_year}`
+                  : 'Aucune'}
+              </Text>
+            </MenuButton>
+            <MenuList>
+              <MenuItem onClick={() => handleCompareChange(undefined)}>
+                <Text as={!isCompareActive ? 'b' : 'span'}>Aucune</Text>
+              </MenuItem>
+              {compareYearOptions.map(y => (
+                <MenuItem key={y} onClick={() => handleCompareChange(y)}>
+                  <Text as={filters.compare_year === y ? 'b' : 'span'}>
+                    {`Comparer avec ${y}`}
+                  </Text>
+                </MenuItem>
+              ))}
+            </MenuList>
+          </Menu>
+        )}
     </Flex>
   );
 }

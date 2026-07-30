@@ -5,7 +5,8 @@ import MapIframe from '@/components/charts/map/Map';
 import { ChartTable } from '@/components/charts/table/Table';
 import { ClosableAlert } from '@/components/layouts/ClosableAlert';
 import { KPI } from '@/components/layouts/KPI';
-import { useData } from '@/utils/api';
+import { SessionExpiredCard } from '@/components/layouts/SessionExpiredCard';
+import { isSessionExpired, useData } from '@/utils/api';
 import { Cm2dContext } from '@/utils/cm2d-provider';
 import {
   addMissingSizes,
@@ -30,7 +31,10 @@ export default function Home() {
 
   const { filters, aggregations, view, setCSVData, dateInterval } = context;
 
-  const { data, dataKind, isLoading } = useData(filters, aggregations);
+  const { data, dataKind, isLoading, isError, isErrorKind } = useData(
+    filters,
+    aggregations
+  );
 
   const fetchNewTitle = async () => {
     if (!filters.categories[0]) setTitle('Nombre de certificats de décès');
@@ -87,6 +91,15 @@ export default function Home() {
       );
     }
   }, [data, view, dateInterval]);
+
+  // Doit passer AVANT le test de chargement : sur erreur `data` reste undefined,
+  // donc `|| !data` resterait vrai indéfiniment (spinner sans issue).
+  if (isError || isErrorKind)
+    return (
+      <SessionExpiredCard
+        expired={isSessionExpired(isError) || isSessionExpired(isErrorKind)}
+      />
+    );
 
   if (isLoading || !dataKind || !data)
     return (

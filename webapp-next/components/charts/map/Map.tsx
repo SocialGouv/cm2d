@@ -40,7 +40,6 @@ export default function MapIframe(props: Props) {
     null
   );
 
-  // Département survolé + position souris (viewport) pour l'infobulle.
   const [hovered, setHovered] = useState<{
     code: string;
     nom: string;
@@ -63,15 +62,14 @@ export default function MapIframe(props: Props) {
     };
   }, []);
 
-  // Mémoïsé : évite de reconstruire toute la carte des départements à chaque
-  // mouvement de souris (l'infobulle déclenche des re-renders fréquents).
+  // Mémoïsé : l'infobulle re-render à chaque mouvement de souris, sans ça la
+  // carte entière serait reconstruite.
   const { config } = useMemo(
     () => getMapProps(datasets, filters.region_departments, saveAggregateX),
     [datasets, filters.region_departments, saveAggregateX]
   );
   const statesByCode = config?.state_specific ?? {};
 
-  // Départements dans le périmètre courant (région sélectionnée / France entière).
   const scoped = useMemo(
     () => new Set(filters.region_departments),
     [filters.region_departments]
@@ -89,9 +87,8 @@ export default function MapIframe(props: Props) {
 
   const features: GeoFeature[] = geojson?.features ?? [];
 
-  // Départements métropolitains DANS le périmètre courant : France entière =
-  // tous, région sélectionnée = uniquement ceux de la région (la projection
-  // ci-dessous se recadre donc automatiquement sur la région).
+  // Filtré sur le périmètre : la projection ci-dessous se recadre donc
+  // automatiquement sur la région sélectionnée.
   const metroFeatures = useMemo(
     () =>
       features.filter(
@@ -102,8 +99,6 @@ export default function MapIframe(props: Props) {
     [features, scoped]
   );
 
-  // Encarts DROM : seulement ceux présents dans le périmètre (France entière
-  // ou région d'outre-mer). La carte principale reste métropolitaine.
   const dromFeatures = useMemo(
     () =>
       features.filter(
@@ -126,15 +121,12 @@ export default function MapIframe(props: Props) {
     return <Text>Chargement de la carte…</Text>;
   }
 
-  // Aucune donnée cartographiable (ni métropole ni DROM dans le périmètre).
   if (!metroProjection && dromFeatures.length === 0) {
     return <Text>Carte indisponible.</Text>;
   }
 
   const hasMetro = !!metroProjection;
   const hasDrom = dromFeatures.length > 0;
-  // Une seule zone affichée (région métropolitaine seule, ou région DROM
-  // seule) → on la centre horizontalement dans le container.
   const single = hasMetro !== hasDrom;
 
   return (

@@ -1,8 +1,6 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
 
 export function MapLegends() {
-  // Colorimétrie relative à la médiane des décès des départements affichés
-  // (cf. utils/map/props.ts).
   const legends = [
     {
       color: '#c9e7c8',

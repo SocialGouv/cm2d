@@ -4,9 +4,6 @@ import { DateInterval, Filters, SearchCategory, View } from './cm2d-provider';
 import { NextApiResponse } from 'next';
 import { REGIONS } from './regions';
 
-// Ré-export : la source unique des régions vit désormais dans ./regions
-// (module sans dépendance React), afin d'être partagée avec le script
-// d'initialisation Elasticsearch sans dérive.
 export { REGIONS, FRANCE_ENTIERE_ROLE, ALL_REGION_ROLES } from './regions';
 export type { Region } from './regions';
 
@@ -221,26 +218,18 @@ export const departmentsCodes: { [key: string]: string } = {
   "78": "FRA5357", // Yvelines
 };
 
-// Tous les départements (métropole + DROM) — utilisé par l'option "France
-// entière" (rôle region-france-entiere) pour lever le filtrage par région.
-// Basé sur departmentRefs (et non departmentsCodes, limité à la carte
-// métropolitaine) afin d'inclure les DROM dans les données et les filtres.
+// departmentRefs (et non departmentsCodes, limité à la métropole) pour inclure
+// les DROM.
 export const ALL_DEPARTMENTS: string[] = Object.keys(departmentRefs);
 
-// DROM (départements et régions d'outre-mer).
 export const DROM_DEPARTMENTS: string[] = ["971", "972", "973", "974", "976"];
 
-// France hexagonale : métropole (Corse incluse) sans les DROM — utilisé par
-// l'option "France hexagonale", réservée au rôle region-france-entiere.
 export const HEXAGON_DEPARTMENTS: string[] = ALL_DEPARTMENTS.filter(
   (d) => !DROM_DEPARTMENTS.includes(d)
 );
-// Agrégation ES "par région" : un bucket nommé par région, chacun filtrant sur
-// les home_department de la région. On NE passe PAS `keyed` : le paramètre n'est
-// supporté par l'agg `filters` qu'à partir d'Elasticsearch 7.11 et l'instance
-// de prod le rejette ("Unknown key for a VALUE_BOOLEAN in [...]: [keyed]").
-// Sans `keyed`, les buckets sont renvoyés sous forme d'objet { label: bucket } ;
-// `normalizeBuckets` les remet en tableau côté lecture.
+// Pas de `keyed` : non supporté par l'agg `filters` avant Elasticsearch 7.11,
+// rejeté par l'instance de prod ("Unknown key for a VALUE_BOOLEAN [...]: [keyed]").
+// Les buckets sont donc renvoyés en objet { label: bucket } → normalizeBuckets.
 export function buildRegionFiltersAgg() {
   const filters: { [label: string]: any } = {};
   REGIONS.forEach((r) => {
@@ -404,14 +393,37 @@ export function transformFilters(filters: Filters): any[] {
   });
 
   if (filters.start_date && filters.end_date) {
-    transformed.push({
-      range: {
-        date: {
-          gte: filters.start_date,
-          lte: filters.end_date,
+    const baseRange = {
+      range: { date: { gte: filters.start_date, lte: filters.end_date } },
+    };
+
+    if (filters.compare_year) {
+      // OR entre la période courante et la même période décalée sur l'année
+      // comparée ; la stratification par année sépare ensuite les deux courbes.
+      const shiftedStart = new Date(filters.start_date);
+      const shiftedEnd = new Date(filters.end_date);
+      shiftedStart.setFullYear(filters.compare_year);
+      shiftedEnd.setFullYear(filters.compare_year);
+
+      transformed.push({
+        bool: {
+          should: [
+            baseRange,
+            {
+              range: {
+                date: {
+                  gte: shiftedStart.toISOString(),
+                  lte: shiftedEnd.toISOString(),
+                },
+              },
+            },
+          ],
+          minimum_should_match: 1,
         },
-      },
-    });
+      });
+    } else {
+      transformed.push(baseRange);
+    }
   }
 
   return transformed;
@@ -464,10 +476,9 @@ export function getCSVDataFromDatasets(
   return csvData;
 }
 
-// Une agg `filters` (stratification par région) renvoie ses buckets sous forme
-// d'objet { label: bucket } et non de tableau (on n'utilise pas `keyed`, cf.
-// buildRegionFiltersAgg). Les aggs terms/range/date_histogram renvoient déjà un
-// tableau. On normalise vers un tableau dont chaque bucket porte `key` = label.
+// L'agg `filters` sans `keyed` renvoie ses buckets en objet { label: bucket }
+// (cf. buildRegionFiltersAgg) ; on les ramène au tableau { key, ... } des autres
+// aggs.
 function normalizeBuckets(agg: any): any[] {
   if (!agg || !agg.buckets) return [];
   if (Array.isArray(agg.buckets)) return agg.buckets;
@@ -621,9 +632,6 @@ export function dateToWeekYear(inputDate: Date): string {
   return formattedString;
 }
 
-// Formate une date selon le pas de la vue courbe (semaine/jour/mois).
-// `withYear` : afficher l'année. Sur l'axe on ne l'affiche que si la période
-// couvre plusieurs années ; dans le CSV on la met toujours (fichier lisible seul).
 export function formatDateByInterval(
   date: Date,
   interval: DateInterval,
@@ -637,7 +645,6 @@ export function formatDateByInterval(
     return withYear ? `${dd}/${mm}/${date.getFullYear()}` : `${dd}/${mm}`;
   }
 
-  // month
   const monthLong = new Intl.DateTimeFormat("fr-FR", { month: "long" }).format(
     date
   );
@@ -882,13 +889,26 @@ export const ELASTIC_API_KEY_NAME =
   (process.env.NEXT_PUBLIC_ELASTIC_API_KEY_NAME as string) || 'cm2d_api_key';
 
 
+// Doit rester aligné sur l'expiration de la key ES (grantApiKey `expiration:
+// '1d'`) : un cookie de session survivrait à la key et piégerait l'utilisateur.
+const COOKIE_MAX_AGE_SECONDS = 24 * 60 * 60;
+
 export const setCookieServerSide = (
   res: NextApiResponse,
   securityTokenEncoded: string
 ) => {
   res.setHeader(
     "Set-Cookie",
-    `${ELASTIC_API_KEY_NAME}=${securityTokenEncoded}; path=/; HttpOnly; ${
+    `${ELASTIC_API_KEY_NAME}=${securityTokenEncoded}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${COOKIE_MAX_AGE_SECONDS}; ${
+      process.env.NODE_ENV !== "development" ? "Secure;" : ""
+    }`
+  );
+};
+
+export const clearCookieServerSide = (res: NextApiResponse) => {
+  res.setHeader(
+    "Set-Cookie",
+    `${ELASTIC_API_KEY_NAME}=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0; ${
       process.env.NODE_ENV !== "development" ? "Secure;" : ""
     }`
   );

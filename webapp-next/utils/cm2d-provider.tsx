@@ -25,6 +25,9 @@ export type Filters = {
   region_departments: string[];
   start_date?: string;
   end_date?: string;
+  // Année de comparaison (même période, autre année). Exclusif de la
+  // stratification. undefined = désactivé.
+  compare_year?: number;
 };
 
 export type User = {
@@ -99,27 +102,29 @@ export function Cm2dProvider({ children }: Cm2dProviderProps) {
   const [user, setUser] = useState<User>({} as User);
 
   const fetchFirstData = () => {
-    fetch('/api/elk/first', { method: 'GET' }).then(res =>
-      res.json().then(data => {
-        const date = data?.result?.hits?.hits[0]._source.date;
+    fetch('/api/elk/first', { method: 'GET' })
+      .then(res => (res.ok ? res.json() : null))
+      .then(data => {
+        const date = data?.result?.hits?.hits[0]?._source?.date;
         if (date) setFirstDate(new Date(date));
       })
-    );
+      .catch(() => {});
   };
 
   const fetchUser = () => {
-    fetch('/api/auth/user', { method: 'GET' }).then(res =>
-      res.json().then(user => {
+    fetch('/api/auth/user', { method: 'GET' })
+      .then(res => (res.ok ? res.json() : null))
+      .then(user => {
         if (user) {
           setUser({
             username: user.username,
             fullName: user.full_name,
             email: user.email,
-            roles: user.roles.filter((r: string) => r !== 'viewer')
+            roles: (user.roles || []).filter((r: string) => r !== 'viewer')
           });
         }
       })
-    );
+      .catch(() => {});
   };
 
   useEffect(() => {

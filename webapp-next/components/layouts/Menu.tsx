@@ -184,13 +184,16 @@ export function Menu() {
                 label: 'Déconnexion',
                 icon: '/icons/log-out.svg',
                 onClick: () => {
+                  // href='/' (pas reload) dans finally : retour au login même si
+                  // l'appel échoue, sans risque de retomber sur /bo.
                   triggerInvalidateApiKey({
                     username: context.user.username as string
-                  }).then(() => {
-                    window.location.reload();
-                  });
-                },
-                link: '/'
+                  })
+                    .catch(() => {})
+                    .finally(() => {
+                      window.location.href = '/';
+                    });
+                }
               }
             ]}
           />
